@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-
+const { login } = useFortifyFeatures()
   // Form data
   const form = ref()
   const email = ref('')
@@ -159,7 +159,11 @@
     isLoading.value = true
 
     try {
-      const result = await mockLogin(email.value, password.value)
+    await login({
+  email: email.value,
+  password: password.value
+})
+
       console.log('Login success:', result)
       showNotification('Login realizado com sucesso!', 'success')
 

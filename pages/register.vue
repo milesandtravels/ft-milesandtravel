@@ -4,3 +4,8 @@
 <template>
   <FormRegister />
 </template>
+<script lang="ts" setup>
+definePageMeta({
+  layout: false
+})
+</script>
