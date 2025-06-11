@@ -5,14 +5,16 @@
         <v-card class="elevation-8 rounded-lg">
           <v-card-title class="text-center pa-6">
             <div class="d-flex flex-column align-center">
-              <img src="~/assets/logo.svg" width="100px">
+              <img src="~/assets/logo.svg" width="100px" />
             </div>
           </v-card-title>
 
           <v-card-text class="pa-6">
             <!-- Success Message -->
             <div v-if="isSuccess" class="text-center">
-              <v-icon class="mb-4" color="success" size="64">mdi-email-check</v-icon>
+              <v-icon class="mb-4" color="success" size="64"
+                >mdi-email-check</v-icon
+              >
               <h3 class="text-h6 mb-3">Cadastro realizado com sucesso!</h3>
               <p class="text-body-1 mb-3 text-medium-emphasis">
                 Um email de confirmação foi enviado para:
@@ -21,7 +23,8 @@
                 {{ registeredEmail }}
               </p>
               <p class="text-body-2 mb-6 text-medium-emphasis">
-                Verifique sua caixa de entrada e spam. Clique no link para criar sua senha de acesso.
+                Verifique sua caixa de entrada e spam. Clique no link para criar
+                sua senha de acesso.
               </p>
 
               <v-btn
@@ -56,7 +59,11 @@
                 </p>
               </div>
 
-              <v-form ref="form" v-model="isFormValid" @submit.prevent="onSubmit">
+              <v-form
+                ref="form"
+                v-model="isFormValid"
+                @submit.prevent="onSubmit"
+              >
                 <v-text-field
                   v-model="name"
                   class="mb-4"
@@ -138,9 +145,7 @@
     >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false">
-          Fechar
-        </v-btn>
+        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
       </template>
     </v-snackbar>
   </v-container>
@@ -257,7 +262,7 @@
       // Simula redirecionamento direto (Google já tem email verificado)
       setTimeout(() => {
         console.log('Redirecting to dashboard...')
-      // router.push('/dashboard')
+        // router.push('/dashboard')
       }, 1500)
     } catch (error) {
       console.error('Google register error:', error)
@@ -287,48 +292,48 @@
 </script>
 
 <style scoped>
-.v-card {
-  max-width: 100%;
-}
-
-.v-btn {
-  text-transform: none;
-}
-
-/* Success state styling */
-.v-icon.mdi-email-check {
-  animation: success-bounce 0.6s ease-out;
-}
-
-@keyframes success-bounce {
-  0% {
-    transform: scale(0) rotate(-45deg);
-    opacity: 0;
+  .v-card {
+    max-width: 100%;
   }
-  50% {
-    transform: scale(1.1) rotate(0deg);
-    opacity: 1;
+
+  .v-btn {
+    text-transform: none;
   }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
+
+  /* Success state styling */
+  .v-icon.mdi-email-check {
+    animation: success-bounce 0.6s ease-out;
   }
-}
 
-/* Smooth transitions */
-.v-btn {
-  transition: all 0.3s ease;
-}
+  @keyframes success-bounce {
+    0% {
+      transform: scale(0) rotate(-45deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
 
-.v-btn:hover {
-  transform: translateY(-1px);
-}
+  /* Smooth transitions */
+  .v-btn {
+    transition: all 0.3s ease;
+  }
 
-/* Email highlight */
-.text-primary {
-  background: linear-gradient(45deg, #1976d2, #42a5f5);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+  .v-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Email highlight */
+  .text-primary {
+    background: linear-gradient(45deg, #1976d2, #42a5f5);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 </style>

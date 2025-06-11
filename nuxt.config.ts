@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   modules: ['vuetify-nuxt-module', 'nuxt-fortify'],
   nuxtFortify: {
     baseUrl: 'https://api-dev.milesandtravels.com',
-    origin:'https://api-dev.milesandtravels.com',
+    origin: 'https://api-dev.milesandtravels.com',
     authMode: 'cookie',
     authHome: '/',
     endpoints: {
@@ -13,11 +13,11 @@ export default defineNuxtConfig({
       login: '/login',
     },
     features: {
-        registration: true,
-        resetPasswords: true,
-        twoFactorAuthentication: true,
+      registration: true,
+      resetPasswords: true,
+      twoFactorAuthentication: true,
       // other features...
-    }
+    },
     // other configurations...
-  }
+  },
 })

@@ -1,7 +1,10 @@
 <template>
   <v-container class="pa-2 pa-md-4">
     <!-- Header Section -->
-    <v-card class="elevation-4 rounded-lg mb-4 mb-md-6 mx-auto search-card" max-width="600">
+    <v-card
+      class="elevation-4 rounded-lg mb-4 mb-md-6 mx-auto search-card"
+      max-width="600"
+    >
       <v-card-title class="pa-4 pa-md-6 pb-2 pb-md-4">
         <h2 class="text-h6 font-weight-bold">Plataformas de Benefícios</h2>
       </v-card-title>
@@ -73,9 +76,15 @@
     </v-card>
 
     <!-- Results Header -->
-    <div v-if="filteredPlatforms.length > 0" class="results-header mb-3 mb-md-4 px-2 px-md-0">
+    <div
+      v-if="filteredPlatforms.length > 0"
+      class="results-header mb-3 mb-md-4 px-2 px-md-0"
+    >
       <h3 class="text-h6 font-weight-bold">
-        {{ filteredPlatforms.length }} plataforma{{ filteredPlatforms.length > 1 ? 's' : '' }} encontrada{{ filteredPlatforms.length > 1 ? 's' : '' }}
+        {{ filteredPlatforms.length }} plataforma{{
+          filteredPlatforms.length > 1 ? 's' : ''
+        }}
+        encontrada{{ filteredPlatforms.length > 1 ? 's' : '' }}
       </h3>
     </div>
 
@@ -120,10 +129,16 @@
                 <div class="d-flex align-center">
                   <v-icon
                     class="mr-1"
-                    :color="platform.type === 'Pontos e Milhas' ? 'orange' : 'green'"
+                    :color="
+                      platform.type === 'Pontos e Milhas' ? 'orange' : 'green'
+                    "
                     size="16"
                   >
-                    {{ platform.type === 'Pontos e Milhas' ? 'mdi-airplane' : 'mdi-cash' }}
+                    {{
+                      platform.type === 'Pontos e Milhas'
+                        ? 'mdi-airplane'
+                        : 'mdi-cash'
+                    }}
                   </v-icon>
                   <span class="cashback-text text-primary font-weight-bold">
                     {{ platform.cashback }}
@@ -154,25 +169,40 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="filteredPlatforms.length === 0 && !loading && hasFiltered" class="empty-state text-center py-8 py-md-12">
-      <v-icon class="mb-3" color="grey-lighten-1" size="48">mdi-gift-off-outline</v-icon>
-      <h3 class="text-body-1 text-md-h6 font-weight-medium mb-2">Nenhuma plataforma encontrada</h3>
+    <div
+      v-else-if="filteredPlatforms.length === 0 && !loading && hasFiltered"
+      class="empty-state text-center py-8 py-md-12"
+    >
+      <v-icon class="mb-3" color="grey-lighten-1" size="48"
+        >mdi-gift-off-outline</v-icon
+      >
+      <h3 class="text-body-1 text-md-h6 font-weight-medium mb-2">
+        Nenhuma plataforma encontrada
+      </h3>
       <p class="text-body-2 text-medium-emphasis">
         Tente usar termos diferentes ou outros tipos
       </p>
     </div>
 
     <!-- Initial State -->
-    <div v-else-if="!hasFiltered" class="initial-state text-center py-8 py-md-12">
+    <div
+      v-else-if="!hasFiltered"
+      class="initial-state text-center py-8 py-md-12"
+    >
       <v-icon class="mb-3" color="primary" size="48">mdi-gift-plus</v-icon>
-      <h3 class="text-body-1 text-md-h6 font-weight-medium mb-2">Explore nossas plataformas de benefícios!</h3>
+      <h3 class="text-body-1 text-md-h6 font-weight-medium mb-2">
+        Explore nossas plataformas de benefícios!
+      </h3>
       <p class="text-body-2 text-medium-emphasis">
         Use a busca para encontrar plataformas específicas de pontos ou cashback
       </p>
     </div>
 
     <!-- End of Results -->
-    <div v-if="!hasMore && !loading && platforms.length > 0" class="text-center py-6">
+    <div
+      v-if="!hasMore && !loading && platforms.length > 0"
+      class="text-center py-6"
+    >
       <v-alert
         class="mx-auto"
         density="compact"
@@ -197,15 +227,8 @@
     >
       <v-card class="ecommerces-modal">
         <!-- Modal Header -->
-        <v-toolbar
-          color="primary"
-          dark
-          density="comfortable"
-        >
-          <v-btn
-            icon="mdi-close"
-            @click="closeEcommercesModal"
-          />
+        <v-toolbar color="primary" dark density="comfortable">
+          <v-btn icon="mdi-close" @click="closeEcommercesModal" />
           <v-toolbar-title>E-commerces Parceiros</v-toolbar-title>
         </v-toolbar>
 
@@ -219,22 +242,20 @@
             >
               <!-- Category Header -->
               <div class="d-flex align-center mb-4">
-                <v-avatar
-                  class="mr-3"
-                  color="primary"
-                  size="48"
-                >
-                  <v-icon
-                    color="white"
-                    size="24"
-                  >
+                <v-avatar class="mr-3" color="primary" size="48">
+                  <v-icon color="white" size="24">
                     {{ getCategoryIcon(category) }}
                   </v-icon>
                 </v-avatar>
                 <div>
                   <h2 class="text-h6 font-weight-bold">{{ category }}</h2>
                   <p class="text-caption text-medium-emphasis">
-                    {{ ecommerces.length }} {{ ecommerces.length === 1 ? 'loja disponível' : 'lojas disponíveis' }}
+                    {{ ecommerces.length }}
+                    {{
+                      ecommerces.length === 1
+                        ? 'loja disponível'
+                        : 'lojas disponíveis'
+                    }}
                   </p>
                 </div>
               </div>
@@ -250,30 +271,35 @@
                   md="4"
                   sm="6"
                 >
-                  <v-card
-                    class="elevation-3 ecommerce-card h-100"
-                    hover
-                  >
+                  <v-card class="elevation-3 ecommerce-card h-100" hover>
                     <div class="ecommerce-image-container">
                       <div
                         class="ecommerce-logo d-flex align-center justify-center"
                         :style="{ backgroundColor: ecommerce.color }"
                       >
-                        <span class="ecommerce-emoji">{{ ecommerce.logo }}</span>
+                        <span class="ecommerce-emoji">{{
+                          ecommerce.logo
+                        }}</span>
                       </div>
                     </div>
 
                     <v-card-text class="pa-2 pa-md-3">
                       <div class="points-container mb-1 mb-md-2">
                         <div class="d-flex align-center">
-                          <v-icon class="mr-1" color="amber" size="16">mdi-star</v-icon>
-                          <span class="points-text text-primary font-weight-bold">
+                          <v-icon class="mr-1" color="amber" size="16"
+                            >mdi-star</v-icon
+                          >
+                          <span
+                            class="points-text text-primary font-weight-bold"
+                          >
                             {{ ecommerce.points }}
                           </span>
                         </div>
                       </div>
 
-                      <h4 class="ecommerce-title text-body-2 font-weight-medium">
+                      <h4
+                        class="ecommerce-title text-body-2 font-weight-medium"
+                      >
                         {{ ecommerce.name }}
                       </h4>
                     </v-card-text>
@@ -542,10 +568,11 @@
     isLoading.value = true
 
     setTimeout(() => {
-      const filtered = platforms.value.filter(platform =>
-        platform.name.toLowerCase().includes(query.toLowerCase())
-        || platform.type.toLowerCase().includes(query.toLowerCase())
-        || platform.cashback.toLowerCase().includes(query.toLowerCase()),
+      const filtered = platforms.value.filter(
+        platform =>
+          platform.name.toLowerCase().includes(query.toLowerCase()) ||
+          platform.type.toLowerCase().includes(query.toLowerCase()) ||
+          platform.cashback.toLowerCase().includes(query.toLowerCase())
       )
       searchResults.value = filtered
       isLoading.value = false
@@ -562,10 +589,11 @@
       // Filter by name or selected platform
       if (searchQuery.value || selectedPlatform.value) {
         const query = searchQuery.value || selectedPlatform.value?.name || ''
-        filtered = filtered.filter(platform =>
-          platform.name.toLowerCase().includes(query.toLowerCase())
-          || platform.type.toLowerCase().includes(query.toLowerCase())
-          || platform.cashback.toLowerCase().includes(query.toLowerCase()),
+        filtered = filtered.filter(
+          platform =>
+            platform.name.toLowerCase().includes(query.toLowerCase()) ||
+            platform.type.toLowerCase().includes(query.toLowerCase()) ||
+            platform.cashback.toLowerCase().includes(query.toLowerCase())
         )
       }
 
@@ -592,7 +620,7 @@
 
     const newPlatforms = initialPlatforms.map(platform => ({
       ...platform,
-      id: platform.id + (page.value * initialPlatforms.length),
+      id: platform.id + page.value * initialPlatforms.length,
       name: `${platform.name}${page.value > 1 ? ` #${page.value}` : ''}`,
     }))
 
@@ -615,7 +643,7 @@
           loadMorePlatforms()
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     )
 
     observer.observe(observerTarget.value)
@@ -631,14 +659,14 @@
 
   const getPlatformColor = (color: string) => {
     const colors: Record<string, string> = {
-      'green': '#4CAF50',
-      'orange': '#FF9800',
-      'pink': '#E91E63',
-      'blue': '#2196F3',
-      'indigo': '#3F51B5',
-      'purple': '#9C27B0',
-      'amber': '#FFC107',
-      'grey': '#9E9E9E',
+      green: '#4CAF50',
+      orange: '#FF9800',
+      pink: '#E91E63',
+      blue: '#2196F3',
+      indigo: '#3F51B5',
+      purple: '#9C27B0',
+      amber: '#FFC107',
+      grey: '#9E9E9E',
       'deep-orange': '#FF5722',
     }
     return colors[color] || '#666'
@@ -647,13 +675,13 @@
   const getCategoryIcon = (category: string) => {
     const icons: Record<string, string> = {
       'Casa & Decoração': 'mdi-home',
-      'Eletrônicos': 'mdi-cellphone',
-      'Variedades': 'mdi-shopping',
-      'Supermercado': 'mdi-cart',
-      'Marketplace': 'mdi-store',
-      'Moda': 'mdi-tshirt-crew',
-      'Esportes': 'mdi-run',
-      'Viagens': 'mdi-airplane',
+      Eletrônicos: 'mdi-cellphone',
+      Variedades: 'mdi-shopping',
+      Supermercado: 'mdi-cart',
+      Marketplace: 'mdi-store',
+      Moda: 'mdi-tshirt-crew',
+      Esportes: 'mdi-run',
+      Viagens: 'mdi-airplane',
     }
     return icons[category] || 'mdi-store'
   }
@@ -694,247 +722,257 @@
 </script>
 
 <style scoped>
-/* Search Card */
-.search-card {
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+  /* Search Card */
+  .search-card {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-/* Platform Avatar in Autocomplete */
-.platform-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  /* Platform Avatar in Autocomplete */
+  .platform-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-.avatar-emoji {
-  font-size: 1.2rem;
-}
+  .avatar-emoji {
+    font-size: 1.2rem;
+  }
 
-/* Action Buttons */
-.action-buttons {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
-}
-
-@media (max-width: 600px) {
+  /* Action Buttons */
   .action-buttons {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-}
-
-/* Platform Cards */
-.platform-card {
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-}
-
-.platform-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-}
-
-.image-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.platform-logo {
-  height: 140px;
-  transition: transform 0.3s ease;
-}
-
-.platform-card:hover .platform-logo {
-  transform: scale(1.05);
-}
-
-.logo-emoji {
-  font-size: 3rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.type-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.cashback-text {
-  font-size: 0.9rem;
-  line-height: 1.2;
-}
-
-@media (min-width: 768px) {
-  .cashback-text {
-    font-size: 1rem;
-  }
-}
-
-.platform-title {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.3;
-  min-height: 2.6em;
-  max-height: 2.6em;
-}
-
-/* E-commerce Cards in Modal */
-.ecommerce-card {
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ecommerce-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-}
-
-.ecommerce-image-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.ecommerce-logo {
-  height: 100px;
-  transition: transform 0.3s ease;
-}
-
-.ecommerce-card:hover .ecommerce-logo {
-  transform: scale(1.05);
-}
-
-.ecommerce-emoji {
-  font-size: 2rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.points-text {
-  font-size: 0.85rem;
-  line-height: 1.2;
-}
-
-.ecommerce-title {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.3;
-  min-height: 2.6em;
-  max-height: 2.6em;
-}
-
-/* Responsive Typography */
-@media (max-width: 600px) {
-  .platform-title,
-  .ecommerce-title {
-    font-size: 0.8rem;
-    line-height: 1.2;
-    min-height: 2.4em;
-    max-height: 2.4em;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
   }
 
-  .logo-emoji {
-    font-size: 2.5rem;
+  @media (max-width: 600px) {
+    .action-buttons {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
   }
 
-  .ecommerce-emoji {
-    font-size: 1.5rem;
+  /* Platform Cards */
+  .platform-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .platform-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .image-container {
+    position: relative;
+    overflow: hidden;
   }
 
   .platform-logo {
-    height: 120px;
+    height: 140px;
+    transition: transform 0.3s ease;
   }
 
-  .ecommerce-logo {
-    height: 80px;
-  }
-}
-
-/* Grid responsive improvements */
-@media (max-width: 400px) {
-  .v-col {
-    padding: 2px !important;
+  .platform-card:hover .platform-logo {
+    transform: scale(1.05);
   }
 
-  .platform-card .v-card-text,
-  .ecommerce-card .v-card-text {
-    padding: 8px !important;
+  .logo-emoji {
+    font-size: 3rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 
   .type-badge {
-    top: 4px;
-    left: 4px;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-}
 
-/* Empty and Initial States */
-.empty-state,
-.initial-state {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.observer-target {
-  height: 20px;
-  width: 100%;
-}
-
-/* Dark theme enhancements */
-.v-theme--dark .search-card {
-  background: rgba(30, 30, 30, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.v-theme--dark .platform-card,
-.v-theme--dark .ecommerce-card {
-  background: rgba(40, 40, 40, 0.95);
-}
-
-/* Smooth animations */
-.v-col {
-  animation: fadeInUp 0.4s ease-out backwards;
-}
-
-.v-col:nth-child(1) { animation-delay: 0.05s; }
-.v-col:nth-child(2) { animation-delay: 0.1s; }
-.v-col:nth-child(3) { animation-delay: 0.15s; }
-.v-col:nth-child(4) { animation-delay: 0.2s; }
-.v-col:nth-child(n+5) { animation-delay: 0.25s; }
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
+  .cashback-text {
+    font-size: 0.9rem;
+    line-height: 1.2;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  @media (min-width: 768px) {
+    .cashback-text {
+      font-size: 1rem;
+    }
   }
-}
 
-/* Performance optimizations */
-.platform-logo,
-.ecommerce-logo {
-  will-change: transform;
-}
+  .platform-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    min-height: 2.6em;
+    max-height: 2.6em;
+  }
 
-.platform-card,
-.ecommerce-card {
-  contain: layout style paint;
-}
+  /* E-commerce Cards in Modal */
+  .ecommerce-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ecommerce-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .ecommerce-image-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ecommerce-logo {
+    height: 100px;
+    transition: transform 0.3s ease;
+  }
+
+  .ecommerce-card:hover .ecommerce-logo {
+    transform: scale(1.05);
+  }
+
+  .ecommerce-emoji {
+    font-size: 2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+
+  .points-text {
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+
+  .ecommerce-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    min-height: 2.6em;
+    max-height: 2.6em;
+  }
+
+  /* Responsive Typography */
+  @media (max-width: 600px) {
+    .platform-title,
+    .ecommerce-title {
+      font-size: 0.8rem;
+      line-height: 1.2;
+      min-height: 2.4em;
+      max-height: 2.4em;
+    }
+
+    .logo-emoji {
+      font-size: 2.5rem;
+    }
+
+    .ecommerce-emoji {
+      font-size: 1.5rem;
+    }
+
+    .platform-logo {
+      height: 120px;
+    }
+
+    .ecommerce-logo {
+      height: 80px;
+    }
+  }
+
+  /* Grid responsive improvements */
+  @media (max-width: 400px) {
+    .v-col {
+      padding: 2px !important;
+    }
+
+    .platform-card .v-card-text,
+    .ecommerce-card .v-card-text {
+      padding: 8px !important;
+    }
+
+    .type-badge {
+      top: 4px;
+      left: 4px;
+    }
+  }
+
+  /* Empty and Initial States */
+  .empty-state,
+  .initial-state {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .observer-target {
+    height: 20px;
+    width: 100%;
+  }
+
+  /* Dark theme enhancements */
+  .v-theme--dark .search-card {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .v-theme--dark .platform-card,
+  .v-theme--dark .ecommerce-card {
+    background: rgba(40, 40, 40, 0.95);
+  }
+
+  /* Smooth animations */
+  .v-col {
+    animation: fadeInUp 0.4s ease-out backwards;
+  }
+
+  .v-col:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .v-col:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  .v-col:nth-child(3) {
+    animation-delay: 0.15s;
+  }
+  .v-col:nth-child(4) {
+    animation-delay: 0.2s;
+  }
+  .v-col:nth-child(n + 5) {
+    animation-delay: 0.25s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Performance optimizations */
+  .platform-logo,
+  .ecommerce-logo {
+    will-change: transform;
+  }
+
+  .platform-card,
+  .ecommerce-card {
+    contain: layout style paint;
+  }
 </style>

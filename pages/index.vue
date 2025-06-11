@@ -3,9 +3,8 @@
 </template>
 
 <script lang="ts" setup>
-// Protect this page with authentication
-definePageMeta({
-  middleware: 'auth'
-})
-
+  // Protect this page with authentication
+  definePageMeta({
+    middleware: 'auth',
+  })
 </script>

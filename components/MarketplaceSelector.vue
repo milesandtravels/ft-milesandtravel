@@ -16,16 +16,14 @@
       <template #item="{ props, item }">
         <v-list-item v-bind="props">
           <template #prepend>
-            <v-avatar
-              class="mr-3"
-              :color="item.raw.color"
-              size="32"
-            >
+            <v-avatar class="mr-3" :color="item.raw.color" size="32">
               <v-icon color="white" size="18">{{ item.raw.icon }}</v-icon>
             </v-avatar>
           </template>
           <v-list-item-title>{{ item.raw.name }}</v-list-item-title>
-          <v-list-item-subtitle>{{ item.raw.description }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{
+            item.raw.description
+          }}</v-list-item-subtitle>
         </v-list-item>
       </template>
 
@@ -112,22 +110,29 @@
   ]
 
   // Watch for external changes
-  watch(() => props.modelValue, newValue => {
-    selectedMarketplaces.value = newValue || []
-  })
+  watch(
+    () => props.modelValue,
+    newValue => {
+      selectedMarketplaces.value = newValue || []
+    }
+  )
 
-  watch(selectedMarketplaces, newValue => {
-    emit('update:modelValue', newValue)
-  }, { deep: true })
+  watch(
+    selectedMarketplaces,
+    newValue => {
+      emit('update:modelValue', newValue)
+    },
+    { deep: true }
+  )
 </script>
 
 <style scoped>
-.marketplace-chip {
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
+  .marketplace-chip {
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
 
-.text-white {
-  color: white !important;
-}
+  .text-white {
+    color: white !important;
+  }
 </style>

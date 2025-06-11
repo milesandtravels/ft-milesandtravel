@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-// Props
+  // Props
   interface Props {
     price: number
   }
@@ -24,9 +24,9 @@
 </script>
 
 <style scoped>
-.product-price {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 </style>

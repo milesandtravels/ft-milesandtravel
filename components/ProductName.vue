@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-// Props
+  // Props
   interface Props {
     name: string
   }
@@ -14,14 +14,14 @@
 </script>
 
 <style scoped>
-.product-name {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-  height: 2.8em;
-  margin: 0;
-}
+  .product-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+    height: 2.8em;
+    margin: 0;
+  }
 </style>

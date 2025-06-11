@@ -2,7 +2,9 @@
   <v-container class="pa-2 pa-md-4">
     <!-- Page Header -->
     <div class="mb-4">
-      <h1 class="text-h5 text-md-h4 font-weight-bold mb-1">Produtos em Destaque</h1>
+      <h1 class="text-h5 text-md-h4 font-weight-bold mb-1">
+        Produtos em Destaque
+      </h1>
       <p class="text-caption text-md-body-2 text-medium-emphasis mb-3">
         Descubra as melhores ofertas e produtos mais buscados
       </p>
@@ -19,7 +21,11 @@
     </div>
 
     <!-- Categories Sections -->
-    <div v-for="(category, index) in categories" :key="category.id" class="category-section mb-8 mb-md-10">
+    <div
+      v-for="(category, index) in categories"
+      :key="category.id"
+      class="category-section mb-8 mb-md-10"
+    >
       <!-- Category Header -->
       <div class="d-flex align-center justify-space-between mb-3 mb-md-4">
         <div class="d-flex align-center">
@@ -27,13 +33,14 @@
             <v-icon color="white" size="20">{{ category.icon }}</v-icon>
           </v-avatar>
           <div>
-            <h2 class="text-subtitle-1 text-md-h6 font-weight-bold">{{ category.name }}</h2>
+            <h2 class="text-subtitle-1 text-md-h6 font-weight-bold">
+              {{ category.name }}
+            </h2>
             <p class="text-caption text-medium-emphasis">
               {{ category.description }}
             </p>
           </div>
         </div>
-
       </div>
 
       <!-- Products Grid -->
@@ -47,9 +54,18 @@
           md="6"
           sm="12"
         >
-          <v-card class="elevation-3 product-card d-flex" hover @click="handleProductClick(product)">
+          <v-card
+            class="elevation-3 product-card d-flex"
+            hover
+            @click="handleProductClick(product)"
+          >
             <div class="image-container">
-              <v-img class="product-image" cover height="120" :src="product.image">
+              <v-img
+                class="product-image"
+                cover
+                height="120"
+                :src="product.image"
+              >
                 <template #placeholder>
                   <div class="d-flex align-center justify-center fill-height">
                     <v-progress-circular indeterminate size="20" />
@@ -82,7 +98,9 @@
             <v-card-text class="pa-3 flex-grow-1">
               <div class="d-flex justify-space-between align-start mb-2">
                 <div class="flex-grow-1 mr-2">
-                  <h4 class="product-title text-caption text-md-body-2 font-weight-medium mb-1">
+                  <h4
+                    class="product-title text-caption text-md-body-2 font-weight-medium mb-1"
+                  >
                     {{ product.name }}
                   </h4>
 
@@ -102,13 +120,11 @@
     <!-- Confirm Remove Dialog -->
     <v-dialog v-model="showConfirmDialog" max-width="400">
       <v-card>
-        <v-card-title class="text-h6">
-          Confirmar Remoção
-        </v-card-title>
+        <v-card-title class="text-h6"> Confirmar Remoção </v-card-title>
         <v-card-text>
           Tem certeza que deseja remover o produto
-          <strong>"{{ productToRemove?.name }}"</strong>?
-          Esta ação não pode ser desfeita.
+          <strong>"{{ productToRemove?.name }}"</strong>? Esta ação não pode ser
+          desfeita.
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -123,12 +139,15 @@
     </v-dialog>
 
     <!-- Success/Error Notifications -->
-    <v-snackbar v-model="showSnackbar" :color="snackbarColor" location="top" timeout="3000">
+    <v-snackbar
+      v-model="showSnackbar"
+      :color="snackbarColor"
+      location="top"
+      timeout="3000"
+    >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false">
-          Fechar
-        </v-btn>
+        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
       </template>
     </v-snackbar>
 
@@ -141,7 +160,6 @@
       size="large"
       @click="router.push('/search-products')"
     />
-
   </v-container>
 </template>
 
@@ -157,7 +175,12 @@
     price: number
     originalPrice?: number
     image: string
-    marketplace: 'Amazon' | 'Shopee' | 'Mercado Livre' | 'AliExpress' | 'Americanas'
+    marketplace:
+      | 'Amazon'
+      | 'Shopee'
+      | 'Mercado Livre'
+      | 'AliExpress'
+      | 'Americanas'
     offerType?: 'cashback' | 'points'
     offerValue?: string
   }
@@ -188,10 +211,13 @@
 
   // Computed
   const isMobile = computed(() => mobile.value)
-  const maxItemsPerCategory = computed(() => isMobile.value ? 5 : 10)
+  const maxItemsPerCategory = computed(() => (isMobile.value ? 5 : 10))
 
   // Mock data
-  const mockCategories: Omit<Category, 'products' | 'displayCount' | 'hasMore'>[] = [
+  const mockCategories: Omit<
+    Category,
+    'products' | 'displayCount' | 'hasMore'
+  >[] = [
     {
       id: 'most-searched',
       name: 'Mais Pesquisados',
@@ -229,72 +255,86 @@
     },
   ]
 
-  const generateProducts = (categoryId: string, count: number, startId = 1): Product[] => {
+  const generateProducts = (
+    categoryId: string,
+    count: number,
+    startId = 1
+  ): Product[] => {
     const baseProducts = [
       {
         name: 'iPhone 15 Pro Max 256GB',
         price: 8999.99,
         originalPrice: 9499.99,
-        image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=400&fit=crop',
         marketplace: 'Amazon' as const,
       },
       {
         name: 'Samsung Galaxy S24 Ultra',
         price: 7499.9,
         originalPrice: 7999.9,
-        image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop',
         marketplace: 'Mercado Livre' as const,
       },
       {
         name: 'MacBook Air M2 13"',
         price: 12_999,
-        image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop',
         marketplace: 'Shopee' as const,
       },
       {
         name: 'AirPods Pro 2ª Geração',
         price: 1899.99,
         originalPrice: 2199.99,
-        image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=400&fit=crop',
         marketplace: 'AliExpress' as const,
       },
       {
         name: 'iPad Pro 11" M2',
         price: 6499,
-        image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop',
         marketplace: 'Americanas' as const,
       },
       {
         name: 'PlayStation 5 Console',
         price: 4299,
         originalPrice: 4699,
-        image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&h=400&fit=crop',
         marketplace: 'Amazon' as const,
       },
       {
         name: 'Nintendo Switch OLED',
         price: 2199,
-        image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop',
         marketplace: 'Shopee' as const,
       },
       {
         name: 'Samsung 65" QLED 4K',
         price: 3899,
         originalPrice: 4299,
-        image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop',
         marketplace: 'Mercado Livre' as const,
       },
       {
         name: 'Dell XPS 13 Intel i7',
         price: 8999,
-        image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop',
         marketplace: 'Americanas' as const,
       },
       {
         name: 'Apple Watch Series 9',
         price: 3299,
         originalPrice: 3599,
-        image: 'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=400&h=400&fit=crop',
+        image:
+          'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=400&h=400&fit=crop',
         marketplace: 'AliExpress' as const,
       },
     ]
@@ -339,11 +379,11 @@
 
   const getMarketplaceColor = (marketplace: string) => {
     const colors: Record<string, string> = {
-      'Amazon': 'orange-darken-2',
-      'Shopee': 'red',
+      Amazon: 'orange-darken-2',
+      Shopee: 'red',
       'Mercado Livre': 'yellow-darken-2',
-      'AliExpress': 'red-darken-2',
-      'Americanas': 'red-darken-3',
+      AliExpress: 'red-darken-2',
+      Americanas: 'red-darken-3',
     }
     return colors[marketplace] || 'grey'
   }
@@ -369,11 +409,16 @@
   const confirmRemove = () => {
     if (productToRemove.value) {
       for (const category of categories) {
-        const index = category.products.findIndex(p => p.id === productToRemove.value!.id)
+        const index = category.products.findIndex(
+          p => p.id === productToRemove.value!.id
+        )
         if (index !== -1) {
           const productName = productToRemove.value!.name
           category.products.splice(index, 1)
-          showNotification(`Produto "${productName}" removido com sucesso`, 'success')
+          showNotification(
+            `Produto "${productName}" removido com sucesso`,
+            'success'
+          )
         }
       }
     }
@@ -386,7 +431,10 @@
     productToRemove.value = null
   }
 
-  const showNotification = (message: string, color: 'success' | 'error' | 'info' = 'success') => {
+  const showNotification = (
+    message: string,
+    color: 'success' | 'error' | 'info' = 'success'
+  ) => {
     snackbarMessage.value = message
     snackbarColor.value = color
     showSnackbar.value = true
@@ -410,7 +458,7 @@
     // Search across all categories
     for (const category of categories) {
       const matchingProducts = category.products.filter(product =>
-        product.name.toLowerCase().includes(query),
+        product.name.toLowerCase().includes(query)
       )
       foundProducts.push(...matchingProducts)
     }
@@ -418,9 +466,15 @@
     closeSearchDialog()
 
     if (foundProducts.length > 0) {
-      showNotification(`Encontrados ${foundProducts.length} produto(s) com "${searchQuery.value}"`, 'success')
+      showNotification(
+        `Encontrados ${foundProducts.length} produto(s) com "${searchQuery.value}"`,
+        'success'
+      )
     } else {
-      showNotification(`Nenhum produto encontrado com "${searchQuery.value}"`, 'info')
+      showNotification(
+        `Nenhum produto encontrado com "${searchQuery.value}"`,
+        'info'
+      )
     }
   }
 
@@ -448,11 +502,12 @@
     console.log('👋 Lista de Produtos por Categorias desmontada')
   })
 
-  console.log(`💡 Mobile: ${isMobile.value ? '5' : '10'} produtos por categoria`)
+  console.log(
+    `💡 Mobile: ${isMobile.value ? '5' : '10'} produtos por categoria`
+  )
 </script>
 
 <style scoped>
-
   /* Custom styles */
   .category-section {
     border-radius: 16px;
@@ -637,7 +692,7 @@
     animation-delay: 0.25s;
   }
 
-  .v-col:nth-child(n+6) {
+  .v-col:nth-child(n + 6) {
     animation-delay: 0.3s;
   }
 

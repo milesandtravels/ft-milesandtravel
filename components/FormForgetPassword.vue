@@ -5,14 +5,16 @@
         <v-card class="elevation-8 rounded-lg">
           <v-card-title class="text-center pa-6">
             <div class="d-flex flex-column align-center">
-              <img src="~/assets/logo.svg" width="140px">
+              <img src="~/assets/logo.svg" width="140px" />
             </div>
           </v-card-title>
 
           <v-card-text class="pa-6">
             <!-- Success Message -->
             <div v-if="isSuccess" class="text-center">
-              <v-icon class="mb-4" color="success" size="64">mdi-check-circle</v-icon>
+              <v-icon class="mb-4" color="success" size="64"
+                >mdi-check-circle</v-icon
+              >
               <h3 class="text-h6 mb-3">Link enviado com sucesso!</h3>
               <p class="text-body-1 mb-6 text-medium-emphasis">
                 Um link para recuperar sua senha foi enviado para seu email.
@@ -40,7 +42,11 @@
                 </p>
               </div>
 
-              <v-form ref="form" v-model="isFormValid" @submit.prevent="onSubmit">
+              <v-form
+                ref="form"
+                v-model="isFormValid"
+                @submit.prevent="onSubmit"
+              >
                 <v-text-field
                   v-model="email"
                   class="mb-6"
@@ -92,9 +98,7 @@
     >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false">
-          Fechar
-        </v-btn>
+        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
       </template>
     </v-snackbar>
   </v-container>
@@ -161,7 +165,9 @@
       isSuccess.value = true
     } catch (error) {
       console.error('Forgot password error:', error)
-      showNotification('Erro ao enviar email. Verifique se o email está correto.')
+      showNotification(
+        'Erro ao enviar email. Verifique se o email está correto.'
+      )
     } finally {
       isLoading.value = false
     }
@@ -187,40 +193,40 @@
 </script>
 
 <style scoped>
-.v-card {
-  max-width: 100%;
-}
-
-.v-btn {
-  text-transform: none;
-}
-
-/* Success state styling */
-.v-icon.mdi-check-circle {
-  animation: success-bounce 0.6s ease-out;
-}
-
-@keyframes success-bounce {
-  0% {
-    transform: scale(0);
-    opacity: 0;
+  .v-card {
+    max-width: 100%;
   }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
 
-/* Smooth transitions */
-.v-btn {
-  transition: all 0.3s ease;
-}
+  .v-btn {
+    text-transform: none;
+  }
 
-.v-btn:hover {
-  transform: translateY(-1px);
-}
+  /* Success state styling */
+  .v-icon.mdi-check-circle {
+    animation: success-bounce 0.6s ease-out;
+  }
+
+  @keyframes success-bounce {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Smooth transitions */
+  .v-btn {
+    transition: all 0.3s ease;
+  }
+
+  .v-btn:hover {
+    transform: translateY(-1px);
+  }
 </style>

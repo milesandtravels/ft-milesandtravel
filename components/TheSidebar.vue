@@ -11,11 +11,7 @@
     <!-- Sidebar Header -->
     <div class="sidebar-header">
       <div class="d-flex align-center pa-4">
-        <v-avatar
-          class="mr-3"
-          color="primary"
-          size="40"
-        >
+        <v-avatar class="mr-3" color="primary" size="40">
           <v-icon color="white" size="24">mdi-map-marker-radius</v-icon>
         </v-avatar>
         <div class="flex-grow-1">
@@ -72,20 +68,14 @@
       <div class="sidebar-footer">
         <v-divider />
         <div class="pa-4">
-          <v-card
-            class="footer-card"
-            color="primary"
-            variant="tonal"
-          >
+          <v-card class="footer-card" color="primary" variant="tonal">
             <v-card-text class="pa-3">
               <div class="d-flex align-center">
                 <v-icon class="mr-2" color="primary" size="20">
                   mdi-information-outline
                 </v-icon>
                 <div class="flex-grow-1">
-                  <div class="text-body-2 font-weight-medium">
-                    Versão 2.1.0
-                  </div>
+                  <div class="text-body-2 font-weight-medium">Versão 2.1.0</div>
                   <div class="text-caption text-medium-emphasis">
                     Última atualização
                   </div>
@@ -121,7 +111,7 @@
   // Emits
   interface Emits {
     'update:modelValue': [value: boolean]
-    'navigate': [route: string]
+    navigate: [route: string]
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -215,7 +205,9 @@
   }
 
   const isActiveRoute = (route: string) => {
-    return props.currentRoute === route || props.currentRoute.startsWith(route + '/')
+    return (
+      props.currentRoute === route || props.currentRoute.startsWith(route + '/')
+    )
   }
 
   // Lifecycle
@@ -231,134 +223,144 @@
 </script>
 
 <style scoped>
-.app-sidebar {
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.sidebar-header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: inherit;
-}
-
-.sidebar-title {
-  font-size: 1.1rem;
-  line-height: 1.2;
-}
-
-.menu-item {
-  border-radius: 8px;
-  margin: 2px 0;
-  transition: all 0.2s ease;
-}
-
-.menu-item:hover {
-  background-color: rgba(0, 0, 0, 0.04);
-  transform: translateX(2px);
-}
-
-.menu-item.v-list-item--active {
-  background-color: rgba(25, 118, 210, 0.12);
-  color: rgb(25, 118, 210);
-}
-
-.sidebar-footer {
-  position: sticky;
-  bottom: 0;
-  background: inherit;
-}
-
-.footer-card {
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-.footer-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Dark theme support */
-.v-theme--dark .app-sidebar {
-  border-right-color: rgba(255, 255, 255, 0.12);
-}
-
-.v-theme--dark .menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.v-theme--dark .menu-item.v-list-item--active {
-  background-color: rgba(144, 202, 249, 0.16);
-  color: rgb(144, 202, 249);
-}
-
-/* Responsive adjustments */
-@media (max-width: 960px) {
   .app-sidebar {
-    width: 260px !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .sidebar-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: inherit;
   }
 
   .sidebar-title {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.2;
   }
-}
 
-/* Animation for menu items */
-.menu-item {
-  animation: fadeInLeft 0.3s ease-out backwards;
-}
-
-.menu-item:nth-child(1) { animation-delay: 0.05s; }
-.menu-item:nth-child(2) { animation-delay: 0.1s; }
-.menu-item:nth-child(3) { animation-delay: 0.15s; }
-.menu-item:nth-child(4) { animation-delay: 0.2s; }
-.menu-item:nth-child(5) { animation-delay: 0.25s; }
-
-@keyframes fadeInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
+  .menu-item {
+    border-radius: 8px;
+    margin: 2px 0;
+    transition: all 0.2s ease;
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+
+  .menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    transform: translateX(2px);
   }
-}
 
-/* Accessibility improvements */
-.menu-item:focus {
-  outline: 2px solid rgba(25, 118, 210, 0.5);
-  outline-offset: 2px;
-}
+  .menu-item.v-list-item--active {
+    background-color: rgba(25, 118, 210, 0.12);
+    color: rgb(25, 118, 210);
+  }
 
-.v-theme--dark .menu-item:focus {
-  outline-color: rgba(144, 202, 249, 0.5);
-}
+  .sidebar-footer {
+    position: sticky;
+    bottom: 0;
+    background: inherit;
+  }
 
-/* Scrollbar styling */
-.app-sidebar ::-webkit-scrollbar {
-  width: 6px;
-}
+  .footer-card {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
 
-.app-sidebar ::-webkit-scrollbar-track {
-  background: transparent;
-}
+  .footer-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 
-.app-sidebar ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-}
+  /* Dark theme support */
+  .v-theme--dark .app-sidebar {
+    border-right-color: rgba(255, 255, 255, 0.12);
+  }
 
-.app-sidebar ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
+  .v-theme--dark .menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
 
-.v-theme--dark .app-sidebar ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-}
+  .v-theme--dark .menu-item.v-list-item--active {
+    background-color: rgba(144, 202, 249, 0.16);
+    color: rgb(144, 202, 249);
+  }
 
-.v-theme--dark .app-sidebar ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
+  /* Responsive adjustments */
+  @media (max-width: 960px) {
+    .app-sidebar {
+      width: 260px !important;
+    }
+
+    .sidebar-title {
+      font-size: 1rem;
+    }
+  }
+
+  /* Animation for menu items */
+  .menu-item {
+    animation: fadeInLeft 0.3s ease-out backwards;
+  }
+
+  .menu-item:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .menu-item:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  .menu-item:nth-child(3) {
+    animation-delay: 0.15s;
+  }
+  .menu-item:nth-child(4) {
+    animation-delay: 0.2s;
+  }
+  .menu-item:nth-child(5) {
+    animation-delay: 0.25s;
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Accessibility improvements */
+  .menu-item:focus {
+    outline: 2px solid rgba(25, 118, 210, 0.5);
+    outline-offset: 2px;
+  }
+
+  .v-theme--dark .menu-item:focus {
+    outline-color: rgba(144, 202, 249, 0.5);
+  }
+
+  /* Scrollbar styling */
+  .app-sidebar ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .app-sidebar ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .app-sidebar ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .app-sidebar ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .v-theme--dark .app-sidebar ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .v-theme--dark .app-sidebar ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
 </style>

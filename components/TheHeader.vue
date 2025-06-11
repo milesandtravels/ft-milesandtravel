@@ -1,15 +1,6 @@
 <template>
-  <v-app-bar
-    app
-    class="app-header"
-    color="primary"
-    dark
-    elevation="4"
-  >
-    <v-app-bar-nav-icon
-      class="hamburger-menu"
-      @click="toggleDrawer"
-    >
+  <v-app-bar app class="app-header" color="primary" dark elevation="4">
+    <v-app-bar-nav-icon class="hamburger-menu" @click="toggleDrawer">
       <v-icon>mdi-menu</v-icon>
     </v-app-bar-nav-icon>
 
@@ -26,17 +17,8 @@
       offset="8"
     >
       <template #activator="{ props }">
-        <v-btn
-          v-bind="props"
-          class="user-avatar-btn"
-          icon
-          size="large"
-        >
-          <v-avatar
-            class="user-avatar"
-            :color="avatarColor"
-            size="40"
-          >
+        <v-btn v-bind="props" class="user-avatar-btn" icon size="large">
+          <v-avatar class="user-avatar" :color="avatarColor" size="40">
             <span class="text-h6 font-weight-bold text-white">
               {{ userInitials }}
             </span>
@@ -47,18 +29,16 @@
       <v-card class="user-menu-card" elevation="8" min-width="280">
         <v-card-text class="pa-4 pb-2">
           <div class="d-flex align-center">
-            <v-avatar
-              class="mr-4"
-              :color="avatarColor"
-              size="56"
-            >
+            <v-avatar class="mr-4" :color="avatarColor" size="56">
               <span class="text-h5 font-weight-bold text-white">
                 {{ userInitials }}
               </span>
             </v-avatar>
             <div class="flex-grow-1">
               <div class="text-h6 font-weight-bold">{{ user.name }}</div>
-              <div class="text-body-2 text-medium-emphasis">{{ user.email }}</div>
+              <div class="text-body-2 text-medium-emphasis">
+                {{ user.email }}
+              </div>
             </div>
           </div>
         </v-card-text>
@@ -123,17 +103,10 @@
 
         <v-card-actions class="pa-6 pt-2">
           <v-spacer />
-          <v-btn
-            variant="text"
-            @click="showLogoutDialog = false"
-          >
+          <v-btn variant="text" @click="showLogoutDialog = false">
             Cancelar
           </v-btn>
-          <v-btn
-            color="error"
-            variant="flat"
-            @click="confirmLogout"
-          >
+          <v-btn color="error" variant="flat" @click="confirmLogout">
             Sair
           </v-btn>
         </v-card-actions>
@@ -149,9 +122,7 @@
     >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false">
-          Fechar
-        </v-btn>
+        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
       </template>
     </v-snackbar>
   </v-app-bar>
@@ -176,10 +147,10 @@
   // Emits
   interface Emits {
     'toggle-drawer': []
-    'logout': []
+    logout: []
     'account-settings': []
-    'notifications': []
-    'help': []
+    notifications: []
+    help: []
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -279,132 +250,142 @@
 </script>
 
 <style scoped>
-.app-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.hamburger-menu {
-  transition: transform 0.2s ease;
-}
-
-.hamburger-menu:hover {
-  transform: scale(1.1);
-}
-
-.app-title {
-  font-size: 1.25rem;
-  letter-spacing: 0.5px;
-}
-
-.user-avatar-btn {
-  transition: all 0.2s ease;
-}
-
-.user-avatar-btn:hover {
-  transform: scale(1.05);
-}
-
-.user-avatar {
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.2s ease;
-}
-
-.user-avatar-btn:hover .user-avatar {
-  border-color: rgba(255, 255, 255, 0.6);
-  transform: scale(1.05);
-}
-
-.user-menu-card {
-  border-radius: 12px;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-}
-
-.menu-item {
-  transition: background-color 0.2s ease;
-  border-radius: 8px;
-  margin: 0 8px;
-}
-
-.menu-item:hover {
-  background-color: rgba(0, 0, 0, 0.04);
-}
-
-.logout-item:hover {
-  background-color: rgba(244, 67, 54, 0.08);
-}
-
-.logout-item .v-list-item__prepend {
-  color: rgb(244, 67, 54);
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .app-title {
-    font-size: 1.1rem;
+  .app-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
 
-  .app-title .v-icon {
-    display: none;
+  .hamburger-menu {
+    transition: transform 0.2s ease;
+  }
+
+  .hamburger-menu:hover {
+    transform: scale(1.1);
+  }
+
+  .app-title {
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
+  }
+
+  .user-avatar-btn {
+    transition: all 0.2s ease;
+  }
+
+  .user-avatar-btn:hover {
+    transform: scale(1.05);
   }
 
   .user-avatar {
-    width: 36px !important;
-    height: 36px !important;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .user-avatar-btn:hover .user-avatar {
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
   }
 
   .user-menu-card {
-    min-width: 260px;
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
   }
-}
 
-/* Dark theme support */
-.v-theme--dark .menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.v-theme--dark .logout-item:hover {
-  background-color: rgba(244, 67, 54, 0.12);
-}
-
-.v-theme--dark .user-menu-card {
-  background: rgba(30, 30, 30, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Animation for menu items */
-.menu-item {
-  animation: fadeInLeft 0.3s ease-out backwards;
-}
-
-.menu-item:nth-child(1) { animation-delay: 0.05s; }
-.menu-item:nth-child(2) { animation-delay: 0.1s; }
-.menu-item:nth-child(3) { animation-delay: 0.15s; }
-.menu-item:nth-child(4) { animation-delay: 0.2s; }
-.menu-item:nth-child(5) { animation-delay: 0.25s; }
-
-@keyframes fadeInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
+  .menu-item {
+    transition: background-color 0.2s ease;
+    border-radius: 8px;
+    margin: 0 8px;
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+
+  .menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
   }
-}
 
-/* Accessibility improvements */
-.user-avatar-btn:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 2px;
-}
+  .logout-item:hover {
+    background-color: rgba(244, 67, 54, 0.08);
+  }
 
-.menu-item:focus {
-  background-color: rgba(0, 0, 0, 0.08);
-}
+  .logout-item .v-list-item__prepend {
+    color: rgb(244, 67, 54);
+  }
 
-.v-theme--dark .menu-item:focus {
-  background-color: rgba(255, 255, 255, 0.12);
-}
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .app-title {
+      font-size: 1.1rem;
+    }
+
+    .app-title .v-icon {
+      display: none;
+    }
+
+    .user-avatar {
+      width: 36px !important;
+      height: 36px !important;
+    }
+
+    .user-menu-card {
+      min-width: 260px;
+    }
+  }
+
+  /* Dark theme support */
+  .v-theme--dark .menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .v-theme--dark .logout-item:hover {
+    background-color: rgba(244, 67, 54, 0.12);
+  }
+
+  .v-theme--dark .user-menu-card {
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Animation for menu items */
+  .menu-item {
+    animation: fadeInLeft 0.3s ease-out backwards;
+  }
+
+  .menu-item:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .menu-item:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  .menu-item:nth-child(3) {
+    animation-delay: 0.15s;
+  }
+  .menu-item:nth-child(4) {
+    animation-delay: 0.2s;
+  }
+  .menu-item:nth-child(5) {
+    animation-delay: 0.25s;
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Accessibility improvements */
+  .user-avatar-btn:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+  }
+
+  .menu-item:focus {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .v-theme--dark .menu-item:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
 </style>

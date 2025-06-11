@@ -5,7 +5,7 @@
         <v-card class="elevation-8 rounded-lg">
           <v-card-title class="text-center pa-6">
             <div class="d-flex flex-column align-center">
-              <img src="~/assets/logo.svg" width="140px">
+              <img src="~/assets/logo.svg" width="140px" />
             </div>
           </v-card-title>
 
@@ -89,9 +89,7 @@
     >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false">
-          Fechar
-        </v-btn>
+        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
       </template>
     </v-snackbar>
   </v-container>
@@ -99,7 +97,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-const { login } = useFortifyFeatures()
+  const { login } = useFortifyFeatures()
   // Form data
   const form = ref()
   const email = ref('')
@@ -159,10 +157,10 @@ const { login } = useFortifyFeatures()
     isLoading.value = true
 
     try {
-    await login({
-  email: email.value,
-  password: password.value
-})
+      await login({
+        email: email.value,
+        password: password.value,
+      })
 
       console.log('Login success:', result)
       showNotification('Login realizado com sucesso!', 'success')
@@ -206,11 +204,11 @@ const { login } = useFortifyFeatures()
 </script>
 
 <style scoped>
-.v-card {
-  max-width: 100%;
-}
+  .v-card {
+    max-width: 100%;
+  }
 
-.v-btn {
-  text-transform: none;
-}
+  .v-btn {
+    text-transform: none;
+  }
 </style>

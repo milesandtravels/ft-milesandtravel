@@ -12,10 +12,7 @@
     />
 
     <!-- Product Details -->
-    <ProductDetails
-      :name="product.name"
-      :price="product.price"
-    />
+    <ProductDetails :name="product.name" :price="product.price" />
   </v-card>
 </template>
 
@@ -26,7 +23,12 @@
     name: string
     price: number
     image: string
-    marketplace: 'Amazon' | 'Shopee' | 'Mercado Livre' | 'AliExpress' | 'Americanas'
+    marketplace:
+      | 'Amazon'
+      | 'Shopee'
+      | 'Mercado Livre'
+      | 'AliExpress'
+      | 'Americanas'
   }
 
   // Props
@@ -45,24 +47,24 @@
 </script>
 
 <style scoped>
-.product-card {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+  .product-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
-.product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-}
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  }
 
-/* Dark theme support */
-.v-theme--dark .product-card {
-  background: rgba(40, 40, 40, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+  /* Dark theme support */
+  .v-theme--dark .product-card {
+    background: rgba(40, 40, 40, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 </style>

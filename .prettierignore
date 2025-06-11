@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+.yarn/
+
+# Build outputs
+dist/
+.output/
+.nuxt/
+.nitro/
+
+# Cache directories
+.cache/
+.temp/
+.tmp/
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Package manager lockfiles (optional - uncomment if you don't want to format them)
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
+
+# Generated files
+coverage/
+.coverage/
+*.tsbuildinfo
+
+# Static assets that shouldn't be formatted
+public/
+static/
+assets/images/
+assets/icons/
+
+# Documentation that might have specific formatting
+CHANGELOG.md
+LICENSE
