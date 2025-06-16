@@ -207,12 +207,12 @@ import type { SearchRecord } from '~/interfaces/search'
     isSearching.value = true
     isLoading.value = true
 
-    const { data, status, error, refresh } = await useSanctumFetch(
+    const { data, error } = await useSanctumFetch(
       `/api/searches/${searchId.value}/automatic-products`,
       {
         method: 'GET',
         query: {
-          search_term: searchQuery.value,
+          search_term: searchQuery.value.trim().toLocaleLowerCase(),
         },
       }
     ).finally(() => {
