@@ -162,7 +162,7 @@
       await login({
         email: email.value,
         password: password.value,
-        device_name: deviceName
+        device_name: deviceName,
       })
 
       showNotification('Login realizado com sucesso!', 'success')

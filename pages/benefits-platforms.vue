@@ -318,7 +318,7 @@
   import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
   definePageMeta({
-    middleware: ['sanctum:auth']
+    middleware: ['sanctum:auth'],
   })
   // Types
   interface Platform {

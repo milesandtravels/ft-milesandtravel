@@ -11,7 +11,7 @@
 
       <v-card-text class="pa-4 pa-md-6 pt-2">
         <!-- Product Name -->
-         <v-text-field
+        <v-text-field
           v-model="searchQuery"
           class="mb-3 mb-md-4"
           clearable
@@ -22,67 +22,6 @@
           return-object
           variant="outlined"
         />
-        <!-- <v-autocomplete
-          v-model="selectedProduct"
-          v-model:search="searchQuery"
-          class="mb-3 mb-md-4"
-          clearable
-          density="comfortable"
-          hide-details
-          item-title="name"
-          item-value="id"
-          :items="searchResults"
-          :loading="isLoading"
-          no-data-text="Digite para buscar"
-          placeholder="Digite o nome do produto..."
-          prepend-inner-icon="mdi-magnify"
-          return-object
-          variant="outlined"
-        >
-          <template #item="{ props, item }">
-            <v-list-item v-bind="props" class="px-3 py-2">
-              <template #prepend>
-                <v-avatar class="mr-3" size="36">
-                  <v-img cover :src="item.raw.image" />
-                </v-avatar>
-              </template>
-              <v-list-item-title class="text-body-2 font-weight-medium">
-                {{ item.raw.name }}
-              </v-list-item-title>
-              <v-list-item-subtitle class="text-caption">
-                {{ item.raw.marketplace }} • {{ formatPrice(item.raw.price) }}
-              </v-list-item-subtitle>
-            </v-list-item>
-          </template>
-        </v-autocomplete> -->
-
-        <!-- Marketplaces -->
-        <v-select
-          v-model="selectedMarketplaces"
-          chips
-          class="mb-4 mb-md-6"
-          closable-chips
-          density="comfortable"
-          hide-details
-          :items="marketplaceOptions"
-          multiple
-          placeholder="Selecione os marketplaces..."
-          prepend-inner-icon="mdi-store-outline"
-          variant="outlined"
-        >
-          <template #chip="{ props, item }">
-            <v-chip
-              v-bind="props"
-              class="text-white mx-1"
-              :color="getMarketplaceColor(item.title)"
-              size="small"
-              variant="flat"
-            >
-              {{ item.title }}
-            </v-chip>
-          </template>
-        </v-select>
-
         <!-- Actions -->
         <div class="action-buttons">
           <v-btn
@@ -193,16 +132,17 @@
         Pronto para buscar!
       </h3>
       <p class="text-body-2 text-medium-emphasis">
-        Digite o nome do produto ou selecione marketplaces
+        Digite o nome do produto que deseja. Tente incluir o máximo de
+        informações sobre o produto.
       </p>
     </div>
   </v-container>
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref } from 'vue'
+import type { SearchRecord } from '~/interfaces/search'
 
-  const client = useSanctumClient();
   // Types
   interface Product {
     id: number
@@ -211,6 +151,8 @@
     image: string
     marketplace: string
   }
+
+  const searchId = ref<number>()
 
   // State
   const searchQuery = ref('')
@@ -222,85 +164,25 @@
   const isSearching = ref(false)
   const hasSearched = ref(false)
 
-  // Options
-  const marketplaceOptions = [
-    'Amazon',
-    'Shopee',
-    'Mercado Livre',
-    'AliExpress',
-    'Americanas',
-  ]
+  onMounted(() => {
+    fetchGenerateSearchId()
+  })
 
-  // Mock data
-  const mockProducts: Product[] = [
-    {
-      id: 1,
-      name: 'iPhone 15 Pro Max 256GB',
-      price: 8999.99,
-      image:
-        'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=300&h=300&fit=crop',
-      marketplace: 'Amazon',
-    },
-    {
-      id: 2,
-      name: 'iPhone 15 Pro 128GB',
-      price: 7499.9,
-      image:
-        'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=300&h=300&fit=crop',
-      marketplace: 'Mercado Livre',
-    },
-    {
-      id: 3,
-      name: 'Samsung Galaxy S24 Ultra',
-      price: 6999,
-      image:
-        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop',
-      marketplace: 'Shopee',
-    },
-    {
-      id: 4,
-      name: 'MacBook Air M2 13"',
-      price: 12_999,
-      image:
-        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop',
-      marketplace: 'Amazon',
-    },
-    {
-      id: 5,
-      name: 'AirPods Pro 2ª Geração',
-      price: 1899.99,
-      image:
-        'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=300&h=300&fit=crop',
-      marketplace: 'Shopee',
-    },
-    {
-      id: 6,
-      name: 'MacBook Pro M3 14"',
-      price: 18_999,
-      image:
-        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop',
-      marketplace: 'Americanas',
-    },
-    {
-      id: 7,
-      name: 'Samsung Galaxy S24',
-      price: 4999,
-      image:
-        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop',
-      marketplace: 'AliExpress',
-    },
-    {
-      id: 8,
-      name: 'AirPods 3ª Geração',
-      price: 1299,
-      image:
-        'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=300&h=300&fit=crop',
-      marketplace: 'Mercado Livre',
-    },
-  ]
+  const fetchGenerateSearchId = async () => {
+    const { data, refresh } = await useSanctumFetch<SearchRecord>(
+      `/api/searches/temporary-searches`,
+      {
+        method: 'POST',
+      }
+    )
 
-  // Debounce timer
-  let timer: NodeJS.Timeout
+    if (!data.value) {
+      refresh()
+      return
+    }
+
+    searchId.value = data.value?.data.id
+  }
 
   // Methods
   const formatPrice = (price: number) => {
@@ -321,59 +203,34 @@
     return colors[marketplace] || '#666'
   }
 
-  const searchProducts = (query: string) => {
-    if (!query.trim()) {
-      searchResults.value = []
-      return
-    }
-
+  const fetchProducts = async () => {
+    isSearching.value = true
     isLoading.value = true
 
-    setTimeout(() => {
-      const filtered = mockProducts.filter(product =>
-        product.name.toLowerCase().includes(query.toLowerCase())
-      )
-      searchResults.value = filtered
+    const { data, status, error, refresh } = await useSanctumFetch(
+      `/api/searches/${searchId.value}/automatic-products`,
+      {
+        method: 'GET',
+        query: {
+          search_term: searchQuery.value,
+        },
+      }
+    ).finally(() => {
+      isSearching.value = false
       isLoading.value = false
-    }, 300)
+    })
+
+    if (data.value) {
+      results.value = data.value.data
+    }
+
+    if (error.value) {
+      results.value = []
+    }
   }
 
   const handleSearch = async () => {
-    isSearching.value = true
-    hasSearched.value = true
-    const search_id = 1;
-    const { data, status, error, refresh } = await useAsyncData('users', () =>
-      client(`/api/searches/${search_id}/automatic-products`, {
-        params: {
-          search_term: searchQuery.value
-        }
-      })
-    );
-
-    results.value = data.value.data
-    isSearching.value = false
-
-    // setTimeout(() => {
-    //   let filtered = [...mockProducts]
-
-    //   // Filter by name
-    //   if (searchQuery.value || selectedProduct.value) {
-    //     const query = searchQuery.value || selectedProduct.value?.name || ''
-    //     filtered = filtered.filter(product =>
-    //       product.name.toLowerCase().includes(query.toLowerCase())
-    //     )
-    //   }
-
-    //   // Filter by marketplaces
-    //   if (selectedMarketplaces.value.length > 0) {
-    //     filtered = filtered.filter(product =>
-    //       selectedMarketplaces.value.includes(product.marketplace)
-    //     )
-    //   }
-
-    //   results.value = filtered
-    //   isSearching.value = false
-    // }, 800)
+    fetchProducts()
   }
 
   const clearAll = () => {
@@ -384,14 +241,6 @@
     results.value = []
     hasSearched.value = false
   }
-
-  // Watch search query for autocomplete
-  watch(searchQuery, newQuery => {
-    clearTimeout(timer)
-    timer = setTimeout(() => {
-      searchProducts(newQuery)
-    }, 500)
-  })
 
   console.log('💡 Teste com: "iPhone", "Samsung", "MacBook", "AirPods"')
 </script>

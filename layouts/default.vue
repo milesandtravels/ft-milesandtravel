@@ -38,7 +38,6 @@
         <slot />
       </v-container>
     </v-main>
-
   </v-app>
 </template>
 
@@ -132,7 +131,6 @@
     }
   }
 
-
   const handleLogout = async () => {
     console.log('👋 Logout realizado')
     // Implement logout logic
@@ -162,7 +160,6 @@
       console.log('📍 Rota alterada para:', newRoute)
     }
   )
-
 
   useHead({
     title: pageTitle,
