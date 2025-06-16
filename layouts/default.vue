@@ -14,7 +14,6 @@
     <TheSidebar
       v-model="sidebarOpen"
       :current-route="currentRoute"
-      :theme="appTheme"
       @navigate="handleNavigation"
     />
 
@@ -40,27 +39,13 @@
       </v-container>
     </v-main>
 
-    <!-- Theme Toggle FAB -->
-    <v-fab
-      class="theme-toggle"
-      color="primary"
-      icon="mdi-theme-light-dark"
-      location="bottom end"
-      size="small"
-      @click="toggleTheme"
-    />
   </v-app>
 </template>
 
 <script setup lang="ts">
-  // Nuxt 3 composables
   const route = useRoute()
-  const router = useRouter()
-  const { $vuetify } = useNuxtApp()
 
-  // Reactive state
-  const sidebarOpen = ref(true)
-  const appTheme = ref<'light' | 'dark'>('light')
+  const sidebarOpen = ref(false)
 
   // User data - could be replaced with useUser() composable or Pinia store
   const currentUser = ref({
@@ -182,9 +167,6 @@
     }
   }
 
-  const goToDashboard = () => {
-    handleNavigation('/')
-  }
 
   const handleLogout = async () => {
     console.log('👋 Logout realizado')
@@ -208,12 +190,6 @@
     handleNavigation('/help')
   }
 
-  const toggleTheme = () => {
-    appTheme.value = appTheme.value === 'light' ? 'dark' : 'light'
-
-    // Update Vuetify theme
-  }
-
   // Watchers
   watch(
     () => route.path,
@@ -222,9 +198,6 @@
     }
   )
 
-  watch(appTheme, newTheme => {
-    console.log('🎨 Tema alterado para:', newTheme)
-  })
 
   useHead({
     title: pageTitle,
