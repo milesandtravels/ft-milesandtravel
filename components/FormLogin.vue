@@ -97,7 +97,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  const { login } = useFortifyFeatures()
+  const { login } = useSanctumAuth()
   // Form data
   const form = ref()
   const email = ref('')
@@ -155,14 +155,16 @@
     if (!isFormValid.value) return
 
     isLoading.value = true
+    // get device name
+    const deviceName = navigator.userAgent
 
     try {
       await login({
         email: email.value,
         password: password.value,
+        device_name: deviceName
       })
 
-      console.log('Login success:', result)
       showNotification('Login realizado com sucesso!', 'success')
 
       // Reset form

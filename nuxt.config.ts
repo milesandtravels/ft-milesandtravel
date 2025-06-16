@@ -2,22 +2,18 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
-  modules: ['vuetify-nuxt-module', 'nuxt-fortify'],
-  nuxtFortify: {
-    baseUrl: 'https://api-dev.milesandtravels.com',
-    origin: 'https://api-dev.milesandtravels.com',
-    authMode: 'cookie',
-    authHome: '/',
-    endpoints: {
-      csrf: '/sanctum/csrf-cookie',
-      login: '/login',
+  modules: [
+    'vuetify-nuxt-module',
+    'nuxt-auth-sanctum',
+  ],
+  sanctum: {
+    mode: 'token',
+    baseUrl: 'https://api-dev.milesandtravels.com', // Laravel API
+    redirectIfAuthenticated: true,
+    redirectIfUnauthenticated: true,
+    endpoints : {
+      login: '/api/login',
+      logout: '/api/logout'
     },
-    features: {
-      registration: true,
-      resetPasswords: true,
-      twoFactorAuthentication: true,
-      // other features...
-    },
-    // other configurations...
   },
 })

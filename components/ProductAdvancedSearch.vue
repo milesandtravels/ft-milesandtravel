@@ -11,7 +11,18 @@
 
       <v-card-text class="pa-4 pa-md-6 pt-2">
         <!-- Product Name -->
-        <v-autocomplete
+         <v-text-field
+          v-model="searchQuery"
+          class="mb-3 mb-md-4"
+          clearable
+          density="comfortable"
+          hide-details
+          label="Digite o nome do produto..."
+          prepend-inner-icon="mdi-magnify"
+          return-object
+          variant="outlined"
+        />
+        <!-- <v-autocomplete
           v-model="selectedProduct"
           v-model:search="searchQuery"
           class="mb-3 mb-md-4"
@@ -43,7 +54,7 @@
               </v-list-item-subtitle>
             </v-list-item>
           </template>
-        </v-autocomplete>
+        </v-autocomplete> -->
 
         <!-- Marketplaces -->
         <v-select
@@ -189,8 +200,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, watch } from 'vue';
 
+  const client = useSanctumClient();
   // Types
   interface Product {
     id: number
@@ -329,28 +341,39 @@
   const handleSearch = async () => {
     isSearching.value = true
     hasSearched.value = true
+    const search_id = 1;
+    const { data, status, error, refresh } = await useAsyncData('users', () =>
+      client(`/api/searches/${search_id}/automatic-products`, {
+        params: {
+          search_term: searchQuery.value
+        }
+      })
+    );
 
-    setTimeout(() => {
-      let filtered = [...mockProducts]
+    results.value = data.value.data
+    isSearching.value = false
 
-      // Filter by name
-      if (searchQuery.value || selectedProduct.value) {
-        const query = searchQuery.value || selectedProduct.value?.name || ''
-        filtered = filtered.filter(product =>
-          product.name.toLowerCase().includes(query.toLowerCase())
-        )
-      }
+    // setTimeout(() => {
+    //   let filtered = [...mockProducts]
 
-      // Filter by marketplaces
-      if (selectedMarketplaces.value.length > 0) {
-        filtered = filtered.filter(product =>
-          selectedMarketplaces.value.includes(product.marketplace)
-        )
-      }
+    //   // Filter by name
+    //   if (searchQuery.value || selectedProduct.value) {
+    //     const query = searchQuery.value || selectedProduct.value?.name || ''
+    //     filtered = filtered.filter(product =>
+    //       product.name.toLowerCase().includes(query.toLowerCase())
+    //     )
+    //   }
 
-      results.value = filtered
-      isSearching.value = false
-    }, 800)
+    //   // Filter by marketplaces
+    //   if (selectedMarketplaces.value.length > 0) {
+    //     filtered = filtered.filter(product =>
+    //       selectedMarketplaces.value.includes(product.marketplace)
+    //     )
+    //   }
+
+    //   results.value = filtered
+    //   isSearching.value = false
+    // }, 800)
   }
 
   const clearAll = () => {

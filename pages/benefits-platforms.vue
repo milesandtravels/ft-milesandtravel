@@ -317,6 +317,9 @@
 <script setup lang="ts">
   import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
+  definePageMeta({
+    middleware: ['sanctum:auth']
+  })
   // Types
   interface Platform {
     id: number
