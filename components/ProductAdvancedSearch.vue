@@ -137,7 +137,7 @@
                 class="product-image"
                 cover
                 height="140"
-                :src="product.image"
+                :src="product.image_url"
               >
                 <template #placeholder>
                   <div class="d-flex align-center justify-center fill-height">
@@ -149,11 +149,11 @@
               <!-- Marketplace Badge -->
               <v-chip
                 class="marketplace-badge text-white"
-                :color="getMarketplaceColor(product.marketplace)"
+                :color="getMarketplaceColor(product.ecommerce.name)"
                 size="x-small"
                 variant="flat"
               >
-                {{ product.marketplace }}
+                {{ product.ecommerce.name }}
               </v-chip>
             </div>
 
