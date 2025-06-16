@@ -47,41 +47,6 @@
 
   const sidebarOpen = ref(false)
 
-  // User data - could be replaced with useUser() composable or Pinia store
-  const currentUser = ref({
-    id: '1',
-    name: 'João Silva',
-    email: 'joao.silva@email.com',
-  })
-
-  // Sample data - could be moved to a Pinia store
-  const sampleTravels = ref([
-    {
-      id: 1,
-      destination: 'Paris, França',
-      dates: '15-20 Jul 2024',
-      status: 'active',
-      color: 'blue',
-      icon: 'mdi-airplane',
-    },
-    {
-      id: 2,
-      destination: 'Tokyo, Japão',
-      dates: '05-12 Ago 2024',
-      status: 'planned',
-      color: 'green',
-      icon: 'mdi-airplane-takeoff',
-    },
-    {
-      id: 3,
-      destination: 'New York, EUA',
-      dates: '20-25 Set 2024',
-      status: 'planned',
-      color: 'orange',
-      icon: 'mdi-city',
-    },
-  ])
-
   // Computed properties
   const currentRoute = computed(() => route.path)
 
