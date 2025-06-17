@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-import type { SearchRecord } from '~/interfaces/search'
+  import type { SearchRecord } from '~/interfaces/search'
 
   // Types
   interface Product {
