@@ -1,6 +1,5 @@
 <template>
   <v-container class="pa-2 pa-md-4">
-    <!-- Search Form -->
     <v-card
       class="elevation-4 rounded-lg mb-4 mb-md-6 mx-auto search-card"
       max-width="600"
@@ -10,155 +9,65 @@
       </v-card-title>
 
       <v-card-text class="pa-4 pa-md-6 pt-2">
-        <!-- Product Name -->
-        <v-text-field
-          v-model="searchQuery"
-          class="mb-3 mb-md-4"
-          clearable
-          density="comfortable"
-          hide-details
-          label="Digite o nome do produto..."
-          prepend-inner-icon="mdi-magnify"
-          return-object
-          variant="outlined"
-        />
-        <!-- Actions -->
-        <div class="action-buttons">
-          <v-btn
-            block
-            class="search-btn"
-            color="primary"
-            :loading="isSearching"
-            size="large"
-            @click="handleSearch"
-          >
-            <v-icon left>mdi-magnify</v-icon>
-            Buscar
-          </v-btn>
-          <v-btn
-            block
-            class="clear-btn"
-            size="large"
+        <v-form @submit.prevent ref="searchForm">
+          <v-text-field
+            v-model="searchQuery"
+            class="mb-3 mb-md-4"
+            clearable
+            density="comfortable"
+            label="Digite o nome do produto..."
+            prepend-inner-icon="mdi-magnify"
             variant="outlined"
-            @click="clearAll"
-          >
-            <v-icon left>mdi-refresh</v-icon>
-            Limpar
-          </v-btn>
-        </div>
+            validate-on="blur"
+            :rules="[v => !!v || 'Campo obrigatório']"
+          />
+
+          <div class="action-buttons">
+            <v-btn
+              block
+              class="clear-btn"
+              size="large"
+              variant="outlined"
+              @click="clearAll"
+            >
+              <v-icon left>mdi-refresh</v-icon>
+              Limpar
+            </v-btn>
+            <v-btn
+              block
+              class="search-btn"
+              color="primary"
+              :loading="isSearching"
+              size="large"
+              type="submit"
+              @click="handleSearch"
+            >
+              <v-icon left>mdi-magnify</v-icon>
+              Buscar
+            </v-btn>
+          </div>
+        </v-form>
       </v-card-text>
     </v-card>
 
-    <!-- Results -->
-    <div v-if="results.length > 0">
-      <div class="results-header mb-3 mb-md-4 px-2 px-md-0">
-        <h3 class="text-h6 font-weight-bold">
-          {{ results.length }} produto{{
-            results.length > 1 ? 's' : ''
-          }}
-          encontrado{{ results.length > 1 ? 's' : '' }}
-        </h3>
-      </div>
-
-      <v-row class="ma-0">
-        <v-col
-          v-for="product in results"
-          :key="product.id"
-          class="pa-1 pa-md-2"
-          cols="6"
-          lg="3"
-          md="3"
-          sm="4"
-        >
-          <v-card class="elevation-3 product-card h-100" hover>
-            <div class="image-container">
-              <v-img
-                class="product-image"
-                cover
-                height="140"
-                :src="product.image_url"
-              >
-                <template #placeholder>
-                  <div class="d-flex align-center justify-center fill-height">
-                    <v-progress-circular indeterminate size="24" />
-                  </div>
-                </template>
-              </v-img>
-
-              <!-- Marketplace Badge -->
-              <v-chip
-                class="marketplace-badge text-white"
-                :color="getMarketplaceColor(product.ecommerce.name)"
-                size="x-small"
-                variant="flat"
-              >
-                {{ product.ecommerce.name }}
-              </v-chip>
-            </div>
-
-            <v-card-text class="pa-2 pa-md-3">
-              <div class="price-container mb-1 mb-md-2">
-                <span class="price-text text-primary font-weight-bold">
-                  {{ formatPrice(product.price) }}
-                </span>
-              </div>
-
-              <h4 class="product-title text-body-2 font-weight-medium">
-                {{ product.name }}
-              </h4>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </div>
-
-    <!-- Empty State -->
-    <div v-else-if="hasSearched" class="empty-state text-center py-8 py-md-12">
-      <v-icon class="mb-3" color="grey-lighten-1" size="48"
-        >mdi-magnify-remove</v-icon
-      >
-      <h3 class="text-body-1 text-md-h6 font-weight-medium mb-2">
-        Nenhum produto encontrado
-      </h3>
-      <p class="text-body-2 text-medium-emphasis">
-        Tente usar termos diferentes ou outros marketplaces
-      </p>
-    </div>
-
-    <!-- Initial State -->
-    <div v-else class="initial-state text-center py-8 py-md-12">
-      <v-icon class="mb-3" color="primary" size="48">mdi-magnify-plus</v-icon>
-      <h3 class="text-body-1 text-md-h6 font-weight-medium mb-2">
-        Pronto para buscar!
-      </h3>
-      <p class="text-body-2 text-medium-emphasis">
-        Digite o nome do produto que deseja. Tente incluir o máximo de
-        informações sobre o produto.
-      </p>
-    </div>
+    <template v-if="results.length > 0">
+      <product-advanced-search-results :results="results" />
+    </template>
+    <product-advanced-search-empty-results v-else-if="hasSearched" />
+    <product-advanced-search-initial-state v-else />
   </v-container>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import type { Product } from '~/interfaces/products'
+
+  import type { VForm } from 'vuetify/components'
   import type { SearchRecord } from '~/interfaces/search'
 
-  // Types
-  interface Product {
-    id: number
-    name: string
-    price: number
-    image: string
-    marketplace: string
-  }
-
   const searchId = ref<number>()
-
-  // State
+  const searchForm = ref<VForm | null>(null)
   const searchQuery = ref('')
-  const selectedProduct = ref<Product | null>(null)
-  const selectedMarketplaces = ref<string[]>([])
-  const searchResults = ref<Product[]>([])
   const results = ref<Product[]>([])
   const isLoading = ref(false)
   const isSearching = ref(false)
@@ -184,26 +93,9 @@
     searchId.value = data.value?.data.id
   }
 
-  // Methods
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price)
-  }
-
-  const getMarketplaceColor = (marketplace: string) => {
-    const colors: Record<string, string> = {
-      Amazon: '#FF9900',
-      Shopee: '#EE4D2D',
-      'Mercado Livre': '#FFF159',
-      AliExpress: '#FF6A00',
-      Americanas: '#E60014',
-    }
-    return colors[marketplace] || '#666'
-  }
-
   const fetchProducts = async () => {
+    searchForm.value
+
     isSearching.value = true
     isLoading.value = true
 
@@ -230,19 +122,19 @@
   }
 
   const handleSearch = async () => {
+    const { valid } = await searchForm.value?.validate()
+
+    if (!valid) {
+      return // Para a execução se inválido
+    }
     fetchProducts()
   }
 
   const clearAll = () => {
     searchQuery.value = ''
-    selectedProduct.value = null
-    selectedMarketplaces.value = []
-    searchResults.value = []
     results.value = []
     hasSearched.value = false
   }
-
-  console.log('💡 Teste com: "iPhone", "Samsung", "MacBook", "AirPods"')
 </script>
 
 <style scoped>
@@ -255,8 +147,10 @@
   /* Action Buttons */
   .action-buttons {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 150px 150px;
     gap: 12px;
+    align-items: end;
+    justify-content: end;
   }
 
   @media (max-width: 600px) {

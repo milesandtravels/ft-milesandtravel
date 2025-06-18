@@ -255,12 +255,12 @@
 </template>
 
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, defineModel, ref } from 'vue'
 
   const emit = defineEmits(['apply-filters'])
 
   // Dialog state
-  const dialog = ref(true)
+ const dialog = defineModel()
 
   // Sort options
   const sortOptions = ref([
@@ -341,11 +341,27 @@
       count: '3.1k',
     },
   ])
+   const fetchEcommerces = async () => {
+    searchForm.value
 
-  const fetchEcommerces = async () => {}
+    isSearching.value = true
+    isLoading.value = true
 
-  // Rating options
-  const ratingOptions = ref([3, 4, 5])
+    const { data, error } = await useSanctumFetch(
+      `/api/ecommerces`,
+      {
+        method: 'GET',
+      }
+    )
+
+    if (data.value) {
+      ecommerceOptions.value = data.value.data
+    }
+
+    if (error.value) {
+      ecommerceOptions.value = []
+    }
+  }
 
   // Filter states
   const selectedSort = ref('relevance')
@@ -441,6 +457,10 @@
     emit('apply-filters', filters)
     closeModal()
   }
+
+  onMounted(() => {
+    fetchEcommerces()
+  })
 </script>
 
 <style scoped>
@@ -566,18 +586,6 @@
     }
   }
 
-  /* Desktop improvements */
-  @media (min-width: 960px) {
-    .v-dialog {
-      max-width: 500px;
-      height: auto;
-    }
-
-    .filter-modal-card {
-      height: auto;
-      max-height: 90vh;
-    }
-  }
 
   /* Custom scrollbar */
   .filter-content::-webkit-scrollbar {
