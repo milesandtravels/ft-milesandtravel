@@ -75,8 +75,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { defineProps } from 'vue';
-import type { Product } from '~/interfaces/products';
+  import { defineProps } from 'vue'
+  import type { Product } from '~/interfaces/products'
   interface Props {
     results: Product[]
   }

@@ -6,26 +6,6 @@
     transition="dialog-bottom-transition"
     class="filter-modal"
   >
-    <template #activator="{ props }">
-      <v-btn
-        v-bind="props"
-        variant="outlined"
-        color="primary"
-        size="large"
-        prepend-icon="mdi-filter-variant"
-        block
-        class="mb-4"
-      >
-        Filtros
-        <v-badge
-          v-if="activeFiltersCount > 0"
-          :content="activeFiltersCount"
-          color="error"
-          class="ms-2"
-        />
-      </v-btn>
-    </template>
-
     <v-card class="filter-modal-card">
       <!-- Header -->
       <v-toolbar color="primary" dark flat class="filter-header">
@@ -260,7 +240,7 @@
   const emit = defineEmits(['apply-filters'])
 
   // Dialog state
- const dialog = defineModel()
+  const dialog = defineModel()
 
   // Sort options
   const sortOptions = ref([
@@ -341,18 +321,15 @@
       count: '3.1k',
     },
   ])
-   const fetchEcommerces = async () => {
+  const fetchEcommerces = async () => {
     searchForm.value
 
     isSearching.value = true
     isLoading.value = true
 
-    const { data, error } = await useSanctumFetch(
-      `/api/ecommerces`,
-      {
-        method: 'GET',
-      }
-    )
+    const { data, error } = await useSanctumFetch(`/api/ecommerces`, {
+      method: 'GET',
+    })
 
     if (data.value) {
       ecommerceOptions.value = data.value.data
@@ -585,7 +562,6 @@
       min-height: 60px;
     }
   }
-
 
   /* Custom scrollbar */
   .filter-content::-webkit-scrollbar {

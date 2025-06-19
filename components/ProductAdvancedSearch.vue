@@ -138,13 +138,11 @@
 </script>
 
 <style scoped>
-  /* Search Card */
   .search-card {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Action Buttons */
   .action-buttons {
     display: grid;
     grid-template-columns: 150px 150px;
@@ -160,7 +158,6 @@
     }
   }
 
-  /* Product Cards */
   .product-card {
     border-radius: 12px;
     overflow: hidden;
