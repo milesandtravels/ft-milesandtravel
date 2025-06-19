@@ -1,9 +1,6 @@
 <template>
-  <v-container class="pa-2 pa-md-4">
-    <v-card
-      class="elevation-4 rounded-lg mb-4 mb-md-6 mx-auto search-card"
-      max-width="600"
-    >
+  <div>
+    <v-card class="elevation-4 rounded-lg mb-4 mb-md-6 mx-auto search-card">
       <v-card-title class="pa-4 pa-md-6 pb-2 pb-md-4">
         <h2 class="text-h6 font-weight-bold">Buscar Produtos</h2>
       </v-card-title>
@@ -55,15 +52,16 @@
     </template>
     <product-advanced-search-empty-results v-else-if="hasSearched" />
     <product-advanced-search-initial-state v-else />
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import type { Product } from '~/interfaces/products'
+import type { Product } from '~/interfaces/products'
 
   import type { VForm } from 'vuetify/components'
-  import type { SearchRecord } from '~/interfaces/search'
+import type { SearchRecord } from '~/interfaces/search'
+import { mockProductsAdvancedSearch } from '~/mocks/productsAdvancedSearch'
 
   const searchId = ref<number>()
   const searchForm = ref<VForm | null>(null)
@@ -93,6 +91,14 @@
     searchId.value = data.value?.data.id
   }
 
+  const mockResponse = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(mockProductsAdvancedSearch)
+      }, 1000)
+    })
+  }
+
   const fetchProducts = async () => {
     searchForm.value
 
@@ -119,6 +125,11 @@
     if (error.value) {
       results.value = []
     }
+
+    // const { data } = (await mockResponse()) as any
+    // results.value = data
+    
+    
   }
 
   const handleSearch = async () => {

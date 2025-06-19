@@ -2,22 +2,30 @@
   <v-container class="pa-2 pa-md-4">
     <!-- Page Header -->
     <div class="mb-4">
-      <h1 class="text-h5 text-md-h4 font-weight-bold mb-1">
-        Produtos em Destaque
-      </h1>
-      <p class="text-caption text-md-body-2 text-medium-emphasis mb-3">
-        Descubra as melhores ofertas e produtos mais buscados
-      </p>
-
-      <v-btn
-        block
-        color="primary"
-        size="large"
-        @click="router.push('/search-products')"
+      <div
+        :class="{
+          'd-flex justify-space-between align-center': !$vuetify.display.mobile,
+        }"
       >
-        <v-icon left>mdi-magnify</v-icon>
-        Buscar produtos
-      </v-btn>
+        <div class="">
+          <h1 class="text-h5 text-md-h4 font-weight-bold mb-1">
+            Produtos em Destaque
+          </h1>
+          <p class="text-caption text-md-body-2 text-medium-emphasis mb-3">
+            Descubra as melhores ofertas e produtos mais buscados
+          </p>
+        </div>
+        <v-btn
+          :block="$vuetify.display.mobile"
+          :width="$vuetify.display.mobile ? '100%' : '250px'"
+          color="primary"
+          size="large"
+          @click="router.push('/search-products')"
+        >
+          <v-icon start>mdi-magnify</v-icon>
+          Buscar produtos
+        </v-btn>
+      </div>
     </div>
 
     <!-- Categories Sections -->
@@ -165,7 +173,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   const router = useRouter()
   // Types

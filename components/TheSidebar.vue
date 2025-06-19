@@ -197,11 +197,7 @@
   const handleNavigation = (route: string) => {
     emit('navigate', route)
     router.push(route)
-
-    // Close sidebar on mobile after navigation
-    if (isMobile.value) {
-      isOpen.value = false
-    }
+    isOpen.value = false
   }
 
   const isActiveRoute = (route: string) => {
