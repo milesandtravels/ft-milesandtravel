@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   modules: ['vuetify-nuxt-module', 'nuxt-auth-sanctum'],
   sanctum: {
     mode: 'token',
-    baseUrl: 'https://api-dev.milesandtravels.com', // Laravel API
+    baseUrl: process.env.API_URL, // Laravel API
     redirectIfAuthenticated: true,
     redirectIfUnauthenticated: true,
     endpoints: {

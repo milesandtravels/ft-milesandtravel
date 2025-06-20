@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -152,16 +152,10 @@
       route: '/search-products',
     },
     {
-      title: 'Benefícios por E-commerce',
+      title: 'Promoções',
       subtitle: 'Vantagens em lojas online',
       icon: 'mdi-store',
-      route: '/ecommerce-benefits',
-    },
-    {
-      title: 'Programas de Benefícios',
-      subtitle: 'Programas de fidelidade e recompensas',
-      icon: 'mdi-gift',
-      route: '/benefits-platforms',
+      route: '/ecommerce-program',
     },
     {
       title: 'Pesquisas Realizadas',
