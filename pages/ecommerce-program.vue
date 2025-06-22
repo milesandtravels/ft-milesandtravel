@@ -2,8 +2,149 @@
   <v-container class="pa-6">
     <v-row>
       <v-col cols="12">
-        <h1 class="text-h4 mb-6 text-center">Promoções</h1>
+        <div class="d-flex justify-space-between align-center mb-6">
+          <h1 class="text-h4">Promoções</h1>
+          <v-btn
+            @click="filterDialog = true"
+            variant="outlined"
+            color="primary"
+            prepend-icon="mdi-filter-variant"
+          >
+            Filtros
+          </v-btn>
+        </div>
+        
+        <!-- Tabs com filtros ativos -->
+        <v-tabs
+          v-if="hasActiveFilters"
+          show-arrows
+          class="mb-4"
+          color="primary"
+          align-tabs="start"
+        >
+          <!-- Tipo de promoção -->
+          <v-tab
+            v-for="type in filters.promotionTypes"
+            :key="'promotion-' + type"
+            class="text-none"
+            @click="removePromotionTypeFilter(type)"
+          >
+            <v-chip
+              closable
+              @click:close="removePromotionTypeFilter(type)"
+              color="primary"
+              variant="flat"
+            >
+              {{ getPromotionTypeLabel(type) }}
+            </v-chip>
+          </v-tab>
+          
+          <!-- E-commerces -->
+          <v-tab
+            v-for="ecommerce in filters.ecommerces"
+            :key="'ecommerce-' + ecommerce.id"
+            class="text-none"
+            @click="removeEcommerceFilter(ecommerce)"
+          >
+            <v-chip
+              closable
+              @click:close="removeEcommerceFilter(ecommerce)"
+              color="primary"
+              variant="flat"
+            >
+              <v-avatar start>
+                <v-img :src="ecommerce.logo_url" :alt="ecommerce.name">
+                  <template v-slot:error>
+                    <v-icon icon="mdi-store" size="16"></v-icon>
+                  </template>
+                </v-img>
+              </v-avatar>
+              {{ ecommerce.name }}
+            </v-chip>
+          </v-tab>
+          
+          <!-- Programas de Pontos -->
+          <v-tab
+            v-for="program in filters.pointsPrograms"
+            :key="'points-' + program.id"
+            class="text-none"
+            @click="removePointsProgramFilter(program)"
+          >
+            <v-chip
+              closable
+              @click:close="removePointsProgramFilter(program)"
+              color="primary"
+              variant="flat"
+            >
+              <v-avatar start>
+                <v-img :src="program.logo_url" :alt="program.name">
+                  <template v-slot:error>
+                    <v-icon icon="mdi-card-giftcard" size="16"></v-icon>
+                  </template>
+                </v-img>
+              </v-avatar>
+              {{ program.name }}
+            </v-chip>
+          </v-tab>
+          
+          <!-- Programas de Milhas -->
+          <v-tab
+            v-for="program in filters.milesPrograms"
+            :key="'miles-' + program.id"
+            class="text-none"
+            @click="removeMilesProgramFilter(program)"
+          >
+            <v-chip
+              closable
+              @click:close="removeMilesProgramFilter(program)"
+              color="primary"
+              variant="flat"
+            >
+              <v-avatar start>
+                <v-img :src="program.logo_url" :alt="program.name">
+                  <template v-slot:error>
+                    <v-icon icon="mdi-airplane" size="16"></v-icon>
+                  </template>
+                </v-img>
+              </v-avatar>
+              {{ program.name }}
+            </v-chip>
+          </v-tab>
+          
+          <!-- Programas de Cashback -->
+          <v-tab
+            v-for="program in filters.cashbackPrograms"
+            :key="'cashback-' + program.id"
+            class="text-none"
+            @click="removeCashbackProgramFilter(program)"
+          >
+            <v-chip
+              closable
+              @click:close="removeCashbackProgramFilter(program)"
+              color="primary"
+              variant="flat"
+            >
+              <v-avatar start>
+                <v-img :src="program.logo_url" :alt="program.name">
+                  <template v-slot:error>
+                    <v-icon icon="mdi-cash" size="16"></v-icon>
+                  </template>
+                </v-img>
+              </v-avatar>
+              {{ program.name }}
+            </v-chip>
+          </v-tab>
+        </v-tabs>
       </v-col>
+      <v-chip
+      v-if="hasActiveFilters"
+              color="error"
+              variant="outlined"
+              prepend-icon="mdi-close-circle"
+              @click="clearAllFilters"
+            >
+              Limpar todos
+        </v-chip>
     </v-row>
     
     <v-row v-if="pending" justify="center">
@@ -184,6 +325,162 @@
        </v-col>
      </v-row>
    </v-container>
+
+   <!-- Modal de Filtros -->
+   <v-dialog v-model="filterDialog" fullscreen transition="dialog-bottom-transition">
+     <v-card>
+       <v-toolbar color="primary" dark>
+         <v-btn icon @click="filterDialog = false">
+           <v-icon>mdi-close</v-icon>
+         </v-btn>
+         <v-toolbar-title>Filtros</v-toolbar-title>
+         <v-spacer></v-spacer>
+         <v-btn text @click="clearFilters">Limpar</v-btn>
+         <v-btn text @click="applyFilters">Aplicar</v-btn>
+       </v-toolbar>
+
+       <v-card-text class="pa-6">
+         <v-container>
+           <v-row>
+             <v-col cols="12" md="6">
+               <v-select
+                 v-model="filters.orderBy"
+                 :items="orderByOptions"
+                 label="Ordenar por"
+                 variant="outlined"
+                 item-title="label"
+                 item-value="value"
+                 clearable
+               ></v-select>
+             </v-col>
+
+             <v-col cols="12" md="6">
+               <v-select
+                 v-model="filters.order"
+                 :items="orderOptions"
+                 label="Ordem"
+                 variant="outlined"
+                 item-title="label"
+                 item-value="value"
+                 clearable
+               ></v-select>
+             </v-col>
+
+             <v-col cols="12">
+               <v-autocomplete
+                 v-model="filters.promotionTypes"
+                 :items="promotionTypeOptions"
+                 label="Tipo de promoção"
+                 variant="outlined"
+                 item-title="label"
+                 item-value="value"
+                 multiple
+                 chips
+                 clearable
+                 closable-chips
+               ></v-autocomplete>
+             </v-col>
+           </v-row>
+           
+           <v-row>
+             <v-col cols="12" md="6">
+               <v-autocomplete
+                 v-model="filters.ecommerces"
+                 :items="ecommerceOptions"
+                 label="E-commerces"
+                 variant="outlined"
+                 item-title="name"
+                 return-object
+                 multiple
+                 chips
+                 clearable
+                 closable-chips
+               >
+                 <template v-slot:chip="{ props, item }">
+                   <v-chip
+                     v-bind="props"
+                     :prepend-avatar="item.logo_url"
+                     :text="item.name"
+                   ></v-chip>
+                 </template>
+               </v-autocomplete>
+             </v-col>
+             
+             <v-col cols="12" md="6">
+               <v-autocomplete
+                 v-model="filters.pointsPrograms"
+                 :items="pointsProgramOptions"
+                 label="Programas de Pontos"
+                 variant="outlined"
+                 item-title="name"
+                 return-object
+                 multiple
+                 chips
+                 clearable
+                 closable-chips
+               >
+                 <template v-slot:chip="{ props, item }">
+                   <v-chip
+                     v-bind="props"
+                     :prepend-avatar="item.logo_url"
+                     :text="item.name"
+                   ></v-chip>
+                 </template>
+               </v-autocomplete>
+             </v-col>
+           </v-row>
+           
+           <v-row>
+             <v-col cols="12" md="6">
+               <v-autocomplete
+                 v-model="filters.milesPrograms"
+                 :items="milesProgramOptions"
+                 label="Programas de Milhas"
+                 variant="outlined"
+                 item-title="name"
+                 return-object
+                 multiple
+                 chips
+                 clearable
+                 closable-chips
+               >
+                 <template v-slot:chip="{ props, item }">
+                   <v-chip
+                     v-bind="props"
+                     :prepend-avatar="item.logo_url"
+                     :text="item.name"
+                   ></v-chip>
+                 </template>
+               </v-autocomplete>
+             </v-col>
+             
+             <v-col cols="12" md="6">
+               <v-autocomplete
+                 v-model="filters.cashbackPrograms"
+                 :items="cashbackProgramOptions"
+                 label="Programas de Cashback"
+                 variant="outlined"
+                 item-title="name"
+                 return-object
+                 multiple
+                 chips
+                 clearable
+                 closable-chips
+               >
+                 <template v-slot:chip="{ props, item }">
+                   <v-chip
+                     v-bind="props"
+                     :prepend-avatar="item.logo_url"
+                     :text="item.name"
+                   ></v-chip>
+                 </template>
+               </v-autocomplete>
+             </v-col>
+           </v-row>
+         </v-container>
+       </v-card-text>
+     </v-card>
+   </v-dialog>
 </template>
 <script setup lang="ts">
   definePageMeta({
@@ -244,16 +541,243 @@
 
 // Estado da paginação
 const route = useRoute()
+const router = useRouter()
 const currentPage = ref(Number(route.query.page) || 1)
 const itemsPerPage = ref(Number(route.query.per_page) || 15)
 
-// Fetch inicial
-const { data: initialResponse, pending: initialPending, error: initialError } = await useSanctumFetch<Response>('/api/promotions', {
-  query: {
+// Estado do modal de filtros
+const filterDialog = ref(false)
+
+// Estado dos filtros
+const filters = ref({
+  orderBy: '',
+  order: '',
+  promotionTypes: [] as string[],
+  ecommerces: [] as any[],
+  pointsPrograms: [] as any[],
+  milesPrograms: [] as any[],
+  cashbackPrograms: [] as any[]
+})
+
+// Opções para os selects
+const orderByOptions = [
+  { label: 'Valor', value: 'current_value' },
+  { label: 'Nome do programa', value: 'program_name' },
+  { label: 'Nome do ecommerce', value: 'ecommerce_name' }
+]
+
+const orderOptions = [
+  { label: 'Do menor para o maior', value: 'asc' },
+  { label: 'Do maior para o menor', value: 'desc' }
+]
+
+const promotionTypeOptions = [
+  { label: 'Milhas', value: 'miles' },
+  { label: 'Pontos', value: 'points' },
+  { label: 'Cashback', value: 'cashback' }
+]
+
+// Opções para os novos filtros
+const ecommerceOptions = ref<any[]>([])
+const pointsProgramOptions = ref<any[]>([])
+const milesProgramOptions = ref<any[]>([])
+const cashbackProgramOptions = ref<any[]>([])
+
+// Fetch das opções para os novos filtros em paralelo
+const [
+  { data: ecommercesData },
+  { data: pointsProgramsData },
+  { data: milesProgramsData },
+  { data: cashbackProgramsData }
+] = await Promise.all([
+  useSanctumFetch<any[]>('/api/ecommerces'),
+  useSanctumFetch<any[]>('/api/points-programs'),
+  useSanctumFetch<any[]>('/api/miles-programs'),
+  useSanctumFetch<any[]>('/api/cashback-programs')
+])
+
+ecommerceOptions.value = ecommercesData.value?.data || []
+pointsProgramOptions.value = pointsProgramsData.value?.data || []
+milesProgramOptions.value = milesProgramsData.value?.data || []
+cashbackProgramOptions.value = cashbackProgramsData.value?.data || []
+
+// Função para inicializar filtros a partir da URL
+const initializeFiltersFromURL = () => {
+  // Inicializa filtros básicos
+  filters.value.orderBy = (route.query.order_by as string) || ''
+  filters.value.order = (route.query.order as string) || ''
+  
+  // Inicializa tipos de promoção
+  const promotionTypes = route.query.program_types
+  if (promotionTypes) {
+    filters.value.promotionTypes = Array.isArray(promotionTypes) ? promotionTypes : [promotionTypes]
+  }
+  
+  // Inicializa e-commerces
+  const ecommerces = route.query.ecommerces
+  if (ecommerces && ecommerceOptions.value.length > 0) {
+    const ecommerceIds = Array.isArray(ecommerces) ? ecommerces : [ecommerces]
+    filters.value.ecommerces = ecommerceOptions.value.filter(e => ecommerceIds.includes(e.id.toString()))
+  }
+  
+  // Inicializa programas de pontos
+  const pointsPrograms = route.query.points_programs
+  if (pointsPrograms && pointsProgramOptions.value.length > 0) {
+    const programIds = Array.isArray(pointsPrograms) ? pointsPrograms : [pointsPrograms]
+    filters.value.pointsPrograms = pointsProgramOptions.value.filter(p => programIds.includes(p.id.toString()))
+  }
+  
+  // Inicializa programas de milhas
+  const milesPrograms = route.query.miles_programs
+  if (milesPrograms && milesProgramOptions.value.length > 0) {
+    const programIds = Array.isArray(milesPrograms) ? milesPrograms : [milesPrograms]
+    filters.value.milesPrograms = milesProgramOptions.value.filter(p => programIds.includes(p.id.toString()))
+  }
+  
+  // Inicializa programas de cashback
+  const cashbackPrograms = route.query.cashback_programs
+  if (cashbackPrograms && cashbackProgramOptions.value.length > 0) {
+    const programIds = Array.isArray(cashbackPrograms) ? cashbackPrograms : [cashbackPrograms]
+    filters.value.cashbackPrograms = cashbackProgramOptions.value.filter(p => programIds.includes(p.id.toString()))
+  }
+}
+
+// Inicializa filtros a partir da URL
+initializeFiltersFromURL()
+
+// Watcher para reagir a mudanças na rota
+watch(() => route.query, (newQuery) => {
+  // Atualiza a página atual se mudou na URL
+  const newPage = Number(newQuery.page) || 1
+  if (newPage !== currentPage.value) {
+    currentPage.value = newPage
+  }
+  
+  // Atualiza os filtros se mudaram na URL
+  initializeFiltersFromURL()
+}, { deep: true })
+
+// Função para atualizar a URL com os filtros atuais
+const updateURLWithFilters = () => {
+  const query: any = {
     page: currentPage.value,
     per_page: itemsPerPage.value
   }
-})
+  
+  // Adiciona filtros básicos se existirem
+  if (filters.value.orderBy) {
+    query.order_by = filters.value.orderBy
+  }
+  
+  if (filters.value.order) {
+    query.order = filters.value.order
+  }
+  
+  // Adiciona tipos de promoção
+  if (filters.value.promotionTypes.length > 0) {
+    query.program_types = filters.value.promotionTypes
+  }
+  
+  // Adiciona e-commerces
+  if (filters.value.ecommerces.length > 0) {
+    query.ecommerces = filters.value.ecommerces.map(e => e.id)
+  }
+  
+  // Adiciona programas de pontos
+  if (filters.value.pointsPrograms.length > 0) {
+    query.points_programs = filters.value.pointsPrograms.map(p => p.id)
+  }
+  
+  // Adiciona programas de milhas
+  if (filters.value.milesPrograms.length > 0) {
+    query.miles_programs = filters.value.milesPrograms.map(p => p.id)
+  }
+  
+  // Adiciona programas de cashback
+  if (filters.value.cashbackPrograms.length > 0) {
+    query.cashback_programs = filters.value.cashbackPrograms.map(p => p.id)
+  }
+  
+  // Atualiza a URL sem recarregar a página
+  router.push({ query })
+}
+
+// Função para construir query params para requisições
+const buildQueryParams = () => {
+  const queryParams: any = {
+    page: currentPage.value,
+    per_page: itemsPerPage.value
+  }
+  
+  // Adiciona filtros básicos se existirem
+  if (filters.value.orderBy) {
+    queryParams.order_by = filters.value.orderBy
+  }
+  
+  if (filters.value.order) {
+    queryParams.order = filters.value.order
+  }
+  
+  return queryParams
+}
+
+// Função para fazer requisição com filtros de array
+const fetchWithArrayFilters = async (queryParams: any) => {
+  // Verifica se há filtros que precisam de query string manual
+  const hasArrayFilters = filters.value.promotionTypes.length > 0 || 
+                         filters.value.ecommerces.length > 0 || 
+                         filters.value.pointsPrograms.length > 0 || 
+                         filters.value.milesPrograms.length > 0 || 
+                         filters.value.cashbackPrograms.length > 0
+  
+  if (hasArrayFilters) {
+    // Constrói query string manualmente para manter colchetes literais
+    const queryParts = []
+    
+    // Adiciona outros parâmetros
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+      }
+    })
+    
+    // Adiciona program_types[] para cada valor
+    filters.value.promotionTypes.forEach(type => {
+      queryParts.push(`program_types[]=${encodeURIComponent(type)}`)
+    })
+    
+    // Adiciona ecommerces[] para cada valor
+    filters.value.ecommerces.forEach(ecommerce => {
+      queryParts.push(`ecommerces[]=${encodeURIComponent(ecommerce.id)}`)
+    })
+    
+    // Adiciona points_programs[] para cada valor
+    filters.value.pointsPrograms.forEach(program => {
+      queryParts.push(`points_programs[]=${encodeURIComponent(program.id)}`)
+    })
+    
+    // Adiciona miles_programs[] para cada valor
+    filters.value.milesPrograms.forEach(program => {
+      queryParts.push(`miles_programs[]=${encodeURIComponent(program.id)}`)
+    })
+    
+    // Adiciona cashback_programs[] para cada valor
+    filters.value.cashbackPrograms.forEach(program => {
+      queryParts.push(`cashback_programs[]=${encodeURIComponent(program.id)}`)
+    })
+    
+    const queryString = queryParts.join('&')
+    return await useSanctumFetch<Response>(`/api/promotions?${queryString}`)
+  } else {
+    return await useSanctumFetch<Response>('/api/promotions', {
+      query: queryParams
+    })
+  }
+}
+
+// Fetch inicial com filtros da URL
+const initialQueryParams = buildQueryParams()
+const { data: initialResponse, pending: initialPending, error: initialError } = await fetchWithArrayFilters(initialQueryParams)
 
 const promotions = ref<Promotion[]>(initialResponse.value?.data || [])
 const meta = ref<Meta | undefined>(initialResponse.value?.meta)
@@ -266,17 +790,16 @@ const goToPage = async (page: number) => {
   currentPage.value = page
   pending.value = true
   
+  // Atualiza a URL com a nova página
+  updateURLWithFilters()
+  
   try {
-    const { data: newResponse } = await useSanctumFetch<Response>('/api/promotions', {
-      query: {
-        page: currentPage.value,
-        per_page: itemsPerPage.value
-      }
-    })
+    const queryParams = buildQueryParams()
+    const newResponse = await fetchWithArrayFilters(queryParams)
     
-    promotions.value = newResponse.value?.data || []
-    meta.value = newResponse.value?.meta
-    links.value = newResponse.value?.links
+    promotions.value = newResponse.data.value?.data || []
+    meta.value = newResponse.data.value?.meta
+    links.value = newResponse.data.value?.links
     error.value = null
   } catch (err) {
     console.error('Erro ao carregar página:', err)
@@ -335,6 +858,55 @@ const getPaginationPages = () => {
 
 
 
+// Computed para verificar se há filtros ativos
+const hasActiveFilters = computed(() => {
+  return filters.value.promotionTypes.length > 0 ||
+         filters.value.ecommerces.length > 0 ||
+         filters.value.pointsPrograms.length > 0 ||
+         filters.value.milesPrograms.length > 0 ||
+         filters.value.cashbackPrograms.length > 0
+})
+
+// Função para obter o label do tipo de promoção
+const getPromotionTypeLabel = (type: string): string => {
+  const option = promotionTypeOptions.find(opt => opt.value === type)
+  return option ? option.label : type
+}
+
+// Funções para remover filtros individuais
+const removePromotionTypeFilter = async (type: string) => {
+  filters.value.promotionTypes = filters.value.promotionTypes.filter(t => t !== type)
+  await applyFilters()
+}
+
+const removeEcommerceFilter = async (ecommerce: any) => {
+  filters.value.ecommerces = filters.value.ecommerces.filter(e => e.id !== ecommerce.id)
+  await applyFilters()
+}
+
+const removePointsProgramFilter = async (program: any) => {
+  filters.value.pointsPrograms = filters.value.pointsPrograms.filter(p => p.id !== program.id)
+  await applyFilters()
+}
+
+const removeMilesProgramFilter = async (program: any) => {
+  filters.value.milesPrograms = filters.value.milesPrograms.filter(p => p.id !== program.id)
+  await applyFilters()
+}
+
+const removeCashbackProgramFilter = async (program: any) => {
+  filters.value.cashbackPrograms = filters.value.cashbackPrograms.filter(p => p.id !== program.id)
+  await applyFilters()
+}
+
+// Função para limpar todos os filtros
+const clearAllFilters = async () => {
+  clearFilters()
+  currentPage.value = 1
+  updateURLWithFilters()
+  await applyFilters()
+}
+
 // Função para formatar valores baseado no tipo
 const formatValue = (value: number, type: ProgramType): string => {
   switch (type) {
@@ -346,6 +918,47 @@ const formatValue = (value: number, type: ProgramType): string => {
       return `${value}% cashback`
     default:
       return value.toString()
+  }
+}
+
+// Função para limpar filtros
+const clearFilters = () => {
+  filters.value = {
+    orderBy: '',
+    order: '',
+    promotionTypes: [],
+    ecommerces: [],
+    pointsPrograms: [],
+    milesPrograms: [],
+    cashbackPrograms: []
+  }
+  // Atualiza a URL removendo todos os filtros
+  currentPage.value = 1
+  updateURLWithFilters()
+}
+
+// Função para aplicar filtros
+const applyFilters = async () => {
+  currentPage.value = 1
+  pending.value = true
+  filterDialog.value = false
+  
+  // Atualiza a URL com os filtros aplicados
+  updateURLWithFilters()
+  
+  try {
+    const queryParams = buildQueryParams()
+    const newResponse = await fetchWithArrayFilters(queryParams)
+    
+    promotions.value = newResponse.data.value?.data || []
+    meta.value = newResponse.data.value?.meta
+    links.value = newResponse.data.value?.links
+    error.value = null
+  } catch (err) {
+    console.error('Erro ao aplicar filtros:', err)
+    error.value = err
+  } finally {
+    pending.value = false
   }
 }
 </script>
