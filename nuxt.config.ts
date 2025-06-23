@@ -4,6 +4,20 @@ export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },
   modules: ['vuetify-nuxt-module', 'nuxt-auth-sanctum'],
+  vuetify: {
+    vuetifyOptions: {
+      theme: {
+        defaultTheme: 'light',
+        themes: {
+          light: {
+            colors: {
+              primary: '#0F2B46',
+            },
+          },
+        },
+      },
+    },
+  },
   sanctum: {
     mode: 'token',
     baseUrl: process.env.API_URL, // Laravel API

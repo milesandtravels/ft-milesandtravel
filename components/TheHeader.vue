@@ -18,7 +18,7 @@
     >
       <template #activator="{ props }">
         <v-btn v-bind="props" class="user-avatar-btn" icon size="large">
-          <v-avatar class="user-avatar" :color="avatarColor" size="40">
+          <v-avatar class="user-avatar" color="primary" size="40">
             <span class="text-h6 font-weight-bold text-white">
               {{ userInitials }}
             </span>
@@ -29,7 +29,7 @@
       <v-card class="user-menu-card" elevation="8" min-width="280">
         <v-card-text class="pa-4 pb-2">
           <div class="d-flex align-center">
-            <v-avatar class="mr-4" :color="avatarColor" size="56">
+            <v-avatar class="mr-4" color="primary" size="56">
               <span class="text-h5 font-weight-bold text-white">
                 {{ userInitials }}
               </span>
@@ -179,26 +179,6 @@
     return names[0].slice(0, 2).toUpperCase()
   })
 
-  const avatarColor = computed(() => {
-    // Generate color based on user name
-    const colors = [
-      'deep-purple',
-      'indigo',
-      'blue',
-      'teal',
-      'green',
-      'orange',
-      'deep-orange',
-      'blue-grey',
-    ]
-
-    const nameSum = props.user.name
-      .split('')
-      .reduce((sum, char) => sum + char.charCodeAt(0), 0)
-
-    return colors[nameSum % colors.length]
-  })
-
   // Methods
   const toggleDrawer = () => {
     emit('toggle-drawer')
@@ -242,11 +222,6 @@
     snackbarColor.value = color
     showSnackbar.value = true
   }
-
-  // Demo info
-  console.log('👤 Header Demo - Usuário:', props.user.name)
-  console.log('🎨 Cor do avatar:', avatarColor.value)
-  console.log('🔤 Iniciais:', userInitials.value)
 </script>
 
 <style scoped>

@@ -19,7 +19,7 @@
             Miles&Travels
           </div>
           <div class="text-caption text-medium-emphasis">
-            Sistema de Viagens
+            Sistema de Benefícios
           </div>
         </div>
       </div>
