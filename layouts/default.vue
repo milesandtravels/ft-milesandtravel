@@ -17,24 +17,8 @@
       @navigate="handleNavigation"
     />
 
-    <!-- Main Content -->
     <v-main class="main-content">
       <v-container class="responsive-main-container pa-6">
-        <!-- Breadcrumb -->
-        <v-breadcrumbs
-          v-if="breadcrumbs.length > 1"
-          class="pa-0 mb-4"
-          :items="breadcrumbs"
-        >
-          <template #prepend>
-            <v-icon size="small">mdi-home</v-icon>
-          </template>
-          <template #divider>
-            <v-icon size="small">mdi-chevron-right</v-icon>
-          </template>
-        </v-breadcrumbs>
-
-        <!-- Page Content -->
         <slot />
       </v-container>
     </v-main>
