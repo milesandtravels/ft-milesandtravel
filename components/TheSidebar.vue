@@ -75,7 +75,7 @@
                   mdi-information-outline
                 </v-icon>
                 <div class="flex-grow-1">
-                  <div class="text-body-2 font-weight-medium">Versão 2.1.0</div>
+                  <div class="text-body-2 font-weight-medium">Versão 1.0.0</div>
                   <div class="text-caption text-medium-emphasis">
                     Última atualização
                   </div>
@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
