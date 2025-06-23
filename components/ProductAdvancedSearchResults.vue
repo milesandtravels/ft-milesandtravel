@@ -116,7 +116,7 @@
                   prepend-icon="mdi-close-circle"
                   @click="deselectAll"
                 >
-                 Remover seleção
+                  Remover seleção
                 </v-btn>
 
                 <v-btn
@@ -136,12 +136,12 @@
     </v-container>
 
     <!-- Products Grid Section -->
-    <v-container 
-      :fluid="$vuetify.display.mobile" 
+    <v-container
+      :fluid="$vuetify.display.mobile"
       class="products-container"
       :class="{ 'mobile-container': $vuetify.display.mobile }"
     >
-      <v-row 
+      <v-row
         :class="$vuetify.display.mobile ? 'mobile-row' : 'desktop-row'"
         no-gutters
       >
@@ -157,10 +157,10 @@
         >
           <v-card
             class="product-card h-100"
-            :class="{ 
+            :class="{
               'selected-card': selectedProducts.includes(product.id),
               'mobile-card': $vuetify.display.mobile,
-              'desktop-card': !$vuetify.display.mobile
+              'desktop-card': !$vuetify.display.mobile,
             }"
             :hover="!$vuetify.display.mobile"
             :elevation="
@@ -269,7 +269,9 @@
               <h4
                 class="product-title font-weight-medium"
                 :class="
-                  $vuetify.display.mobile ? 'text-caption mt-1' : 'text-body-2 mt-2'
+                  $vuetify.display.mobile
+                    ? 'text-caption mt-1'
+                    : 'text-body-2 mt-2'
                 "
               >
                 {{ product.name }}
@@ -281,21 +283,25 @@
     </v-container>
 
     <!-- Barra de ação fixa no final da página -->
-    <div
-      v-if="selectedProducts.length > 0"
-      class="action-bar"
-    >
+    <div v-if="selectedProducts.length > 0" class="action-bar">
       <v-container fluid class="pa-0">
         <div class="action-bar-content">
           <!-- Mobile Layout -->
-          <div v-if="$vuetify.display.mobile" class="d-flex align-center justify-space-between">
+          <div
+            v-if="$vuetify.display.mobile"
+            class="d-flex align-center justify-space-between"
+          >
             <div class="selection-info">
-              <v-icon color="white" size="small" class="mr-1">mdi-check-circle</v-icon>
+              <v-icon color="white" size="small" class="mr-1"
+                >mdi-check-circle</v-icon
+              >
               <span class="text-white text-body-2 font-weight-medium">
-                {{ selectedProducts.length }} selecionado{{ selectedProducts.length > 1 ? 's' : '' }}
+                {{ selectedProducts.length }} selecionado{{
+                  selectedProducts.length > 1 ? 's' : ''
+                }}
               </span>
             </div>
-            
+
             <v-btn
               color="white"
               variant="flat"
@@ -312,12 +318,17 @@
           <!-- Desktop Layout -->
           <div v-else class="d-flex align-center justify-space-between">
             <div class="selection-info">
-              <v-icon color="white" size="default" class="mr-2">mdi-check-circle</v-icon>
+              <v-icon color="white" size="default" class="mr-2"
+                >mdi-check-circle</v-icon
+              >
               <span class="text-white text-body-1 font-weight-medium">
-                {{ selectedProducts.length }} produto{{ selectedProducts.length > 1 ? 's' : '' }} selecionado{{ selectedProducts.length > 1 ? 's' : '' }}
+                {{ selectedProducts.length }} produto{{
+                  selectedProducts.length > 1 ? 's' : ''
+                }}
+                selecionado{{ selectedProducts.length > 1 ? 's' : '' }}
               </span>
             </div>
-            
+
             <div class="d-flex align-center ga-3">
               <v-btn
                 color="white"
@@ -329,7 +340,7 @@
                 <v-icon start size="small">mdi-close</v-icon>
                 Limpar
               </v-btn>
-              
+
               <v-btn
                 color="white"
                 variant="flat"
@@ -352,11 +363,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { defineEmits, defineProps } from 'vue';
-import type { Product } from '~/interfaces/products';
+  import { defineEmits, defineProps } from 'vue'
+import type { Product } from '~/interfaces/products'
 
   interface Props {
     results: Product[]
+    searchId: string | number
   }
 
   interface Emits {
@@ -437,38 +449,30 @@ import type { Product } from '~/interfaces/products';
   }
 
   // Função para explorar vantagens dos produtos selecionados
+
+  const updateSearch = async () => {
+    useSanctumFetch<any>(
+      `/api/searches/${props.searchId}/update-and-sync-products`,
+      {
+        method: 'PUT',
+        body: {
+          name: 'custom-search',
+          products: selectedProducts.value,
+        },
+      }
+    )
+  }
+
   const exploreAdvantages = async () => {
     if (selectedProducts.value.length === 0) return
 
     loadingAdvantages.value = true
-    
+
     try {
-      console.log('Explorando vantagens para produtos:', selectedProducts.value)
-      
-      // Aqui você pode chamar sua API
-      // const response = await $fetch('/api/products/advantages', {
-      //   method: 'POST',
-      //   body: {
-      //     productIds: selectedProducts.value
-      //   }
-      // })
-      
-      // Simulação de delay da API
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // Aqui você pode processar a resposta e navegar para outra página
-      // ou mostrar um modal com as vantagens encontradas
-      console.log('Vantagens exploradas com sucesso!')
-      
-      // Exemplo de navegação após sucesso:
-      // await navigateTo({
-      //   name: 'product-advantages',
-      //   query: { ids: selectedProducts.value.join(',') }
-      // })
-      
+      await updateSearch()
+      navigateTo(`/offers?searchId=${props.searchId}`)
     } catch (error) {
       console.error('Erro ao explorar vantagens:', error)
-      // Aqui você pode mostrar uma notificação de erro
     } finally {
       loadingAdvantages.value = false
     }
@@ -567,7 +571,7 @@ import type { Product } from '~/interfaces/products';
     .action-bar-content {
       padding: 10px 12px;
     }
-    
+
     .products-container {
       padding-bottom: 80px; /* Menos espaço em mobile */
     }
@@ -613,17 +617,17 @@ import type { Product } from '~/interfaces/products';
     .products-container {
       padding-bottom: 90px; /* Menos espaço em mobile */
     }
-    
+
     .mobile-container {
       padding-left: 6px !important;
       padding-right: 6px !important;
       padding-top: 16px !important;
     }
-    
+
     .mobile-row {
       margin: 0 -3px !important;
     }
-    
+
     .product-col {
       padding: 3px !important; /* Gap menor em mobile */
     }
@@ -906,7 +910,7 @@ import type { Product } from '~/interfaces/products';
       font-size: 0.75rem !important;
       min-height: 2.4em;
     }
-    
+
     .price-text {
       font-size: 0.875rem !important;
     }
@@ -959,7 +963,7 @@ import type { Product } from '~/interfaces/products';
       min-width: 24px;
       min-height: 24px;
     }
-    
+
     .product-card {
       min-height: 240px;
     }

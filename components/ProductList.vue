@@ -173,7 +173,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
-import { useDisplay } from 'vuetify'
+  import { useDisplay } from 'vuetify'
 
   const router = useRouter()
   // Types

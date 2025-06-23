@@ -48,7 +48,10 @@
     </v-card>
 
     <template v-if="results.length > 0">
-      <product-advanced-search-results :results="results" />
+      <product-advanced-search-results
+        :results="results"
+        :searchId="searchId"
+      />
     </template>
     <product-advanced-search-empty-results v-else-if="hasSearched" />
     <product-advanced-search-initial-state v-else />
@@ -57,11 +60,11 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-import type { Product } from '~/interfaces/products'
+  import type { Product } from '~/interfaces/products'
 
   import type { VForm } from 'vuetify/components'
-import type { SearchRecord } from '~/interfaces/search'
-import { mockProductsAdvancedSearch } from '~/mocks/productsAdvancedSearch'
+  import type { SearchRecord } from '~/interfaces/search'
+  import { mockProductsAdvancedSearch } from '~/mocks/productsAdvancedSearch'
 
   const searchId = ref<number>()
   const searchForm = ref<VForm | null>(null)
@@ -128,8 +131,6 @@ import { mockProductsAdvancedSearch } from '~/mocks/productsAdvancedSearch'
 
     // const { data } = (await mockResponse()) as any
     // results.value = data
-    
-    
   }
 
   const handleSearch = async () => {
