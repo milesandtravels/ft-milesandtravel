@@ -77,7 +77,7 @@
 
 <script setup lang="ts">
   import OffersList from '~/components/OffersList.vue'
-import type { OfferItem, ProgramType } from '~/interfaces/offers'
+  import type { OfferItem, ProgramType } from '~/interfaces/offers'
 
   // Estados reativo
   const loading = ref<boolean>(false)

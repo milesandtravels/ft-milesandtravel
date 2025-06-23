@@ -364,7 +364,7 @@
 
 <script lang="ts" setup>
   import { defineEmits, defineProps } from 'vue'
-import type { Product } from '~/interfaces/products'
+  import type { Product } from '~/interfaces/products'
 
   interface Props {
     results: Product[]

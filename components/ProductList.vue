@@ -61,7 +61,11 @@
 
       <!-- Loading State -->
       <div v-if="section.loading" class="text-center py-8">
-        <v-progress-circular indeterminate color="primary" size="32"></v-progress-circular>
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="32"
+        ></v-progress-circular>
         <p class="mt-2 text-body-2">Carregando promoções...</p>
       </div>
 
@@ -74,27 +78,26 @@
       </div>
 
       <!-- Promotions Grid -->
-      <v-row v-else-if="section.promotions && section.promotions.length > 0" class="ga-4">
-        <v-col 
-          v-for="promotion in section.promotions" 
+      <v-row
+        v-else-if="section.promotions && section.promotions.length > 0"
+        class="ga-4"
+      >
+        <v-col
+          v-for="promotion in section.promotions"
           :key="promotion.id"
-          cols="12" 
-          sm="6" 
-          md="4" 
+          cols="12"
+          sm="6"
+          md="4"
           lg="3"
         >
-          <v-card 
-            class="promotion-card h-100" 
-            elevation="2"
-            hover
-          >
+          <v-card class="promotion-card h-100" elevation="2" hover>
             <v-card-text class="pa-4">
               <!-- E-commerce Section -->
               <div class="ecommerce-section mb-4">
                 <div class="d-flex align-center mb-2">
                   <v-avatar size="32" class="me-3">
-                    <v-img 
-                      :src="promotion.ecommerce.logo_url" 
+                    <v-img
+                      :src="promotion.ecommerce.logo_url"
                       :alt="promotion.ecommerce.name"
                       cover
                     >
@@ -104,8 +107,12 @@
                     </v-img>
                   </v-avatar>
                   <div>
-                    <p class="text-caption text-medium-emphasis mb-0">E-commerce</p>
-                    <p class="text-body-2 font-weight-medium mb-0">{{ promotion.ecommerce.name }}</p>
+                    <p class="text-caption text-medium-emphasis mb-0">
+                      E-commerce
+                    </p>
+                    <p class="text-body-2 font-weight-medium mb-0">
+                      {{ promotion.ecommerce.name }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -114,8 +121,8 @@
               <div class="program-section mb-4">
                 <div class="d-flex align-center mb-2">
                   <v-avatar size="32" class="me-3">
-                    <v-img 
-                      :src="promotion.program.logo_url" 
+                    <v-img
+                      :src="promotion.program.logo_url"
                       :alt="promotion.program.name"
                       cover
                     >
@@ -125,8 +132,12 @@
                     </v-img>
                   </v-avatar>
                   <div>
-                    <p class="text-caption text-medium-emphasis mb-0">Programa</p>
-                    <p class="text-body-2 font-weight-medium mb-0">{{ promotion.program.name }}</p>
+                    <p class="text-caption text-medium-emphasis mb-0">
+                      Programa
+                    </p>
+                    <p class="text-body-2 font-weight-medium mb-0">
+                      {{ promotion.program.name }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -135,21 +146,23 @@
               <div class="current-value-section">
                 <v-divider class="mb-3"></v-divider>
                 <div class="text-center">
-                  <p class="text-caption text-medium-emphasis mb-1">Valor Atual da Promoção</p>
+                  <p class="text-caption text-medium-emphasis mb-1">
+                    Valor Atual da Promoção
+                  </p>
                   <p class="text-h5 font-weight-bold text-primary mb-0">
-                     {{ formatValue(promotion.current_value, promotion.program_type) }}
-                   </p>
+                    {{
+                      formatValue(
+                        promotion.current_value,
+                        promotion.program_type
+                      )
+                    }}
+                  </p>
                 </div>
               </div>
             </v-card-text>
 
             <v-card-actions class="pa-4 pt-0">
-              <v-btn 
-                variant="outlined" 
-                color="primary" 
-                block
-                size="small"
-              >
+              <v-btn variant="outlined" color="primary" block size="small">
                 Ver Detalhes
               </v-btn>
             </v-card-actions>
@@ -160,7 +173,11 @@
       <!-- Empty State -->
       <div v-else class="text-center py-8">
         <v-card class="pa-8" variant="outlined">
-          <v-icon icon="mdi-package-variant" size="64" class="text-medium-emphasis mb-4"></v-icon>
+          <v-icon
+            icon="mdi-package-variant"
+            size="64"
+            class="text-medium-emphasis mb-4"
+          ></v-icon>
           <h3 class="text-h6 mb-2">Nenhuma promoção encontrada</h3>
           <p class="text-body-2 text-medium-emphasis">
             Não há promoções disponíveis nesta categoria no momento.
@@ -318,7 +335,7 @@
   import { useDisplay } from 'vuetify'
 
   const router = useRouter()
-  
+
   // Types
   interface Program {
     id: number
@@ -326,15 +343,15 @@
     logo_url: string
     value_per_mile?: number
   }
-  
+
   interface Ecommerce {
     id: number
     name: string
     logo_url: string
   }
-  
+
   type ProgramType = 'miles' | 'points' | 'cashback'
-  
+
   interface Promotion {
     id: number
     current_value: number
@@ -342,13 +359,13 @@
     program: Program
     ecommerce: Ecommerce
   }
-  
+
   interface PromotionResponse {
     data: Promotion[]
     meta?: any
     links?: any
   }
-  
+
   interface PromotionSection {
     id: string
     name: string
@@ -401,7 +418,7 @@
       filterType: 'all',
       promotions: [],
       loading: true,
-      error: false
+      error: false,
     },
     {
       id: 'points-promotions',
@@ -412,7 +429,7 @@
       filterType: 'points',
       promotions: [],
       loading: true,
-      error: false
+      error: false,
     },
     {
       id: 'miles-promotions',
@@ -423,7 +440,7 @@
       filterType: 'miles',
       promotions: [],
       loading: true,
-      error: false
+      error: false,
     },
     {
       id: 'cashback-promotions',
@@ -434,8 +451,8 @@
       filterType: 'cashback',
       promotions: [],
       loading: true,
-      error: false
-    }
+      error: false,
+    },
   ])
 
   // Dialog and notification state
@@ -646,14 +663,14 @@
 
   const goToPromotionsPage = (filterType: string) => {
     const query: any = {}
-    
+
     if (filterType !== 'all') {
       query['program_types[]'] = filterType
     }
-    
+
     router.push({
       path: '/ecommerce-program',
-      query
+      query,
     })
   }
 
@@ -661,21 +678,24 @@
     try {
       section.loading = true
       section.error = false
-      
+
       const query: any = {
         limit: 10,
         order_by: 'current_value',
-        order: 'desc'
+        order: 'desc',
       }
-      
+
       if (section.filterType !== 'all') {
         query['program_types[]'] = section.filterType
       }
-      
-      const { data } = await useSanctumFetch<PromotionResponse>('/api/promotions', {
-        query
-      })
-      
+
+      const { data } = await useSanctumFetch<PromotionResponse>(
+        '/api/promotions',
+        {
+          query,
+        }
+      )
+
       section.promotions = data.value?.data || []
     } catch (error) {
       console.error(`Error fetching ${section.id}:`, error)
@@ -796,7 +816,7 @@
 
     // Initialize categories with products (legacy)
     initializeCategories()
-    
+
     // Load all promotion sections
     await loadAllPromotions()
   })
