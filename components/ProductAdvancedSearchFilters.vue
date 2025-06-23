@@ -1,10 +1,12 @@
 <template>
   <v-dialog
     v-model="dialog"
-    fullscreen
+    :fullscreen="$vuetify.display.mobile"
+    :max-width="$vuetify.display.mobile ? undefined : 600"
     hide-overlay
     transition="dialog-bottom-transition"
     class="filter-modal"
+    scrollable
   >
     <v-card class="filter-modal-card">
       <!-- Header -->
@@ -219,13 +221,6 @@
               class="text-body-2 font-weight-bold"
             >
               Aplicar Filtros
-              <v-badge
-                v-if="activeFiltersCount > 0"
-                :content="activeFiltersCount"
-                color="white"
-                text-color="primary"
-                class="ms-2"
-              />
             </v-btn>
           </v-col>
         </v-row>
@@ -235,7 +230,7 @@
 </template>
 
 <script setup>
-  import { computed, defineModel, ref } from 'vue'
+  import { computed, defineModel, ref, onMounted } from 'vue'
 
   const emit = defineEmits(['apply-filters'])
 
@@ -321,6 +316,7 @@
       count: '3.1k',
     },
   ])
+
   const fetchEcommerces = async () => {
     searchForm.value
 
@@ -442,9 +438,21 @@
 
 <style scoped>
   .filter-modal-card {
-    height: 100vh;
     display: flex;
     flex-direction: column;
+  }
+
+  /* Desktop styles - max 600px width */
+  .filter-modal-card {
+    max-height: 80vh;
+  }
+
+  /* Mobile styles - fullscreen */
+  @media (max-width: 959px) {
+    .filter-modal-card {
+      height: 100vh;
+      max-height: 100vh;
+    }
   }
 
   .filter-header {

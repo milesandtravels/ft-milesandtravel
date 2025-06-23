@@ -501,6 +501,16 @@
     middleware: ['sanctum:auth'],
   })
 
+  useSeoMeta({
+    title: 'Tenha acesso aos melhores programas e marketplaces - Miles&Travels',
+    ogTitle:
+      'Tenha acesso aos melhores programas e marketplaces - Miles&Travels',
+    description:
+      'Descubra os principais programas de pontos, milhas e cashback e compare vantagens entre os maiores marketplaces do Brasil.',
+    ogDescription:
+      'Descubra os principais programas de pontos, milhas e cashback e compare vantagens entre os maiores marketplaces do Brasil.',
+  })
+
   interface Program {
     id: number
     name: string

@@ -49,75 +49,6 @@
   // Computed properties
   const currentRoute = computed(() => route.path)
 
-  const pageTitle = computed(() => {
-    const routeTitles: Record<string, string> = {
-      '/': 'Dashboard',
-      '/dashboard': 'Dashboard',
-      '/travels': 'Minhas Viagens',
-      '/travels/new': 'Nova Viagem',
-      '/travels/history': 'Histórico de Viagens',
-      '/bookings': 'Reservas',
-      '/bookings/hotels': 'Reservas de Hotéis',
-      '/bookings/flights': 'Reservas de Voos',
-      '/expenses': 'Controle de Despesas',
-      '/documents': 'Documentos',
-      '/miles': 'Programa de Milhas',
-      '/settings': 'Configurações',
-      '/profile': 'Meu Perfil',
-      '/help': 'Ajuda e Suporte',
-    }
-    return routeTitles[currentRoute.value] || 'Página não encontrada'
-  })
-
-  const pageDescription = computed(() => {
-    const routeDescriptions: Record<string, string> = {
-      '/': 'Visão geral das suas viagens e atividades recentes',
-      '/dashboard': 'Visão geral das suas viagens e atividades recentes',
-      '/travels': 'Gerencie suas viagens passadas, atuais e futuras',
-      '/travels/new': 'Planeje uma nova viagem com facilidade',
-      '/travels/history': 'Histórico completo de todas as suas viagens',
-      '/bookings': 'Todas as suas reservas em um só lugar',
-      '/expenses': 'Controle seus gastos e orçamento de viagem',
-      '/documents': 'Gerencie passaportes, vistos e outros documentos',
-      '/miles': 'Acompanhe suas milhas e benefícios',
-      '/settings': 'Personalize sua experiência no sistema',
-      '/profile': 'Gerencie seus dados pessoais e preferências',
-      '/help': 'Encontre ajuda e suporte quando precisar',
-    }
-    return routeDescriptions[currentRoute.value] || 'Página não encontrada'
-  })
-
-  const breadcrumbs = computed(() => {
-    const parts = currentRoute.value.split('/').filter(Boolean)
-    const breadcrumbs = [{ title: 'Início', to: '/' }]
-
-    let path = ''
-    for (const part of parts) {
-      path += `/${part}`
-      const titles: Record<string, string> = {
-        '/dashboard': 'Dashboard',
-        '/travels': 'Viagens',
-        '/travels/new': 'Nova Viagem',
-        '/travels/history': 'Histórico',
-        '/bookings': 'Reservas',
-        '/bookings/hotels': 'Hotéis',
-        '/bookings/flights': 'Voos',
-        '/expenses': 'Despesas',
-        '/documents': 'Documentos',
-        '/miles': 'Milhas',
-        '/settings': 'Configurações',
-        '/profile': 'Perfil',
-        '/help': 'Ajuda',
-      }
-
-      if (titles[path]) {
-        breadcrumbs.push({ title: titles[path], to: path })
-      }
-    }
-
-    return breadcrumbs
-  })
-
   // Methods
   const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value
@@ -133,10 +64,6 @@
 
   const handleLogout = async () => {
     console.log('👋 Logout realizado')
-    // Implement logout logic
-    // Could clear user session, redirect to login, etc.
-    // await $fetch('/api/auth/logout', { method: 'POST' })
-    // await navigateTo('/login')
   }
 
   const handleAccountSettings = () => {
@@ -145,31 +72,11 @@
 
   const handleNotifications = () => {
     console.log('🔔 Abrindo notificações')
-    // Implement notifications logic
-    // Could open a modal, navigate to notifications page, etc.
   }
 
   const handleHelp = () => {
     handleNavigation('/help')
   }
-
-  // Watchers
-  watch(
-    () => route.path,
-    newRoute => {
-      console.log('📍 Rota alterada para:', newRoute)
-    }
-  )
-
-  useHead({
-    title: pageTitle,
-    meta: [
-      {
-        name: 'description',
-        content: pageDescription,
-      },
-    ],
-  })
 </script>
 
 <style scoped>
