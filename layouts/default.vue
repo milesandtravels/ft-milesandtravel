@@ -5,7 +5,6 @@
       :user="currentUser"
       @account-settings="handleAccountSettings"
       @help="handleHelp"
-      @logout="handleLogout"
       @notifications="handleNotifications"
       @toggle-drawer="toggleSidebar"
     />
@@ -44,10 +43,6 @@
     } catch (error) {
       console.error('Navigation error:', error)
     }
-  }
-
-  const handleLogout = async () => {
-    console.log('👋 Logout realizado')
   }
 
   const handleAccountSettings = () => {

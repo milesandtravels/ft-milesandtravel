@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useDisplay } from 'vuetify'
+  import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -182,7 +182,7 @@ import { useDisplay } from 'vuetify'
       title: 'Ajuda',
       subtitle: 'Suporte e FAQ',
       icon: 'mdi-help-circle',
-      route: '/help',
+      route: '/faq',
     },
   ])
 

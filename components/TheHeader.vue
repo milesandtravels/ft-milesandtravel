@@ -199,7 +199,7 @@
   const handleHelp = () => {
     showUserMenu.value = false
     showNotification('Abrindo central de ajuda...', 'info')
-    emit('help')
+    navigateTo('/faq')
   }
 
   const handleLogout = () => {
@@ -207,14 +207,16 @@
     showLogoutDialog.value = true
   }
 
+  const cookies = useCookie('sanctum.token.cookie')
+  const router = useRouter()
   const confirmLogout = () => {
     showLogoutDialog.value = false
     showNotification('Fazendo logout...', 'info')
 
-    // Simulate logout delay
-    setTimeout(() => {
-      emit('logout')
-    }, 1000)
+    localStorage.clear()
+    sessionStorage.clear()
+    cookies.value = ''
+    router.push('/login')
   }
 
   const showNotification = (message: string, color = 'success') => {

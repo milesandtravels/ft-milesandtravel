@@ -78,7 +78,9 @@
 <script setup lang="ts">
   import OffersList from '~/components/OffersList.vue'
   import type { OfferItem, ProgramType } from '~/interfaces/offers'
-
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
   // Estados reativo
   const loading = ref<boolean>(false)
   const route = useRoute()
