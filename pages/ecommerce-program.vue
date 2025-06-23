@@ -607,38 +607,48 @@ const initializeFiltersFromURL = () => {
   filters.value.orderBy = (route.query.order_by as string) || ''
   filters.value.order = (route.query.order as string) || ''
   
+  // Função auxiliar para extrair valores de parâmetros com notação de array
+  const extractArrayParams = (paramPrefix: string) => {
+    const values: string[] = []
+    Object.keys(route.query).forEach(key => {
+      if (key.startsWith(paramPrefix + '[') && key.endsWith(']')) {
+        const value = route.query[key]
+        if (value) {
+          values.push(Array.isArray(value) ? value[0] : value)
+        }
+      }
+    })
+    return values
+  }
+  
   // Inicializa tipos de promoção
-  const promotionTypes = route.query.program_types
-  if (promotionTypes) {
-    filters.value.promotionTypes = Array.isArray(promotionTypes) ? promotionTypes : [promotionTypes]
+  const promotionTypes = extractArrayParams('program_types')
+  if (promotionTypes.length > 0) {
+    filters.value.promotionTypes = promotionTypes
   }
   
   // Inicializa e-commerces
-  const ecommerces = route.query.ecommerces
-  if (ecommerces && ecommerceOptions.value.length > 0) {
-    const ecommerceIds = Array.isArray(ecommerces) ? ecommerces : [ecommerces]
+  const ecommerceIds = extractArrayParams('ecommerces')
+  if (ecommerceIds.length > 0 && ecommerceOptions.value.length > 0) {
     filters.value.ecommerces = ecommerceOptions.value.filter(e => ecommerceIds.includes(e.id.toString()))
   }
   
   // Inicializa programas de pontos
-  const pointsPrograms = route.query.points_programs
-  if (pointsPrograms && pointsProgramOptions.value.length > 0) {
-    const programIds = Array.isArray(pointsPrograms) ? pointsPrograms : [pointsPrograms]
-    filters.value.pointsPrograms = pointsProgramOptions.value.filter(p => programIds.includes(p.id.toString()))
+  const pointsProgramIds = extractArrayParams('points_programs')
+  if (pointsProgramIds.length > 0 && pointsProgramOptions.value.length > 0) {
+    filters.value.pointsPrograms = pointsProgramOptions.value.filter(p => pointsProgramIds.includes(p.id.toString()))
   }
   
   // Inicializa programas de milhas
-  const milesPrograms = route.query.miles_programs
-  if (milesPrograms && milesProgramOptions.value.length > 0) {
-    const programIds = Array.isArray(milesPrograms) ? milesPrograms : [milesPrograms]
-    filters.value.milesPrograms = milesProgramOptions.value.filter(p => programIds.includes(p.id.toString()))
+  const milesProgramIds = extractArrayParams('miles_programs')
+  if (milesProgramIds.length > 0 && milesProgramOptions.value.length > 0) {
+    filters.value.milesPrograms = milesProgramOptions.value.filter(p => milesProgramIds.includes(p.id.toString()))
   }
   
   // Inicializa programas de cashback
-  const cashbackPrograms = route.query.cashback_programs
-  if (cashbackPrograms && cashbackProgramOptions.value.length > 0) {
-    const programIds = Array.isArray(cashbackPrograms) ? cashbackPrograms : [cashbackPrograms]
-    filters.value.cashbackPrograms = cashbackProgramOptions.value.filter(p => programIds.includes(p.id.toString()))
+  const cashbackProgramIds = extractArrayParams('cashback_programs')
+  if (cashbackProgramIds.length > 0 && cashbackProgramOptions.value.length > 0) {
+    filters.value.cashbackPrograms = cashbackProgramOptions.value.filter(p => cashbackProgramIds.includes(p.id.toString()))
   }
 }
 
@@ -673,29 +683,39 @@ const updateURLWithFilters = () => {
     query.order = filters.value.order
   }
   
-  // Adiciona tipos de promoção
+  // Adiciona tipos de promoção com notação de array
   if (filters.value.promotionTypes.length > 0) {
-    query.program_types = filters.value.promotionTypes
+    filters.value.promotionTypes.forEach((type, index) => {
+      query[`program_types[${index}]`] = type
+    })
   }
   
-  // Adiciona e-commerces
+  // Adiciona e-commerces com notação de array
   if (filters.value.ecommerces.length > 0) {
-    query.ecommerces = filters.value.ecommerces.map(e => e.id)
+    filters.value.ecommerces.forEach((ecommerce, index) => {
+      query[`ecommerces[${index}]`] = ecommerce.id
+    })
   }
   
-  // Adiciona programas de pontos
+  // Adiciona programas de pontos com notação de array
   if (filters.value.pointsPrograms.length > 0) {
-    query.points_programs = filters.value.pointsPrograms.map(p => p.id)
+    filters.value.pointsPrograms.forEach((program, index) => {
+      query[`points_programs[${index}]`] = program.id
+    })
   }
   
-  // Adiciona programas de milhas
+  // Adiciona programas de milhas com notação de array
   if (filters.value.milesPrograms.length > 0) {
-    query.miles_programs = filters.value.milesPrograms.map(p => p.id)
+    filters.value.milesPrograms.forEach((program, index) => {
+      query[`miles_programs[${index}]`] = program.id
+    })
   }
   
-  // Adiciona programas de cashback
+  // Adiciona programas de cashback com notação de array
   if (filters.value.cashbackPrograms.length > 0) {
-    query.cashback_programs = filters.value.cashbackPrograms.map(p => p.id)
+    filters.value.cashbackPrograms.forEach((program, index) => {
+      query[`cashback_programs[${index}]`] = program.id
+    })
   }
   
   // Atualiza a URL sem recarregar a página

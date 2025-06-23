@@ -9,10 +9,10 @@
       >
         <div class="">
           <h1 class="text-h5 text-md-h4 font-weight-bold mb-1">
-            Produtos em Destaque
+            Promoções em Destaque
           </h1>
           <p class="text-caption text-md-body-2 text-medium-emphasis mb-3">
-            Descubra as melhores ofertas e produtos mais buscados
+            Descubra as melhores promoções e ofertas disponíveis
           </p>
         </div>
         <v-btn
@@ -28,11 +28,153 @@
       </div>
     </div>
 
-    <!-- Categories Sections -->
+    <!-- Promotion Sections -->
+    <div
+      v-for="(section, index) in promotionSections"
+      :key="section.id"
+      class="promotion-section mb-8 mb-md-10"
+    >
+      <!-- Section Header -->
+      <div class="d-flex align-center justify-space-between mb-3 mb-md-4">
+        <div class="d-flex align-center">
+          <v-avatar class="mr-3" :color="section.color" size="40">
+            <v-icon color="white" size="20">{{ section.icon }}</v-icon>
+          </v-avatar>
+          <div>
+            <h2 class="text-subtitle-1 text-md-h6 font-weight-bold">
+              {{ section.name }}
+            </h2>
+            <p class="text-caption text-medium-emphasis">
+              {{ section.description }}
+            </p>
+          </div>
+        </div>
+        <v-btn
+          variant="outlined"
+          color="primary"
+          size="small"
+          @click="goToPromotionsPage(section.filterType)"
+        >
+          Ver mais
+        </v-btn>
+      </div>
+
+      <!-- Loading State -->
+      <div v-if="section.loading" class="text-center py-8">
+        <v-progress-circular indeterminate color="primary" size="32"></v-progress-circular>
+        <p class="mt-2 text-body-2">Carregando promoções...</p>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="section.error" class="text-center py-8">
+        <v-alert type="error" variant="tonal" class="mb-4">
+          <v-alert-title>Erro ao carregar dados</v-alert-title>
+          Não foi possível carregar as promoções desta seção.
+        </v-alert>
+      </div>
+
+      <!-- Promotions Grid -->
+      <v-row v-else-if="section.promotions && section.promotions.length > 0" class="ga-4">
+        <v-col 
+          v-for="promotion in section.promotions" 
+          :key="promotion.id"
+          cols="12" 
+          sm="6" 
+          md="4" 
+          lg="3"
+        >
+          <v-card 
+            class="promotion-card h-100" 
+            elevation="2"
+            hover
+          >
+            <v-card-text class="pa-4">
+              <!-- E-commerce Section -->
+              <div class="ecommerce-section mb-4">
+                <div class="d-flex align-center mb-2">
+                  <v-avatar size="32" class="me-3">
+                    <v-img 
+                      :src="promotion.ecommerce.logo_url" 
+                      :alt="promotion.ecommerce.name"
+                      cover
+                    >
+                      <template v-slot:error>
+                        <v-icon icon="mdi-store" size="20"></v-icon>
+                      </template>
+                    </v-img>
+                  </v-avatar>
+                  <div>
+                    <p class="text-caption text-medium-emphasis mb-0">E-commerce</p>
+                    <p class="text-body-2 font-weight-medium mb-0">{{ promotion.ecommerce.name }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Program Section -->
+              <div class="program-section mb-4">
+                <div class="d-flex align-center mb-2">
+                  <v-avatar size="32" class="me-3">
+                    <v-img 
+                      :src="promotion.program.logo_url" 
+                      :alt="promotion.program.name"
+                      cover
+                    >
+                      <template v-slot:error>
+                        <v-icon icon="mdi-card-giftcard" size="20"></v-icon>
+                      </template>
+                    </v-img>
+                  </v-avatar>
+                  <div>
+                    <p class="text-caption text-medium-emphasis mb-0">Programa</p>
+                    <p class="text-body-2 font-weight-medium mb-0">{{ promotion.program.name }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Current Value Section -->
+              <div class="current-value-section">
+                <v-divider class="mb-3"></v-divider>
+                <div class="text-center">
+                  <p class="text-caption text-medium-emphasis mb-1">Valor Atual da Promoção</p>
+                  <p class="text-h5 font-weight-bold text-primary mb-0">
+                     {{ formatValue(promotion.current_value, promotion.program_type) }}
+                   </p>
+                </div>
+              </div>
+            </v-card-text>
+
+            <v-card-actions class="pa-4 pt-0">
+              <v-btn 
+                variant="outlined" 
+                color="primary" 
+                block
+                size="small"
+              >
+                Ver Detalhes
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <!-- Empty State -->
+      <div v-else class="text-center py-8">
+        <v-card class="pa-8" variant="outlined">
+          <v-icon icon="mdi-package-variant" size="64" class="text-medium-emphasis mb-4"></v-icon>
+          <h3 class="text-h6 mb-2">Nenhuma promoção encontrada</h3>
+          <p class="text-body-2 text-medium-emphasis">
+            Não há promoções disponíveis nesta categoria no momento.
+          </p>
+        </v-card>
+      </div>
+    </div>
+
+    <!-- Legacy Categories Sections (keeping for backward compatibility) -->
     <div
       v-for="(category, index) in categories"
       :key="category.id"
       class="category-section mb-8 mb-md-10"
+      v-show="false"
     >
       <!-- Category Header -->
       <div class="d-flex align-center justify-space-between mb-3 mb-md-4">
@@ -176,7 +318,49 @@
 import { useDisplay } from 'vuetify'
 
   const router = useRouter()
+  
   // Types
+  interface Program {
+    id: number
+    name: string
+    logo_url: string
+    value_per_mile?: number
+  }
+  
+  interface Ecommerce {
+    id: number
+    name: string
+    logo_url: string
+  }
+  
+  type ProgramType = 'miles' | 'points' | 'cashback'
+  
+  interface Promotion {
+    id: number
+    current_value: number
+    program_type: ProgramType
+    program: Program
+    ecommerce: Ecommerce
+  }
+  
+  interface PromotionResponse {
+    data: Promotion[]
+    meta?: any
+    links?: any
+  }
+  
+  interface PromotionSection {
+    id: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    filterType: string
+    promotions: Promotion[]
+    loading: boolean
+    error: boolean
+  }
+
   interface Product {
     id: number
     name: string
@@ -207,6 +391,52 @@ import { useDisplay } from 'vuetify'
 
   // State
   const categories = reactive<Category[]>([])
+  const promotionSections = reactive<PromotionSection[]>([
+    {
+      id: 'all-promotions',
+      name: 'Maiores promoções em Ecommerces',
+      description: 'As 10 maiores promoções disponíveis atualmente',
+      icon: 'mdi-store',
+      color: 'primary',
+      filterType: 'all',
+      promotions: [],
+      loading: true,
+      error: false
+    },
+    {
+      id: 'points-promotions',
+      name: 'Maiores promoções de Pontos',
+      description: 'As 10 maiores promoções de pontos disponíveis',
+      icon: 'mdi-star-circle',
+      color: 'orange',
+      filterType: 'points',
+      promotions: [],
+      loading: true,
+      error: false
+    },
+    {
+      id: 'miles-promotions',
+      name: 'Maiores promoções de Milhas',
+      description: 'As 10 maiores promoções de milhas disponíveis',
+      icon: 'mdi-airplane',
+      color: 'blue',
+      filterType: 'miles',
+      promotions: [],
+      loading: true,
+      error: false
+    },
+    {
+      id: 'cashback-promotions',
+      name: 'Maiores promoções de Cashback',
+      description: 'As 10 maiores promoções de cashback disponíveis',
+      icon: 'mdi-cash-multiple',
+      color: 'green',
+      filterType: 'cashback',
+      promotions: [],
+      loading: true,
+      error: false
+    }
+  ])
 
   // Dialog and notification state
   const showConfirmDialog = ref(false)
@@ -400,6 +630,68 @@ import { useDisplay } from 'vuetify'
     return offerType === 'cashback' ? 'green' : 'orange'
   }
 
+  // Promotion-related methods
+  const formatValue = (value: number, type: ProgramType): string => {
+    switch (type) {
+      case 'miles':
+        return `${value} milhas`
+      case 'points':
+        return `${value} pontos`
+      case 'cashback':
+        return `R$ ${value.toFixed(2)}`
+      default:
+        return value.toString()
+    }
+  }
+
+  const goToPromotionsPage = (filterType: string) => {
+    const query: any = {}
+    
+    if (filterType !== 'all') {
+      query['program_types[]'] = filterType
+    }
+    
+    router.push({
+      path: '/ecommerce-program',
+      query
+    })
+  }
+
+  const fetchPromotions = async (section: PromotionSection) => {
+    try {
+      section.loading = true
+      section.error = false
+      
+      const query: any = {
+        limit: 10,
+        order_by: 'current_value',
+        order: 'desc'
+      }
+      
+      if (section.filterType !== 'all') {
+        query['program_types[]'] = section.filterType
+      }
+      
+      const { data } = await useSanctumFetch<PromotionResponse>('/api/promotions', {
+        query
+      })
+      
+      section.promotions = data.value?.data || []
+    } catch (error) {
+      console.error(`Error fetching ${section.id}:`, error)
+      section.error = true
+      section.promotions = []
+    } finally {
+      section.loading = false
+    }
+  }
+
+  const loadAllPromotions = async () => {
+    await Promise.all(
+      promotionSections.map(section => fetchPromotions(section))
+    )
+  }
+
   const handleProductClick = (product: Product) => {
     showNotification(`Visualizando: ${product.name}`, 'info')
   }
@@ -499,11 +791,14 @@ import { useDisplay } from 'vuetify'
   }
 
   // Lifecycle
-  onMounted(() => {
-    console.log('🎯 Lista de Produtos por Categorias montada')
+  onMounted(async () => {
+    console.log('🎯 Lista de Promoções por Categorias montada')
 
-    // Initialize categories with products
+    // Initialize categories with products (legacy)
     initializeCategories()
+    
+    // Load all promotion sections
+    await loadAllPromotions()
   })
 
   onUnmounted(() => {
@@ -517,11 +812,24 @@ import { useDisplay } from 'vuetify'
 
 <style scoped>
   /* Custom styles */
-  .category-section {
+  .category-section,
+  .promotion-section {
     border-radius: 16px;
     background: rgba(var(--v-theme-surface), 0.7);
     padding: 16px;
     backdrop-filter: blur(10px);
+  }
+
+  .promotion-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .promotion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
   }
 
   .observer-target {
