@@ -5,7 +5,7 @@
       <v-container>
         <div class="text-center py-8 py-md-12">
           <h1 class="hero-title mb-4">Perguntas Frequentes</h1>
-          <p class="hero-subtitle">&nbsp;</p>
+          <p class="hero-subtitle">Tire suas dúvidas sobre o Miles&Travels</p>
         </div>
       </v-container>
     </section>
@@ -56,23 +56,64 @@
           <v-card class="contact-card" elevation="0">
             <v-card-text class="text-center pa-6 pa-md-8">
               <v-icon size="48" color="primary" class="mb-4">
-                mdi-help-circle-outline
+                mdi-email-outline
               </v-icon>
               <h3 class="contact-title mb-3">Não encontrou sua resposta?</h3>
-              <p class="contact-text text-grey-darken-1 mb-6">
-                Estamos trabalhando em um canal de suporte. Em breve você poderá
-                entrar em contato direto com nossa equipe.
+              <p class="contact-text text-grey-darken-1 mb-4">
+                Entre em contato conosco! Nossa equipe está pronta para ajudar você.
               </p>
-              <v-btn
-                color="primary"
-                variant="outlined"
-                size="large"
-                disabled
-                class="contact-btn"
-              >
-                <v-icon start>mdi-message-outline</v-icon>
-                Suporte em breve
-              </v-btn>
+              
+              <!-- Email Contact -->
+              <div class="email-contact-wrapper mb-6">
+                <p class="text-body-1 mb-3">
+                  Envie sua dúvida para nosso e-mail oficial:
+                </p>
+                <a 
+                  href="mailto:contato@milesandtravels.com?subject=Dúvida sobre Miles&Travels - FAQ&body=Olá,%0D%0A%0D%0ATenho uma dúvida sobre a plataforma Miles&Travels.%0D%0A%0D%0AMinha dúvida:%0D%0A%0D%0A%0D%0AObrigado!"
+                  class="email-link text-h6 font-weight-bold text-primary d-block text-decoration-none mb-4"
+                  @click.stop
+                >
+                  contato@milesandtravels.com
+                </a>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="contact-actions d-flex flex-column flex-sm-row gap-3 justify-center align-center">
+                <v-btn
+                  color="primary"
+                  variant="elevated"
+                  size="large"
+                  class="contact-btn"
+                  href="mailto:contato@milesandtravels.com?subject=Dúvida sobre Miles&Travels - FAQ&body=Olá,%0D%0A%0D%0ATenho uma dúvida sobre a plataforma Miles&Travels.%0D%0A%0D%0AMinha dúvida:%0D%0A%0D%0A%0D%0AObrigado!"
+                  @click.stop
+                >
+                  <v-icon start>mdi-email-send</v-icon>
+                  Enviar E-mail
+                </v-btn>
+                
+                <v-btn
+                  color="primary"
+                  variant="outlined"
+                  size="large"
+                  class="contact-btn"
+                  :to="'/terms-of-use'"
+                >
+                  <v-icon start>mdi-file-document-outline</v-icon>
+                  Ver Termos de Uso
+                </v-btn>
+              </div>
+
+              <!-- Additional Info -->
+              <div class="additional-info mt-6">
+                <v-divider class="mb-4"></v-divider>
+                <p class="text-body-2 text-grey-darken-1 mb-2">
+                  <v-icon size="16" class="mr-1">mdi-clock-outline</v-icon>
+                  Respondemos em até 24 horas úteis
+                </p>
+                <p class="text-subtitle-1 font-weight-bold text-primary">
+                  Miles&Travels – Tornando suas compras mais inteligentes.
+                </p>
+              </div>
             </v-card-text>
           </v-card>
         </div>
@@ -156,9 +197,9 @@
     },
     {
       icon: '📞',
-      question: 'Vocês oferecem suporte?',
-      answer: `Ainda não temos um canal de suporte ativo, mas estamos trabalhando nisso. Em breve, você poderá 
-             entrar em contato direto com a nossa equipe 💬`,
+      question: 'Como entro em contato com vocês?',
+      answer: `Você pode nos enviar um e-mail para <strong>contato@milesandtravels.com</strong>. Respondemos todas as mensagens 
+             em até 24 horas úteis. Nossa equipe está sempre pronta para ajudar! 💬`,
     },
   ]
 </script>
@@ -368,19 +409,83 @@
     font-size: 1.05rem;
     line-height: 1.6;
     max-width: 520px;
-    margin: 0 auto 2rem;
+    margin: 0 auto;
     color: #6b7280;
     font-weight: 400;
+  }
+
+  /* Email Contact Styles */
+  .email-contact-wrapper {
+    background: rgba(var(--v-theme-primary), 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 400px;
+  }
+
+  .email-link {
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: -8px -12px;
+    display: inline-block;
+  }
+
+  .email-link:hover {
+    background-color: rgba(25, 118, 210, 0.1);
+    text-decoration: underline !important;
+    transform: scale(1.02);
+  }
+
+  .email-link:active {
+    transform: scale(0.98);
+  }
+
+  .contact-actions {
+    gap: 12px;
   }
 
   .contact-btn {
     border-radius: 12px !important;
     text-transform: none;
     font-weight: 600;
-    padding: 0 2.5rem;
-    height: 52px;
+    padding: 0 2rem;
+    height: 48px;
     font-size: 1rem;
     letter-spacing: -0.005em;
+    min-width: 160px;
+  }
+
+  .additional-info {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 0 -16px;
+  }
+
+  @media (min-width: 768px) {
+    .additional-info {
+      margin: 0 -32px;
+      padding: 20px 32px;
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 599px) {
+    .contact-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .contact-btn {
+      width: 100%;
+      max-width: 280px;
+    }
+    
+    .email-contact-wrapper {
+      margin: 0;
+      padding: 16px;
+    }
   }
 
   /* Dark theme support */
@@ -401,6 +506,14 @@
     background: rgb(var(--v-theme-surface)) !important;
   }
 
+  :deep(.v-theme--dark) .email-contact-wrapper {
+    background: rgba(var(--v-theme-primary), 0.1);
+  }
+
+  :deep(.v-theme--dark) .additional-info {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
   /* Accessibility improvements */
   @media (prefers-reduced-motion: reduce) {
     .faq-panel {
@@ -408,6 +521,10 @@
     }
 
     .faq-panel:hover {
+      transform: none;
+    }
+
+    .email-link:hover {
       transform: none;
     }
 
@@ -425,5 +542,16 @@
     .faq-question {
       border-bottom: 2px solid rgb(var(--v-theme-primary));
     }
+
+    .email-contact-wrapper {
+      border: 2px solid rgb(var(--v-theme-primary));
+    }
+  }
+
+  /* Focus styles for keyboard navigation */
+  .email-link:focus-visible,
+  .contact-btn:focus-visible {
+    outline: 2px solid rgb(var(--v-theme-primary));
+    outline-offset: 2px;
   }
 </style>

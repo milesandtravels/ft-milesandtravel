@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -179,6 +179,12 @@
       route: '/profile',
     },
     {
+      title: 'Termos de Uso',
+      subtitle: 'Condições de utilização',
+      icon: 'mdi-file-document-outline',
+      route: '/terms-of-use',
+    },
+    {
       title: 'Ajuda',
       subtitle: 'Suporte e FAQ',
       icon: 'mdi-help-circle',
@@ -191,7 +197,10 @@
   const handleNavigation = (route: string) => {
     emit('navigate', route)
     navigateTo(route)
-    isOpen.value = false
+    // Fechar sidebar no mobile após navegação
+    if (isMobile.value) {
+      isOpen.value = false
+    }
   }
 
   const isActiveRoute = (route: string) => {
@@ -305,6 +314,12 @@
   }
   .menu-item:nth-child(5) {
     animation-delay: 0.25s;
+  }
+  .menu-item:nth-child(6) {
+    animation-delay: 0.3s;
+  }
+  .menu-item:nth-child(7) {
+    animation-delay: 0.35s;
   }
 
   @keyframes fadeInLeft {
