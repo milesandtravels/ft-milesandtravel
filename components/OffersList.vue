@@ -136,7 +136,8 @@
                   size="16"
                   class="me-1"
                 />
-                {{ offer.reward_value }}
+                {{ offer.reward_value }} de
+                {{ offer.program_type === 'points' ? 'pontos' : 'cashback' }}
               </v-chip>
             </div>
           </v-card-text>
