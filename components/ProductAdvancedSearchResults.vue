@@ -364,7 +364,7 @@
 
 <script lang="ts" setup>
   import { defineEmits, defineProps } from 'vue'
-  import type { Product } from '~/interfaces/products'
+import type { Product } from '~/interfaces/products'
 
   interface Props {
     results: Product[]
@@ -975,12 +975,10 @@
 
   @media (prefers-color-scheme: dark) {
     .product-checkbox-desktop {
-      background: rgba(18, 18, 18, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .mobile-selection-indicator {
-      background: rgba(18, 18, 18, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
