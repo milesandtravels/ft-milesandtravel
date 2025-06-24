@@ -12,7 +12,11 @@
 
               <!-- Form Section -->
               <v-card-text class="form-section">
-                <v-form ref="form" v-model="isFormValid" @submit.prevent="onSubmit">
+                <v-form
+                  ref="form"
+                  v-model="isFormValid"
+                  @submit.prevent="onSubmit"
+                >
                   <v-text-field
                     v-model="email"
                     class="input-field"
@@ -28,7 +32,9 @@
 
                   <v-text-field
                     v-model="password"
-                    :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    :append-inner-icon="
+                      showPassword ? 'mdi-eye' : 'mdi-eye-off'
+                    "
                     class="input-field"
                     label="Senha"
                     prepend-inner-icon="mdi-lock"
@@ -88,7 +94,7 @@
                 <!-- Support Section -->
                 <div class="support-section">
                   <div class="support-divider" />
-                  
+
                   <div class="support-content">
                     <v-chip
                       class="support-chip"
@@ -99,11 +105,11 @@
                     >
                       Primeira vez aqui?
                     </v-chip>
-                    
+
                     <p class="support-text">
                       Não sabe como funciona? Acesse nossa central de ajuda
                     </p>
-                    
+
                     <v-btn
                       class="support-btn"
                       color="primary"
@@ -134,388 +140,388 @@
     >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false">
-          Fechar
-        </v-btn>
+        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
       </template>
     </v-snackbar>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const { login } = useSanctumAuth()
+  import { ref } from 'vue'
+  const { login } = useSanctumAuth()
 
-// Form data
-const form = ref()
-const email = ref('')
-const password = ref('')
-const showPassword = ref(false)
-const isFormValid = ref(false)
+  // Form data
+  const form = ref()
+  const email = ref('')
+  const password = ref('')
+  const showPassword = ref(false)
+  const isFormValid = ref(false)
 
-// Loading states
-const isLoading = ref(false)
-const isGoogleLoading = ref(false)
+  // Loading states
+  const isLoading = ref(false)
+  const isGoogleLoading = ref(false)
 
-// Snackbar
-const showSnackbar = ref(false)
-const snackbarMessage = ref('')
-const snackbarColor = ref('error')
+  // Snackbar
+  const showSnackbar = ref(false)
+  const snackbarMessage = ref('')
+  const snackbarColor = ref('error')
 
-// Validation rules
-const emailRules = [
-  (v: string) => !!v || 'Email é obrigatório',
-  (v: string) => /.+@.+\..+/.test(v) || 'Email deve ser válido',
-]
+  // Validation rules
+  const emailRules = [
+    (v: string) => !!v || 'Email é obrigatório',
+    (v: string) => /.+@.+\..+/.test(v) || 'Email deve ser válido',
+  ]
 
-const passwordRules = [
-  (v: string) => !!v || 'Senha é obrigatória',
-  (v: string) => v.length >= 6 || 'Senha deve ter pelo menos 6 caracteres',
-]
+  const passwordRules = [
+    (v: string) => !!v || 'Senha é obrigatória',
+    (v: string) => v.length >= 6 || 'Senha deve ter pelo menos 6 caracteres',
+  ]
 
-// Show notification
-const showNotification = (message: string, color = 'error') => {
-  snackbarMessage.value = message
-  snackbarColor.value = color
-  showSnackbar.value = true
-}
-
-// Submit handler
-const onSubmit = async () => {
-  if (!isFormValid.value) return
-
-  isLoading.value = true
-  const deviceName = navigator.userAgent
-
-  try {
-    await login({
-      email: email.value,
-      password: password.value,
-      device_name: deviceName,
-    })
-
-    showNotification('Login realizado com sucesso!', 'success')
-
-    // Reset form
-    email.value = ''
-    password.value = ''
-    form.value?.reset()
-  } catch (error) {
-    console.error('Login error:', error)
-    showNotification('Falha ao realizar login. Verifique suas credenciais.')
-  } finally {
-    isLoading.value = false
+  // Show notification
+  const showNotification = (message: string, color = 'error') => {
+    snackbarMessage.value = message
+    snackbarColor.value = color
+    showSnackbar.value = true
   }
-}
 
-const router = useRouter()
+  // Submit handler
+  const onSubmit = async () => {
+    if (!isFormValid.value) return
 
-// Google login handler
-const loginWithGoogle = async () => {
-  isGoogleLoading.value = true
+    isLoading.value = true
+    const deviceName = navigator.userAgent
 
-  try {
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    showNotification('Login com Google realizado com sucesso!', 'success')
-  } catch (error) {
-    console.error('Google login error:', error)
-    showNotification('Falha ao conectar com Google.')
-  } finally {
-    isGoogleLoading.value = false
+    try {
+      await login({
+        email: email.value,
+        password: password.value,
+        device_name: deviceName,
+      })
+
+      showNotification('Login realizado com sucesso!', 'success')
+
+      // Reset form
+      email.value = ''
+      password.value = ''
+      form.value?.reset()
+    } catch (error) {
+      console.error('Login error:', error)
+      showNotification('Falha ao realizar login. Verifique suas credenciais.')
+    } finally {
+      isLoading.value = false
+    }
   }
-}
 
-// Forgot password handler
-const handleForgotPassword = () => {
-  router.push('/forgot-password')
-}
+  const router = useRouter()
 
-// Support handler
-const goToSupport = () => {
-  router.push('/faq')
-}
+  // Google login handler
+  const loginWithGoogle = async () => {
+    isGoogleLoading.value = true
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      showNotification('Login com Google realizado com sucesso!', 'success')
+    } catch (error) {
+      console.error('Google login error:', error)
+      showNotification('Falha ao conectar com Google.')
+    } finally {
+      isGoogleLoading.value = false
+    }
+  }
+
+  // Forgot password handler
+  const handleForgotPassword = () => {
+    router.push('/forgot-password')
+  }
+
+  // Support handler
+  const goToSupport = () => {
+    router.push('/faq')
+  }
 </script>
 
 <style scoped>
-.login-container {
-  min-height: 100vh;
-  min-height: 100dvh; /* For mobile browsers */
-  background: #fafbfc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.login-wrapper {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.login-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 25px rgba(0, 0, 0, 0.04);
-  border: 1px solid #f1f5f9;
-  overflow: hidden;
-}
-
-/* Logo Section */
-.logo-section {
-  padding: 2rem 1.5rem 1rem;
-  text-align: center;
-  background: white;
-}
-
-.logo {
-  width: 120px;
-  height: auto;
-  max-width: 100%;
-}
-
-/* Form Section */
-.form-section {
-  padding: 1rem 1.5rem 2rem !important;
-}
-
-.input-field {
-  margin-bottom: 1rem;
-}
-
-.input-field :deep(.v-field) {
-  border-radius: 12px;
-}
-
-.login-btn {
-  margin-bottom: 1.5rem;
-  border-radius: 12px !important;
-  font-weight: 600;
-  text-transform: none;
-  height: 48px;
-  font-size: 1rem;
-}
-
-/* Forgot Password */
-.forgot-password-section {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.forgot-btn {
-  text-transform: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-/* Divider */
-.divider-section {
-  display: flex;
-  align-items: center;
-  margin: 1.5rem 0;
-  gap: 1rem;
-}
-
-.divider-text {
-  font-size: 0.875rem;
-  color: #6b7280;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-/* Google Button */
-.google-btn {
-  margin-bottom: 1.5rem;
-  border-radius: 12px !important;
-  text-transform: none;
-  font-weight: 500;
-  height: 48px;
-  border: 1.5px solid #e5e7eb;
-}
-
-.google-btn:hover {
-  border-color: rgb(var(--v-theme-primary));
-  background: rgba(var(--v-theme-primary), 0.04);
-}
-
-/* Support Section */
-.support-section {
-  margin-top: 1.5rem;
-}
-
-.support-divider {
-  height: 1px;
-  background: #f1f5f9;
-  margin-bottom: 1.5rem;
-}
-
-.support-content {
-  text-align: center;
-}
-
-.support-chip {
-  margin-bottom: 0.75rem;
-  font-size: 0.75rem;
-}
-
-.support-text {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
-
-.support-btn {
-  border-radius: 12px !important;
-  text-transform: none;
-  font-weight: 500;
-  font-size: 0.875rem;
-  height: 40px;
-}
-
-/* Responsive Design */
-@media (max-width: 480px) {
   .login-container {
-    padding: 0.75rem;
+    min-height: 100vh;
+    min-height: 100dvh; /* For mobile browsers */
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
   }
-  
-  .logo {
-    width: 100px;
-  }
-  
-  .form-section {
-    padding: 0.75rem 1rem 1.5rem !important;
-  }
-  
-  .logo-section {
-    padding: 1.5rem 1rem 0.75rem;
-  }
-  
-  .support-text {
-    font-size: 0.8rem;
-  }
-}
 
-@media (max-width: 360px) {
-  .login-container {
-    padding: 0.5rem;
-  }
-  
-  .form-section {
-    padding: 0.5rem 0.75rem 1rem !important;
-  }
-  
-  .logo-section {
-    padding: 1rem 0.75rem 0.5rem;
-  }
-}
-
-/* Landscape mobile */
-@media (max-height: 600px) and (orientation: landscape) {
-  .login-container {
-    padding: 0.5rem;
-    align-items: flex-start;
-    padding-top: 1rem;
-  }
-  
-  .logo-section {
-    padding: 1rem 1.5rem 0.5rem;
-  }
-  
-  .logo {
-    width: 80px;
-  }
-}
-
-/* Tablet */
-@media (min-width: 768px) {
   .login-wrapper {
-    max-width: 420px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
   }
-  
-  .form-section {
-    padding: 1.5rem 2rem 2.5rem !important;
-  }
-  
-  .logo-section {
-    padding: 2.5rem 2rem 1.5rem;
-  }
-  
-  .logo {
-    width: 140px;
-  }
-}
 
-/* Desktop */
-@media (min-width: 1024px) {
-  .login-wrapper {
-    max-width: 440px;
-  }
-}
-
-/* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .logo {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
-}
-
-/* Dark theme */
-:deep(.v-theme--dark) {
-  .login-container {
-    background: #121212;
-  }
-  
   .login-card {
-    background: rgb(var(--v-theme-surface));
-    border-color: rgba(255, 255, 255, 0.12);
+    background: white;
+    border-radius: 16px;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.05),
+      0 10px 25px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
   }
-  
+
+  /* Logo Section */
   .logo-section {
-    background: rgb(var(--v-theme-surface));
+    padding: 2rem 1.5rem 1rem;
+    text-align: center;
+    background: white;
   }
-  
-  .support-divider {
-    background: rgba(255, 255, 255, 0.12);
+
+  .logo {
+    width: 120px;
+    height: auto;
+    max-width: 100%;
   }
-  
+
+  /* Form Section */
+  .form-section {
+    padding: 1rem 1.5rem 2rem !important;
+  }
+
+  .input-field {
+    margin-bottom: 1rem;
+  }
+
+  .input-field :deep(.v-field) {
+    border-radius: 12px;
+  }
+
+  .login-btn {
+    margin-bottom: 1.5rem;
+    border-radius: 12px !important;
+    font-weight: 600;
+    text-transform: none;
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  /* Forgot Password */
+  .forgot-password-section {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .forgot-btn {
+    text-transform: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  /* Divider */
+  .divider-section {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    gap: 1rem;
+  }
+
   .divider-text {
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+    white-space: nowrap;
   }
-  
+
+  /* Google Button */
+  .google-btn {
+    margin-bottom: 1.5rem;
+    border-radius: 12px !important;
+    text-transform: none;
+    font-weight: 500;
+    height: 48px;
+    border: 1.5px solid #e5e7eb;
+  }
+
+  .google-btn:hover {
+    border-color: rgb(var(--v-theme-primary));
+    background: rgba(var(--v-theme-primary), 0.04);
+  }
+
+  /* Support Section */
+  .support-section {
+    margin-top: 1.5rem;
+  }
+
+  .support-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin-bottom: 1.5rem;
+  }
+
+  .support-content {
+    text-align: center;
+  }
+
+  .support-chip {
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+  }
+
   .support-text {
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    line-height: 1.5;
   }
-  
-  .google-btn {
-    border-color: rgba(255, 255, 255, 0.23);
-  }
-}
 
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
+  .support-btn {
+    border-radius: 12px !important;
+    text-transform: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    height: 40px;
   }
-}
 
-/* High contrast mode */
-@media (prefers-contrast: high) {
-  .login-card {
-    border: 2px solid rgb(var(--v-theme-primary));
-  }
-  
-  .google-btn {
-    border-width: 2px;
-  }
-}
+  /* Responsive Design */
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 0.75rem;
+    }
 
-/* Print styles */
-@media print {
-  .floating-support {
-    display: none;
+    .logo {
+      width: 100px;
+    }
+
+    .form-section {
+      padding: 0.75rem 1rem 1.5rem !important;
+    }
+
+    .logo-section {
+      padding: 1.5rem 1rem 0.75rem;
+    }
+
+    .support-text {
+      font-size: 0.8rem;
+    }
   }
-}
+
+  @media (max-width: 360px) {
+    .login-container {
+      padding: 0.5rem;
+    }
+
+    .form-section {
+      padding: 0.5rem 0.75rem 1rem !important;
+    }
+
+    .logo-section {
+      padding: 1rem 0.75rem 0.5rem;
+    }
+  }
+
+  /* Landscape mobile */
+  @media (max-height: 600px) and (orientation: landscape) {
+    .login-container {
+      padding: 0.5rem;
+      align-items: flex-start;
+      padding-top: 1rem;
+    }
+
+    .logo-section {
+      padding: 1rem 1.5rem 0.5rem;
+    }
+
+    .logo {
+      width: 80px;
+    }
+  }
+
+  /* Tablet */
+  @media (min-width: 768px) {
+    .login-wrapper {
+      max-width: 420px;
+    }
+
+    .form-section {
+      padding: 1.5rem 2rem 2.5rem !important;
+    }
+
+    .logo-section {
+      padding: 2.5rem 2rem 1.5rem;
+    }
+
+    .logo {
+      width: 140px;
+    }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .login-wrapper {
+      max-width: 440px;
+    }
+  }
+
+  /* High DPI displays */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+  }
+
+  /* Dark theme */
+  :deep(.v-theme--dark) {
+    .login-container {
+      background: #121212;
+    }
+
+    .login-card {
+      background: rgb(var(--v-theme-surface));
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .logo-section {
+      background: rgb(var(--v-theme-surface));
+    }
+
+    .support-divider {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .divider-text {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .support-text {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .google-btn {
+      border-color: rgba(255, 255, 255, 0.23);
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .login-card {
+      border: 2px solid rgb(var(--v-theme-primary));
+    }
+
+    .google-btn {
+      border-width: 2px;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .floating-support {
+      display: none;
+    }
+  }
 </style>

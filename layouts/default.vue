@@ -16,6 +16,8 @@
       @navigate="handleNavigation"
     />
 
+    <TermsModal />
+
     <v-main class="main-content">
       <v-container class="responsive-main-container pa-6">
         <slot />
