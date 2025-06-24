@@ -231,12 +231,12 @@
 
   // Forgot password handler
   const handleForgotPassword = () => {
-    router.push('/forgot-password')
+    navigateTo('/forgot-password')
   }
 
   // Support handler
   const goToSupport = () => {
-    router.push('/faq')
+    navigateTo('/faq')
   }
 </script>
 

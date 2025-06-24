@@ -20,7 +20,7 @@
           :width="$vuetify.display.mobile ? '100%' : '250px'"
           color="primary"
           size="large"
-          @click="router.push('/search-products')"
+          @click="navigateTo('/search-products')"
         >
           <v-icon start>mdi-magnify</v-icon>
           Buscar produtos
@@ -325,7 +325,7 @@
       icon="mdi-magnify"
       location="bottom end"
       size="large"
-      @click="router.push('/search-products')"
+      @click="navigateTo('/search-products')"
     />
   </v-container>
 </template>
@@ -668,7 +668,7 @@
       query['program_types[]'] = filterType
     }
 
-    router.push({
+    navigateTo({
       path: '/ecommerce-program',
       query,
     })

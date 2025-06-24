@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <!-- App Header -->
     <TheHeader
       :user="currentUser"
       @account-settings="handleAccountSettings"
@@ -9,7 +8,6 @@
       @toggle-drawer="toggleSidebar"
     />
 
-    <!-- App Sidebar -->
     <TheSidebar
       v-model="sidebarOpen"
       :current-route="currentRoute"

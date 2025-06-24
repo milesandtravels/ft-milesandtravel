@@ -216,7 +216,7 @@
     localStorage.clear()
     sessionStorage.clear()
     cookies.value = ''
-    router.push('/login')
+    navigateTo('/login')
   }
 
   const showNotification = (message: string, color = 'success') => {

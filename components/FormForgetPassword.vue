@@ -178,7 +178,7 @@
   const goBackToLogin = () => {
     console.log('Going back to login')
     // Em uma aplicação real:
-    router.push('/login')
+    navigateTo('/login')
 
     // Para demo, reseta o formulário
     if (isSuccess.value) {

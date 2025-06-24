@@ -190,7 +190,7 @@
   // Methods
   const handleNavigation = (route: string) => {
     emit('navigate', route)
-    router.push(route)
+    navigateTo(route)
     isOpen.value = false
   }
 

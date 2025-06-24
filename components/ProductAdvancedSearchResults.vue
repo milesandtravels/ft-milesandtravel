@@ -450,8 +450,8 @@
 
   // Função para explorar vantagens dos produtos selecionados
 
-  const updateSearch = async () => {
-    useSanctumFetch<any>(
+  const updateSearch = () => {
+    return useSanctumFetch<any>(
       `/api/searches/${props.searchId}/update-and-sync-products`,
       {
         method: 'PUT',

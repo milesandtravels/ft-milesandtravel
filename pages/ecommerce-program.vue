@@ -757,7 +757,7 @@
     }
 
     // Atualiza a URL sem recarregar a página
-    router.push({ query })
+    navigateTo({ query })
   }
 
   // Função para construir query params para requisições

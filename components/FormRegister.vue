@@ -274,7 +274,7 @@
 
   // Navigation functions
   const goToLogin = () => {
-    router.push('/login')
+    navigateTo('/login')
   }
 
   const resetForm = () => {

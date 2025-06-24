@@ -63,7 +63,7 @@
               size="small"
               variant="flat"
             >
-              -{{ offer.discount_percentage }}
+              {{ offer.discount_percentage }}%
             </v-chip>
           </div>
 
