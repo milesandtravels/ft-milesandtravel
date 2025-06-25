@@ -86,7 +86,7 @@
                   prepend-icon="mdi-google"
                   size="large"
                   variant="outlined"
-                  @click="loginWithGoogle"
+                  @click="loginWith('google')"
                 >
                   Continuar com Google
                 </v-btn>
@@ -215,16 +215,25 @@
   const router = useRouter()
 
   // Google login handler
-  const loginWithGoogle = async () => {
+  const loginWith = async (provider: string) => {
     isGoogleLoading.value = true
-
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      showNotification('Login com Google realizado com sucesso!', 'success')
+      const config = useRuntimeConfig()
+      // Busca a URL de redirecionamento do Google
+      const { data } = await useSanctumFetch<{ redirect_url: string }>(
+        `/api/auth/${provider}/redirect`,
+        {
+          query: {
+            device_name: navigator.userAgent,
+            app_callback_redirect_url: config.public.appCallbackRedirectUrl,
+          },
+        }
+      )
+      if (data.value?.redirect_url) {
+        window.location.href = data.value.redirect_url
+      }
     } catch (error) {
-      console.error('Google login error:', error)
-      showNotification('Falha ao conectar com Google.')
-    } finally {
+      showNotification(`Falha ao conectar com ${provider}.`)
       isGoogleLoading.value = false
     }
   }

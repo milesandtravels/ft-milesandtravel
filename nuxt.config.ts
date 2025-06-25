@@ -4,6 +4,11 @@ export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },
   modules: ['vuetify-nuxt-module', 'nuxt-auth-sanctum'],
+  runtimeConfig: {
+    public: {
+      appCallbackRedirectUrl: process.env.APP_CALLBACK_REDIRECT_URL,
+    },
+  },
   vuetify: {
     vuetifyOptions: {
       theme: {

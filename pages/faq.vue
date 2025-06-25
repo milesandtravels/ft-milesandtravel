@@ -60,15 +60,16 @@
               </v-icon>
               <h3 class="contact-title mb-3">Não encontrou sua resposta?</h3>
               <p class="contact-text text-grey-darken-1 mb-4">
-                Entre em contato conosco! Nossa equipe está pronta para ajudar você.
+                Entre em contato conosco! Nossa equipe está pronta para ajudar
+                você.
               </p>
-              
+
               <!-- Email Contact -->
               <div class="email-contact-wrapper mb-6">
                 <p class="text-body-1 mb-3">
                   Envie sua dúvida para nosso e-mail oficial:
                 </p>
-                <a 
+                <a
                   href="mailto:contato@milesandtravels.com?subject=Dúvida sobre Miles&Travels - FAQ&body=Olá,%0D%0A%0D%0ATenho uma dúvida sobre a plataforma Miles&Travels.%0D%0A%0D%0AMinha dúvida:%0D%0A%0D%0A%0D%0AObrigado!"
                   class="email-link text-h6 font-weight-bold text-primary d-block text-decoration-none mb-4"
                   @click.stop
@@ -78,7 +79,9 @@
               </div>
 
               <!-- Action Buttons -->
-              <div class="contact-actions d-flex flex-column flex-sm-row gap-3 justify-center align-center">
+              <div
+                class="contact-actions d-flex flex-column flex-sm-row gap-3 justify-center align-center"
+              >
                 <v-btn
                   color="primary"
                   variant="elevated"
@@ -90,7 +93,7 @@
                   <v-icon start>mdi-email-send</v-icon>
                   Enviar E-mail
                 </v-btn>
-                
+
                 <v-btn
                   color="primary"
                   variant="outlined"
@@ -476,12 +479,12 @@
       flex-direction: column;
       width: 100%;
     }
-    
+
     .contact-btn {
       width: 100%;
       max-width: 280px;
     }
-    
+
     .email-contact-wrapper {
       margin: 0;
       padding: 16px;

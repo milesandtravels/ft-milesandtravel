@@ -39,6 +39,23 @@
             </v-chip>
           </v-tab>
 
+          <!-- Categorias -->
+          <v-tab
+            v-for="category in filters.categories"
+            :key="'category-' + category"
+            class="text-none"
+            @click="removeCategoryFilter(category)"
+          >
+            <v-chip
+              closable
+              @click:close="removeCategoryFilter(category)"
+              color="primary"
+              variant="flat"
+            >
+              {{ category }}
+            </v-chip>
+          </v-tab>
+
           <!-- E-commerces -->
           <v-tab
             v-for="ecommerce in filters.ecommerces"
@@ -356,31 +373,21 @@
       <v-card-text class="pa-6">
         <v-container>
           <v-row>
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="filters.orderBy"
-                :items="orderByOptions"
-                label="Ordenar por"
+            <v-col cols="6">
+              <v-autocomplete
+                v-model="filters.categories"
+                :items="categoryOptions"
+                label="Categoria de ecommerce"
                 variant="outlined"
                 item-title="label"
                 item-value="value"
+                multiple
+                chips
                 clearable
-              ></v-select>
+                closable-chips
+              ></v-autocomplete>
             </v-col>
-
-            <v-col cols="12" md="6">
-              <v-select
-                v-model="filters.order"
-                :items="orderOptions"
-                label="Ordem"
-                variant="outlined"
-                item-title="label"
-                item-value="value"
-                clearable
-              ></v-select>
-            </v-col>
-
-            <v-col cols="12">
+            <v-col cols="6">
               <v-autocomplete
                 v-model="filters.promotionTypes"
                 :items="promotionTypeOptions"
@@ -491,6 +498,31 @@
               </v-autocomplete>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="filters.orderBy"
+                :items="orderByOptions"
+                label="Ordenar por"
+                variant="outlined"
+                item-title="label"
+                item-value="value"
+                clearable
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-select
+                v-model="filters.order"
+                :items="orderOptions"
+                label="Ordem"
+                variant="outlined"
+                item-title="label"
+                item-value="value"
+                clearable
+              ></v-select>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
     </v-card>
@@ -521,6 +553,7 @@
     id: number
     name: string
     logo_url: string
+    category: string
   }
 
   type ProgramType = 'miles' | 'points' | 'cashback'
@@ -580,6 +613,7 @@
     pointsPrograms: [] as any[],
     milesPrograms: [] as any[],
     cashbackPrograms: [] as any[],
+    categories: [] as string[],
   })
 
   // Opções para os selects
@@ -605,6 +639,7 @@
   const pointsProgramOptions = ref<any[]>([])
   const milesProgramOptions = ref<any[]>([])
   const cashbackProgramOptions = ref<any[]>([])
+  const categoryOptions = ref<string[]>([])
 
   // Fetch das opções para os novos filtros em paralelo
   const [
@@ -612,17 +647,20 @@
     { data: pointsProgramsData },
     { data: milesProgramsData },
     { data: cashbackProgramsData },
+    { data: categoriesData },
   ] = await Promise.all([
     useSanctumFetch<any[]>('/api/ecommerces'),
     useSanctumFetch<any[]>('/api/points-programs'),
     useSanctumFetch<any[]>('/api/miles-programs'),
     useSanctumFetch<any[]>('/api/cashback-programs'),
+    useSanctumFetch<string[]>('/api/categories'),
   ])
 
   ecommerceOptions.value = ecommercesData.value?.data || []
   pointsProgramOptions.value = pointsProgramsData.value?.data || []
   milesProgramOptions.value = milesProgramsData.value?.data || []
   cashbackProgramOptions.value = cashbackProgramsData.value?.data || []
+  categoryOptions.value = categoriesData.value || []
 
   // Função para inicializar filtros a partir da URL
   const initializeFiltersFromURL = () => {
@@ -648,6 +686,12 @@
     const promotionTypes = extractArrayParams('program_types')
     if (promotionTypes.length > 0) {
       filters.value.promotionTypes = promotionTypes
+    }
+
+    // Inicializa categorias
+    const categories = extractArrayParams('categories')
+    if (categories.length > 0) {
+      filters.value.categories = categories
     }
 
     // Inicializa e-commerces
@@ -728,6 +772,13 @@
       })
     }
 
+    // Adiciona categorias com notação de array
+    if (filters.value.categories.length > 0) {
+      filters.value.categories.forEach((category, index) => {
+        query[`categories[${index}]`] = category
+      })
+    }
+
     // Adiciona e-commerces com notação de array
     if (filters.value.ecommerces.length > 0) {
       filters.value.ecommerces.forEach((ecommerce, index) => {
@@ -784,6 +835,7 @@
     // Verifica se há filtros que precisam de query string manual
     const hasArrayFilters =
       filters.value.promotionTypes.length > 0 ||
+      filters.value.categories.length > 0 ||
       filters.value.ecommerces.length > 0 ||
       filters.value.pointsPrograms.length > 0 ||
       filters.value.milesPrograms.length > 0 ||
@@ -805,6 +857,11 @@
       // Adiciona program_types[] para cada valor
       filters.value.promotionTypes.forEach(type => {
         queryParts.push(`program_types[]=${encodeURIComponent(type)}`)
+      })
+
+      // Adiciona categories[] para cada valor
+      filters.value.categories.forEach(category => {
+        queryParts.push(`categories[]=${encodeURIComponent(category)}`)
       })
 
       // Adiciona ecommerces[] para cada valor
@@ -925,6 +982,7 @@
   const hasActiveFilters = computed(() => {
     return (
       filters.value.promotionTypes.length > 0 ||
+      filters.value.categories.length > 0 ||
       filters.value.ecommerces.length > 0 ||
       filters.value.pointsPrograms.length > 0 ||
       filters.value.milesPrograms.length > 0 ||
@@ -937,11 +995,23 @@
     const option = promotionTypeOptions.find(opt => opt.value === type)
     return option ? option.label : type
   }
+  // Função para obter o label da categoria
+  const getCategoryLabel = (category: string): string => {
+    const option = categoryOptions.find(opt => opt === category)
+    return option ? option : category
+  }
 
   // Funções para remover filtros individuais
   const removePromotionTypeFilter = async (type: string) => {
     filters.value.promotionTypes = filters.value.promotionTypes.filter(
       t => t !== type
+    )
+    await applyFilters()
+  }
+  // Função para remover filtros de categoria
+  const removeCategoryFilter = async (category: string) => {
+    filters.value.categories = filters.value.categories.filter(
+      c => c !== category
     )
     await applyFilters()
   }
@@ -986,9 +1056,9 @@
   const formatValue = (value: number, type: ProgramType): string => {
     switch (type) {
       case 'miles':
-        return `${value} pontos/R$`
-      case 'points':
         return `${value} milhas/R$`
+      case 'points':
+        return `${value} pontos/R$`
       case 'cashback':
         return `${value}% cashback`
       default:
@@ -1000,6 +1070,7 @@
     filters.value = {
       orderBy: '',
       order: '',
+      categories: [],
       promotionTypes: [],
       ecommerces: [],
       pointsPrograms: [],
