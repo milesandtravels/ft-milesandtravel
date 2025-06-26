@@ -97,7 +97,7 @@
     </div>
 
     <!-- Promotions Grid -->
-    <v-row v-else-if="promotions?.length" class="ga-4">
+    <v-row v-else-if="promotions?.length">
       <v-col
         v-for="promotion in promotions"
         :key="promotion.id"

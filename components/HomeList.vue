@@ -250,7 +250,7 @@ import { useDisplay } from 'vuetify'
     }
 
     navigateTo({
-      path: '/ecommerce-program',
+      path: '/promotions',
       query,
     })
   }
