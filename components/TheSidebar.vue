@@ -192,8 +192,6 @@ import { useDisplay } from 'vuetify'
     },
   ])
 
-  const router = useRouter()
-  // Methods
   const handleNavigation = (route: string) => {
     emit('navigate', route)
     navigateTo(route)
