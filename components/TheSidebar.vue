@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useDisplay } from 'vuetify'
+  import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -195,7 +195,7 @@ import { useDisplay } from 'vuetify'
   const handleNavigation = (route: string) => {
     emit('navigate', route)
     navigateTo(route)
-      isOpen.value = false
+    isOpen.value = false
   }
 
   const isActiveRoute = (route: string) => {

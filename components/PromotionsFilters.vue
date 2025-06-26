@@ -4,7 +4,9 @@
     @update:model-value="$emit('update:modelValue', $event)"
     :fullscreen="$vuetify.display.mobile"
     :max-width="$vuetify.display.mobile ? undefined : '700px'"
-    :transition="$vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'"
+    :transition="
+      $vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'
+    "
     scrollable
   >
     <v-card>
@@ -156,7 +158,7 @@
 
           <!-- Ordenação - menor prioridade -->
           <v-divider class="my-3"></v-divider>
-          
+
           <v-row dense>
             <v-col cols="12" md="6">
               <v-select
@@ -190,18 +192,10 @@
       <!-- Botões de ação fixos na parte inferior -->
       <v-card-actions class="px-6 py-3">
         <v-spacer></v-spacer>
-        <v-btn 
-          variant="text" 
-          @click="$emit('clear')"
-          class="mr-3"
-        >
+        <v-btn variant="text" @click="$emit('clear')" class="mr-3">
           Limpar
         </v-btn>
-        <v-btn 
-          color="primary"
-          variant="flat"
-          @click="$emit('apply')"
-        >
+        <v-btn color="primary" variant="flat" @click="$emit('apply')">
           Aplicar
         </v-btn>
       </v-card-actions>

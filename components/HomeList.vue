@@ -78,7 +78,7 @@
       </div>
 
       <!-- Promotions Grid -->
-      <v-row v-else-if="section.promotions && section.promotions.length > 0" >
+      <v-row v-else-if="section.promotions && section.promotions.length > 0">
         <v-col
           v-for="promotion in section.promotions"
           :key="promotion.id"
@@ -88,8 +88,8 @@
           lg="4"
           xl="4"
         >
-          <PromotionsCard 
-            :promotion="promotion" 
+          <PromotionsCard
+            :promotion="promotion"
             @view-details="handleViewDetails"
           />
         </v-col>
@@ -138,7 +138,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-import { useDisplay } from 'vuetify'
+  import { useDisplay } from 'vuetify'
 
   // Types
   interface Program {
@@ -259,9 +259,12 @@ import { useDisplay } from 'vuetify'
     console.log('Visualizar detalhes da promoção:', promotion.id)
     // Navegar para página de detalhes ou abrir modal
     // navigateTo(`/promocoes/${promotion.id}`)
-    
+
     // Ou mostrar notificação temporária
-    showNotification(`Visualizando promoção: ${promotion.ecommerce.name} + ${promotion.program.name}`, 'info')
+    showNotification(
+      `Visualizando promoção: ${promotion.ecommerce.name} + ${promotion.program.name}`,
+      'info'
+    )
   }
 
   const fetchPromotions = async (section: PromotionSection) => {

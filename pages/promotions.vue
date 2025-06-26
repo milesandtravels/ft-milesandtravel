@@ -85,7 +85,11 @@
 
     <!-- Content States -->
     <div v-if="pending" class="text-center py-8">
-      <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        size="64"
+      ></v-progress-circular>
       <p class="mt-4 text-h6">Carregando promoções...</p>
     </div>
 
@@ -107,8 +111,8 @@
         lg="4"
         xl="4"
       >
-        <PromotionsCard 
-          :promotion="promotion" 
+        <PromotionsCard
+          :promotion="promotion"
           @view-details="handleViewDetails"
         />
       </v-col>
@@ -117,7 +121,11 @@
     <!-- Empty State -->
     <div v-else class="text-center py-8">
       <v-card class="pa-8" variant="outlined">
-        <v-icon icon="mdi-package-variant" size="64" class="text-medium-emphasis mb-4"></v-icon>
+        <v-icon
+          icon="mdi-package-variant"
+          size="64"
+          class="text-medium-emphasis mb-4"
+        ></v-icon>
         <h3 class="text-h6 mb-2">Nenhuma promoção encontrada</h3>
         <p class="text-body-2 text-medium-emphasis">
           Não há promoções disponíveis no momento.
@@ -153,9 +161,12 @@
 
   useSeoMeta({
     title: 'Tenha acesso aos melhores programas e marketplaces - Miles&Travels',
-    ogTitle: 'Tenha acesso aos melhores programas e marketplaces - Miles&Travels',
-    description: 'Descubra os principais programas de pontos, milhas e cashback e compare vantagens entre os maiores marketplaces do Brasil.',
-    ogDescription: 'Descubra os principais programas de pontos, milhas e cashback e compare vantagens entre os maiores marketplaces do Brasil.',
+    ogTitle:
+      'Tenha acesso aos melhores programas e marketplaces - Miles&Travels',
+    description:
+      'Descubra os principais programas de pontos, milhas e cashback e compare vantagens entre os maiores marketplaces do Brasil.',
+    ogDescription:
+      'Descubra os principais programas de pontos, milhas e cashback e compare vantagens entre os maiores marketplaces do Brasil.',
   })
 
   // Types
@@ -202,28 +213,28 @@
         { label: 'Milhas', value: 'miles' },
         { label: 'Pontos', value: 'points' },
         { label: 'Cashback', value: 'cashback' },
-      ]
+      ],
     },
     orderBy: {
       options: [
         { label: 'Valor', value: 'current_value' },
         { label: 'Nome do programa', value: 'program_name' },
         { label: 'Nome do ecommerce', value: 'ecommerce_name' },
-      ]
+      ],
     },
     order: {
       options: [
         { label: 'Do menor para o maior', value: 'asc' },
         { label: 'Do maior para o menor', value: 'desc' },
-      ]
-    }
+      ],
+    },
   }
 
   const PROGRAM_ICONS = {
     ecommerces: 'mdi-store',
     pointsPrograms: 'mdi-card-giftcard',
     milesPrograms: 'mdi-airplane',
-    cashbackPrograms: 'mdi-cash'
+    cashbackPrograms: 'mdi-cash',
   }
 
   // Composables
@@ -265,38 +276,44 @@
     milesPrograms: milesProgramsData.value?.data || [],
     cashbackPrograms: cashbackProgramsData.value?.data || [],
     categories: categoriesData.value || [],
-    ...FILTER_CONFIGS
+    ...FILTER_CONFIGS,
   }))
 
   // Computed
-  const hasActiveFilters = computed(() => 
-    Object.entries(filters.value).some(([key, value]) => 
-      key !== 'orderBy' && key !== 'order' && 
-      (Array.isArray(value) ? value.length > 0 : value)
+  const hasActiveFilters = computed(() =>
+    Object.entries(filters.value).some(
+      ([key, value]) =>
+        key !== 'orderBy' &&
+        key !== 'order' &&
+        (Array.isArray(value) ? value.length > 0 : value)
     )
   )
 
   const allSelectedPrograms = computed(() => {
     const programs = []
-    
+
     // Add ecommerces
-    programs.push(...filters.value.ecommerces.map(item => ({
-      ...item,
-      type: 'ecommerce',
-      filterKey: 'ecommerces',
-      icon: PROGRAM_ICONS.ecommerces
-    })))
-    
+    programs.push(
+      ...filters.value.ecommerces.map(item => ({
+        ...item,
+        type: 'ecommerce',
+        filterKey: 'ecommerces',
+        icon: PROGRAM_ICONS.ecommerces,
+      }))
+    )
+
     // Add all program types
     ;['pointsPrograms', 'milesPrograms', 'cashbackPrograms'].forEach(key => {
-      programs.push(...filters.value[key].map(item => ({
-        ...item,
-        type: key.replace('Programs', ''),
-        filterKey: key,
-        icon: PROGRAM_ICONS[key]
-      })))
+      programs.push(
+        ...filters.value[key].map(item => ({
+          ...item,
+          type: key.replace('Programs', ''),
+          filterKey: key,
+          icon: PROGRAM_ICONS[key],
+        }))
+      )
     })
-    
+
     return programs
   })
 
@@ -332,17 +349,33 @@
 
     // Initialize programs
     const programMappings = [
-      { filterKey: 'ecommerces', paramKey: 'ecommerces', optionsKey: 'ecommerces' },
-      { filterKey: 'pointsPrograms', paramKey: 'points_programs', optionsKey: 'pointsPrograms' },
-      { filterKey: 'milesPrograms', paramKey: 'miles_programs', optionsKey: 'milesPrograms' },
-      { filterKey: 'cashbackPrograms', paramKey: 'cashback_programs', optionsKey: 'cashbackPrograms' }
+      {
+        filterKey: 'ecommerces',
+        paramKey: 'ecommerces',
+        optionsKey: 'ecommerces',
+      },
+      {
+        filterKey: 'pointsPrograms',
+        paramKey: 'points_programs',
+        optionsKey: 'pointsPrograms',
+      },
+      {
+        filterKey: 'milesPrograms',
+        paramKey: 'miles_programs',
+        optionsKey: 'milesPrograms',
+      },
+      {
+        filterKey: 'cashbackPrograms',
+        paramKey: 'cashback_programs',
+        optionsKey: 'cashbackPrograms',
+      },
     ]
 
     programMappings.forEach(({ filterKey, paramKey, optionsKey }) => {
       const ids = extractArrayParams(paramKey)
       if (ids.length > 0 && filterOptions.value[optionsKey]?.length > 0) {
-        filters.value[filterKey] = filterOptions.value[optionsKey].filter(item =>
-          ids.includes(item.id.toString())
+        filters.value[filterKey] = filterOptions.value[optionsKey].filter(
+          item => ids.includes(item.id.toString())
         )
       }
     })
@@ -354,7 +387,9 @@
     // Add basic params
     Object.entries(queryParams).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+        queryParts.push(
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+        )
       }
     })
 
@@ -365,7 +400,7 @@
       { filter: filters.value.ecommerces, param: 'ecommerces[]' },
       { filter: filters.value.pointsPrograms, param: 'points_programs[]' },
       { filter: filters.value.milesPrograms, param: 'miles_programs[]' },
-      { filter: filters.value.cashbackPrograms, param: 'cashback_programs[]' }
+      { filter: filters.value.cashbackPrograms, param: 'cashback_programs[]' },
     ]
 
     arrayFilters.forEach(({ filter, param }) => {
@@ -380,15 +415,17 @@
 
   // Data fetching
   const fetchPromotions = async (queryParams: any) => {
-    const hasArrayFilters = Object.values(filters.value).some(val => 
-      Array.isArray(val) && val.length > 0
+    const hasArrayFilters = Object.values(filters.value).some(
+      val => Array.isArray(val) && val.length > 0
     )
 
     if (hasArrayFilters) {
       const queryString = buildQueryString(queryParams)
       return await useSanctumFetch<Response>(`/api/promotions?${queryString}`)
     } else {
-      return await useSanctumFetch<Response>('/api/promotions', { query: queryParams })
+      return await useSanctumFetch<Response>('/api/promotions', {
+        query: queryParams,
+      })
     }
   }
 
@@ -415,7 +452,9 @@
 
   // Methods
   const getPromotionTypeLabel = (type: string): string => {
-    const option = FILTER_CONFIGS.promotionTypes.options.find(opt => opt.value === type)
+    const option = FILTER_CONFIGS.promotionTypes.options.find(
+      opt => opt.value === type
+    )
     return option?.label || type
   }
 
