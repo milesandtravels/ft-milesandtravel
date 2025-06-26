@@ -26,7 +26,9 @@
 
 <script setup lang="ts">
   const route = useRoute()
+  const { value } = useSanctumUser()
 
+  console.log('value', value)
   const sidebarOpen = ref(false)
 
   // Computed properties

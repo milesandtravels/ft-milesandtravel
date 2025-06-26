@@ -102,8 +102,9 @@
                       variant="outlined"
                       size="small"
                       prepend-icon="mdi-information"
+                      @click="navigateTo('register')"
                     >
-                      Primeira vez aqui?
+                      Cadastre-se aqui
                     </v-chip>
 
                     <p class="support-text">

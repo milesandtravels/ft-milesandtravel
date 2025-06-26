@@ -22,7 +22,6 @@
   })
 
   const route = useRoute()
-  const { login } = useSanctumAuth()
 
   onMounted(async () => {
     try {

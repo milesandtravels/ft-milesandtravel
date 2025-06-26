@@ -9,7 +9,7 @@
     useCookie('sanctum.token.cookie').value = token as string
     const { refreshIdentity } = useSanctumAuth()
     await refreshIdentity()
-    await navigateTo('/')
+    window.location.href = window.location.origin + '/'
   } else {
     navigateTo('/login')
   }
