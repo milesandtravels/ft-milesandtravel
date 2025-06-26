@@ -155,7 +155,7 @@
       title: 'Promoções',
       subtitle: 'Vantagens em lojas online',
       icon: 'mdi-store',
-      route: '/ecommerce-program',
+      route: '/promotions',
     },
     {
       title: 'Pesquisas Realizadas',
