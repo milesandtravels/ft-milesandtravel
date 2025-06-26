@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -197,10 +197,7 @@
   const handleNavigation = (route: string) => {
     emit('navigate', route)
     navigateTo(route)
-    // Fechar sidebar no mobile após navegação
-    if (isMobile.value) {
       isOpen.value = false
-    }
   }
 
   const isActiveRoute = (route: string) => {
