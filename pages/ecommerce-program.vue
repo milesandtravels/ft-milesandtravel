@@ -184,90 +184,108 @@
       </v-col>
     </v-row>
 
-    <v-row v-else-if="promotions && promotions.length > 0" class="ga-4">
+    <v-row v-else-if="promotions && promotions.length > 0" >
       <v-col
         v-for="promotion in promotions"
         :key="promotion.id"
         cols="12"
         sm="6"
-        md="4"
-        lg="3"
+        md="6"
+        lg="4"
+        xl="4"
       >
         <v-card class="promotion-card h-100" elevation="2" hover>
-          <v-card-text class="pa-4">
-            <!-- E-commerce Section -->
-            <div class="ecommerce-section mb-4">
-              <div class="d-flex align-center mb-2">
-                <v-avatar size="32" class="me-3">
-                  <v-img
-                    :src="promotion.ecommerce.logo_url"
-                    :alt="promotion.ecommerce.name"
-                    cover
-                  >
-                    <template v-slot:error>
-                      <v-icon icon="mdi-store" size="20"></v-icon>
-                    </template>
-                  </v-img>
-                </v-avatar>
-                <div>
-                  <p class="text-caption text-medium-emphasis mb-0">
-                    E-commerce
-                  </p>
-                  <p class="text-body-2 font-weight-medium mb-0">
-                    {{ promotion.ecommerce.name }}
-                  </p>
+          <v-card-text class="pa-6">
+            <!-- Header com logos lado a lado -->
+            <div class="logos-header mb-4">
+              <div class="d-flex justify-space-between align-center">
+                <!-- E-commerce Logo & Info -->
+                <div class="logo-section">
+                  <div class="logo-container mb-2">
+                    <v-img
+                      :src="promotion.ecommerce.logo_url"
+                      :alt="promotion.ecommerce.name"
+                      contain
+                      height="80"
+                      max-width="120"
+                      class="ecommerce-logo"
+                    >
+                      <template v-slot:error>
+                        <div class="logo-error">
+                          <v-icon icon="mdi-store" size="30" color="grey"></v-icon>
+                        </div>
+                      </template>
+                    </v-img>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-caption text-medium-emphasis mb-0">E-commerce</p>
+                    <p class="text-body-2 font-weight-medium">
+                      {{ promotion.ecommerce.name }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- VS Divider -->
+                <div class="vs-divider mx-3">
+                  <v-icon icon="mdi-plus" size="16" color="grey-lighten-1"></v-icon>
+                </div>
+
+                <!-- Program Logo & Info -->
+                <div class="logo-section">
+                  <div class="logo-container mb-2">
+                    <v-img
+                      :src="promotion.program.logo_url"
+                      :alt="promotion.program.name"
+                      contain
+                      height="80"
+                      max-width="120"
+                      class="program-logo"
+                    >
+                      <template v-slot:error>
+                        <div class="logo-error">
+                          <v-icon icon="mdi-card-giftcard" size="30" color="grey"></v-icon>
+                        </div>
+                      </template>
+                    </v-img>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-caption text-medium-emphasis mb-0">Programa</p>
+                    <p class="text-body-2 font-weight-medium">
+                      {{ promotion.program.name }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Program Section -->
-            <div class="program-section mb-4">
-              <div class="d-flex align-center mb-2">
-                <v-avatar size="32" class="me-3">
-                  <v-img
-                    :src="promotion.program.logo_url"
-                    :alt="promotion.program.name"
-                    cover
-                  >
-                    <template v-slot:error>
-                      <v-icon icon="mdi-card-giftcard" size="20"></v-icon>
-                    </template>
-                  </v-img>
-                </v-avatar>
-                <div>
-                  <p class="text-caption text-medium-emphasis mb-0">Programa</p>
-                  <p class="text-body-2 font-weight-medium mb-0">
-                    {{ promotion.program.name }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Current Value Section -->
-            <div class="current-value-section">
-              <v-divider class="mb-3"></v-divider>
+            <!-- Promotion Value -->
+            <div class="promotion-value">
+              <v-divider class="mb-4"></v-divider>
               <div class="text-center">
-                <p class="text-caption text-medium-emphasis mb-1">
+                <p class="text-caption text-medium-emphasis mb-2">
                   Valor Atual da Promoção
                 </p>
-                <p class="text-h5 font-weight-bold text-primary mb-0">
-                  {{
-                    formatValue(promotion.current_value, promotion.program_type)
-                  }}
+                <p class="text-h4 font-weight-bold text-primary mb-0">
+                  {{ formatValue(promotion.current_value, promotion.program_type) }}
                 </p>
               </div>
             </div>
           </v-card-text>
 
-          <v-card-actions class="pa-4 pt-0">
-            <v-btn variant="outlined" color="primary" block size="small">
+          <v-card-actions class="pa-6 pt-0">
+            <v-btn
+              variant="outlined"
+              color="primary"
+              block
+              size="large"
+            >
+              <v-icon start>mdi-eye</v-icon>
               Ver Detalhes
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
-
     <v-row v-else justify="center">
       <v-col cols="12" class="text-center">
         <v-card class="pa-8" variant="outlined">
@@ -1109,35 +1127,147 @@
 </script>
 
 <style scoped>
+  /* Redesigned Promotion Cards */
   .promotion-card {
-    transition:
-      transform 0.2s ease-in-out,
-      box-shadow 0.2s ease-in-out;
-    border-radius: 12px;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.08);
   }
 
   .promotion-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12) !important;
   }
 
-  .ecommerce-section,
-  .program-section {
-    border-radius: 8px;
-    background-color: rgba(var(--v-theme-surface-variant), 0.1);
+  /* Logos Header Layout */
+  .logos-header {
+    background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+    padding: 20px;
+    border-radius: 16px;
+    margin: -24px -24px 20px -24px;
+  }
+
+  .logo-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 45%;
+  }
+
+  .logo-container {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 12px;
     padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
   }
 
-  .current-value-section {
-    background: linear-gradient(
-      135deg,
-      rgba(var(--v-theme-primary), 0.05) 0%,
-      rgba(var(--v-theme-secondary), 0.05) 100%
-    );
-    border-radius: 8px;
-    padding: 16px;
+  .ecommerce-logo,
+  .program-logo {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
   }
 
+  .logo-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  .vs-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+
+  /* Promotion Value Section */
+  .promotion-value {
+    background: rgba(25, 118, 210, 0.02);
+    padding: 20px;
+    border-radius: 16px;
+    margin: 0 -24px -24px -24px;
+  }
+
+  /* Text Adjustments */
+  .logo-section .text-body-2 {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Dark Theme */
+  .v-theme--dark .logos-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  }
+
+  .v-theme--dark .logo-container {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .v-theme--dark .vs-divider {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .v-theme--dark .promotion-value {
+    background: rgba(25, 118, 210, 0.08);
+  }
+
+  .v-theme--dark .logo-error {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 600px) {
+    .logos-header {
+      padding: 16px;
+      margin: -24px -24px 16px -24px;
+    }
+    
+    .logo-container {
+      height: 60px;
+      padding: 8px;
+    }
+    
+    .vs-divider {
+      width: 32px;
+      height: 32px;
+      margin: 0 12px;
+    }
+    
+    .logo-section .text-body-2 {
+      font-size: 0.8rem;
+    }
+
+    .promotion-value {
+      padding: 16px;
+      margin: 0 -24px -24px -24px;
+    }
+  }
+
+  /* Height and flex utilities */
   .h-100 {
     height: 100%;
     display: flex;
@@ -1146,5 +1276,15 @@
 
   .h-100 .v-card-text {
     flex-grow: 1;
+  }
+
+  /* Remove old styles */
+  .ecommerce-section,
+  .program-section {
+    display: none;
+  }
+
+  .current-value-section {
+    display: none;
   }
 </style>

@@ -78,9 +78,7 @@
       </div>
 
       <!-- Promotions Grid -->
-      <v-row
-        v-else-if="section.promotions && section.promotions.length > 0"
-      >
+      <v-row v-else-if="section.promotions && section.promotions.length > 0">
         <v-col
           v-for="promotion in section.promotions"
           :key="promotion.id"
@@ -108,13 +106,19 @@
                       >
                         <template v-slot:error>
                           <div class="logo-error">
-                            <v-icon icon="mdi-store" size="30" color="grey"></v-icon>
+                            <v-icon
+                              icon="mdi-store"
+                              size="30"
+                              color="grey"
+                            ></v-icon>
                           </div>
                         </template>
                       </v-img>
                     </div>
                     <div class="text-center">
-                      <p class="text-caption text-medium-emphasis mb-0">E-commerce</p>
+                      <p class="text-caption text-medium-emphasis mb-0">
+                        E-commerce
+                      </p>
                       <p class="text-body-2 font-weight-medium">
                         {{ promotion.ecommerce.name }}
                       </p>
@@ -123,7 +127,11 @@
 
                   <!-- VS Divider -->
                   <div class="vs-divider mx-3">
-                    <v-icon icon="mdi-plus" size="16" color="grey-lighten-1"></v-icon>
+                    <v-icon
+                      icon="mdi-plus"
+                      size="16"
+                      color="grey-lighten-1"
+                    ></v-icon>
                   </div>
 
                   <!-- Program Logo & Info -->
@@ -139,13 +147,19 @@
                       >
                         <template v-slot:error>
                           <div class="logo-error">
-                            <v-icon icon="mdi-card-giftcard" size="30" color="grey"></v-icon>
+                            <v-icon
+                              icon="mdi-card-giftcard"
+                              size="30"
+                              color="grey"
+                            ></v-icon>
                           </div>
                         </template>
                       </v-img>
                     </div>
                     <div class="text-center">
-                      <p class="text-caption text-medium-emphasis mb-0">Programa</p>
+                      <p class="text-caption text-medium-emphasis mb-0">
+                        Programa
+                      </p>
                       <p class="text-body-2 font-weight-medium">
                         {{ promotion.program.name }}
                       </p>
@@ -162,7 +176,12 @@
                     Valor Atual da Promoção
                   </p>
                   <p class="text-h4 font-weight-bold text-primary mb-0">
-                    {{ formatValue(promotion.current_value, promotion.program_type) }}
+                    {{
+                      formatValue(
+                        promotion.current_value,
+                        promotion.program_type
+                      )
+                    }}
                   </p>
                 </div>
               </div>
@@ -325,7 +344,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-import { useDisplay } from 'vuetify'
+  import { useDisplay } from 'vuetify'
 
   // Types
   interface Program {
@@ -699,7 +718,11 @@ import { useDisplay } from 'vuetify'
 
   /* Dark Theme */
   .v-theme--dark .logos-header {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
   }
 
   .v-theme--dark .logo-container {
@@ -725,17 +748,17 @@ import { useDisplay } from 'vuetify'
       padding: 12px;
       margin: -16px -16px 12px -16px;
     }
-    
+
     .logo-container {
       height: 50px;
     }
-    
+
     .vs-divider {
       width: 24px;
       height: 24px;
       margin: 0 8px;
     }
-    
+
     .logo-section .text-body-2 {
       font-size: 0.75rem;
     }
