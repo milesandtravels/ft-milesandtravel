@@ -1,5 +1,5 @@
 <template>
-  <ProductList />
+  <HomeList />
 </template>
 
 <script lang="ts" setup>

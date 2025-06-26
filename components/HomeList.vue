@@ -4,7 +4,7 @@
     <div class="mb-4">
       <div
         :class="{
-          'd-flex justify-space-between align-center': !$vuetify.display.mobile,
+          'd-flex justify-space-between align-center': !mobile,
         }"
       >
         <div class="">
@@ -16,8 +16,8 @@
           </p>
         </div>
         <v-btn
-          :block="$vuetify.display.mobile"
-          :width="$vuetify.display.mobile ? '100%' : '250px'"
+          :block="mobile"
+          :width="mobile ? '100%' : '250px'"
           color="primary"
           size="large"
           @click="navigateTo('/search-products')"
@@ -80,89 +80,103 @@
       <!-- Promotions Grid -->
       <v-row
         v-else-if="section.promotions && section.promotions.length > 0"
-        class="ga-4"
       >
         <v-col
           v-for="promotion in section.promotions"
           :key="promotion.id"
           cols="12"
           sm="6"
-          md="4"
-          lg="3"
+          md="6"
+          lg="4"
+          xl="4"
         >
           <v-card class="promotion-card h-100" elevation="2" hover>
-            <v-card-text class="pa-4">
-              <!-- E-commerce Section -->
-              <div class="ecommerce-section mb-4">
-                <div class="d-flex align-center mb-2">
-                  <v-avatar size="32" class="me-3">
-                    <v-img
-                      :src="promotion.ecommerce.logo_url"
-                      :alt="promotion.ecommerce.name"
-                      cover
-                    >
-                      <template v-slot:error>
-                        <v-icon icon="mdi-store" size="20"></v-icon>
-                      </template>
-                    </v-img>
-                  </v-avatar>
-                  <div>
-                    <p class="text-caption text-medium-emphasis mb-0">
-                      E-commerce
-                    </p>
-                    <p class="text-body-2 font-weight-medium mb-0">
-                      {{ promotion.ecommerce.name }}
-                    </p>
+            <v-card-text class="pa-6">
+              <!-- Header com logos lado a lado -->
+              <div class="logos-header mb-4">
+                <div class="d-flex justify-space-between align-center">
+                  <!-- E-commerce Logo & Info -->
+                  <div class="logo-section">
+                    <div class="logo-container mb-2">
+                      <v-img
+                        :src="promotion.ecommerce.logo_url"
+                        :alt="promotion.ecommerce.name"
+                        contain
+                        height="80"
+                        max-width="120"
+                        class="ecommerce-logo"
+                      >
+                        <template v-slot:error>
+                          <div class="logo-error">
+                            <v-icon icon="mdi-store" size="30" color="grey"></v-icon>
+                          </div>
+                        </template>
+                      </v-img>
+                    </div>
+                    <div class="text-center">
+                      <p class="text-caption text-medium-emphasis mb-0">E-commerce</p>
+                      <p class="text-body-2 font-weight-medium">
+                        {{ promotion.ecommerce.name }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- VS Divider -->
+                  <div class="vs-divider mx-3">
+                    <v-icon icon="mdi-plus" size="16" color="grey-lighten-1"></v-icon>
+                  </div>
+
+                  <!-- Program Logo & Info -->
+                  <div class="logo-section">
+                    <div class="logo-container mb-2">
+                      <v-img
+                        :src="promotion.program.logo_url"
+                        :alt="promotion.program.name"
+                        contain
+                        height="80"
+                        max-width="120"
+                        class="program-logo"
+                      >
+                        <template v-slot:error>
+                          <div class="logo-error">
+                            <v-icon icon="mdi-card-giftcard" size="30" color="grey"></v-icon>
+                          </div>
+                        </template>
+                      </v-img>
+                    </div>
+                    <div class="text-center">
+                      <p class="text-caption text-medium-emphasis mb-0">Programa</p>
+                      <p class="text-body-2 font-weight-medium">
+                        {{ promotion.program.name }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Program Section -->
-              <div class="program-section mb-4">
-                <div class="d-flex align-center mb-2">
-                  <v-avatar size="32" class="me-3">
-                    <v-img
-                      :src="promotion.program.logo_url"
-                      :alt="promotion.program.name"
-                      cover
-                    >
-                      <template v-slot:error>
-                        <v-icon icon="mdi-card-giftcard" size="20"></v-icon>
-                      </template>
-                    </v-img>
-                  </v-avatar>
-                  <div>
-                    <p class="text-caption text-medium-emphasis mb-0">
-                      Programa
-                    </p>
-                    <p class="text-body-2 font-weight-medium mb-0">
-                      {{ promotion.program.name }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Current Value Section -->
-              <div class="current-value-section">
-                <v-divider class="mb-3"></v-divider>
+              <!-- Promotion Value -->
+              <div class="promotion-value">
+                <v-divider class="mb-4"></v-divider>
                 <div class="text-center">
-                  <p class="text-caption text-medium-emphasis mb-1">
+                  <p class="text-caption text-medium-emphasis mb-2">
                     Valor Atual da Promoção
                   </p>
-                  <p class="text-h5 font-weight-bold text-primary mb-0">
-                    {{
-                      formatValue(
-                        promotion.current_value,
-                        promotion.program_type
-                      )
-                    }}
+                  <p class="text-h4 font-weight-bold text-primary mb-0">
+                    {{ formatValue(promotion.current_value, promotion.program_type) }}
                   </p>
                 </div>
               </div>
             </v-card-text>
 
-            <v-card-actions class="pa-4 pt-0">
-              <v-btn variant="outlined" color="primary" block size="small">
+            <v-card-actions class="pa-6 pt-0">
+              <v-btn
+                variant="outlined"
+                color="primary"
+                block
+                size="large"
+                @click="goToPromotionsPage(section.filterType)"
+              >
+                <v-icon start>mdi-eye</v-icon>
                 Ver Detalhes
               </v-btn>
             </v-card-actions>
@@ -284,27 +298,6 @@
       </v-row>
     </div>
 
-    <!-- Confirm Remove Dialog -->
-    <v-dialog v-model="showConfirmDialog" max-width="400">
-      <v-card>
-        <v-card-title class="text-h6"> Confirmar Remoção </v-card-title>
-        <v-card-text>
-          Tem certeza que deseja remover o produto
-          <strong>"{{ productToRemove?.name }}"</strong>? Esta ação não pode ser
-          desfeita.
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="grey" variant="text" @click="cancelRemove">
-            Cancelar
-          </v-btn>
-          <v-btn color="red" variant="text" @click="confirmRemove">
-            Remover
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <!-- Success/Error Notifications -->
     <v-snackbar
       v-model="showSnackbar"
@@ -331,10 +324,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
-
-  const router = useRouter()
+  import { computed, onMounted, reactive, ref } from 'vue'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface Program {
@@ -461,160 +452,10 @@
   const showSnackbar = ref(false)
   const snackbarMessage = ref('')
   const snackbarColor = ref('success')
-  const showSearchDialog = ref(false)
-  const searchQuery = ref('')
 
   // Computed
   const isMobile = computed(() => mobile.value)
   const maxItemsPerCategory = computed(() => (isMobile.value ? 5 : 10))
-
-  // Mock data
-  const mockCategories: Omit<
-    Category,
-    'products' | 'displayCount' | 'hasMore'
-  >[] = [
-    {
-      id: 'most-searched',
-      name: 'Mais Pesquisados',
-      description: 'Os produtos mais buscados pelos usuários',
-      icon: 'mdi-trending-up',
-      color: 'primary',
-    },
-    {
-      id: 'my-history',
-      name: 'Meu Histórico',
-      description: 'Produtos que você já pesquisou',
-      icon: 'mdi-history',
-      color: 'secondary',
-    },
-    {
-      id: 'best-cashback',
-      name: 'Melhores Ofertas de Cashback',
-      description: 'Produtos com maior percentual de cashback',
-      icon: 'mdi-cash-multiple',
-      color: 'green',
-    },
-    {
-      id: 'best-points',
-      name: 'Melhores Ofertas de Pontos',
-      description: 'Produtos que geram mais pontos',
-      icon: 'mdi-star-circle',
-      color: 'orange',
-    },
-    {
-      id: 'recommended',
-      name: 'Recomendados para Você',
-      description: 'Selecionados especialmente para seu perfil',
-      icon: 'mdi-heart',
-      color: 'pink',
-    },
-  ]
-
-  const generateProducts = (
-    categoryId: string,
-    count: number,
-    startId = 1
-  ): Product[] => {
-    const baseProducts = [
-      {
-        name: 'iPhone 15 Pro Max 256GB',
-        price: 8999.99,
-        originalPrice: 9499.99,
-        image:
-          'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400&h=400&fit=crop',
-        marketplace: 'Amazon' as const,
-      },
-      {
-        name: 'Samsung Galaxy S24 Ultra',
-        price: 7499.9,
-        originalPrice: 7999.9,
-        image:
-          'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop',
-        marketplace: 'Mercado Livre' as const,
-      },
-      {
-        name: 'MacBook Air M2 13"',
-        price: 12_999,
-        image:
-          'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop',
-        marketplace: 'Shopee' as const,
-      },
-      {
-        name: 'AirPods Pro 2ª Geração',
-        price: 1899.99,
-        originalPrice: 2199.99,
-        image:
-          'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=400&fit=crop',
-        marketplace: 'AliExpress' as const,
-      },
-      {
-        name: 'iPad Pro 11" M2',
-        price: 6499,
-        image:
-          'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop',
-        marketplace: 'Americanas' as const,
-      },
-      {
-        name: 'PlayStation 5 Console',
-        price: 4299,
-        originalPrice: 4699,
-        image:
-          'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&h=400&fit=crop',
-        marketplace: 'Amazon' as const,
-      },
-      {
-        name: 'Nintendo Switch OLED',
-        price: 2199,
-        image:
-          'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop',
-        marketplace: 'Shopee' as const,
-      },
-      {
-        name: 'Samsung 65" QLED 4K',
-        price: 3899,
-        originalPrice: 4299,
-        image:
-          'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop',
-        marketplace: 'Mercado Livre' as const,
-      },
-      {
-        name: 'Dell XPS 13 Intel i7',
-        price: 8999,
-        image:
-          'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop',
-        marketplace: 'Americanas' as const,
-      },
-      {
-        name: 'Apple Watch Series 9',
-        price: 3299,
-        originalPrice: 3599,
-        image:
-          'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=400&h=400&fit=crop',
-        marketplace: 'AliExpress' as const,
-      },
-    ]
-
-    return Array.from({ length: count }, (_, i) => {
-      const baseProduct = baseProducts[i % baseProducts.length]
-      const product: Product = {
-        ...baseProduct,
-        id: startId + i,
-        name: `${baseProduct.name} - ${categoryId} #${startId + i}`,
-        price: baseProduct.price + (Math.random() * 200 - 100), // Vary price
-      }
-
-      // Add offer types based on category
-      if (categoryId === 'best-cashback') {
-        product.offerType = 'cashback'
-        product.offerValue = `${(Math.random() * 15 + 5).toFixed(1)}% CB`
-      } else if (categoryId === 'best-points') {
-        product.offerType = 'points'
-        product.offerValue = `${(Math.random() * 5 + 2).toFixed(1)}x pts`
-      }
-
-      return product
-    })
-  }
 
   // Methods
   const getDisplayProducts = (categoryId: string) => {
@@ -680,7 +521,7 @@
       section.error = false
 
       const query: any = {
-        limit: 10,
+        limit: isMobile.value ? 3 : 10,
         order_by: 'current_value',
         order: 'desc',
       }
@@ -714,16 +555,6 @@
 
   const handleProductClick = (product: Product) => {
     showNotification(`Visualizando: ${product.name}`, 'info')
-  }
-
-  const handleEdit = (product: Product) => {
-    console.log('Edit product:', product)
-    showNotification(`Editando produto: ${product.name}`, 'info')
-  }
-
-  const handleRemove = (product: Product) => {
-    productToRemove.value = product
-    showConfirmDialog.value = true
   }
 
   const confirmRemove = () => {
@@ -760,74 +591,10 @@
     showSnackbar.value = true
   }
 
-  const openSearchDialog = () => {
-    showSearchDialog.value = true
-  }
-
-  const closeSearchDialog = () => {
-    showSearchDialog.value = false
-    searchQuery.value = ''
-  }
-
-  const performSearch = () => {
-    if (!searchQuery.value.trim()) return
-
-    const query = searchQuery.value.toLowerCase()
-    let foundProducts: Product[] = []
-
-    // Search across all categories
-    for (const category of categories) {
-      const matchingProducts = category.products.filter(product =>
-        product.name.toLowerCase().includes(query)
-      )
-      foundProducts.push(...matchingProducts)
-    }
-
-    closeSearchDialog()
-
-    if (foundProducts.length > 0) {
-      showNotification(
-        `Encontrados ${foundProducts.length} produto(s) com "${searchQuery.value}"`,
-        'success'
-      )
-    } else {
-      showNotification(
-        `Nenhum produto encontrado com "${searchQuery.value}"`,
-        'info'
-      )
-    }
-  }
-
-  // Initialize categories
-  const initializeCategories = () => {
-    for (const categoryData of mockCategories) {
-      const products = generateProducts(categoryData.id, 20) // Generate 20 products per category
-
-      categories.push({
-        ...categoryData,
-        products,
-      })
-    }
-  }
-
   // Lifecycle
   onMounted(async () => {
-    console.log('🎯 Lista de Promoções por Categorias montada')
-
-    // Initialize categories with products (legacy)
-    initializeCategories()
-
-    // Load all promotion sections
-    await loadAllPromotions()
+    loadAllPromotions()
   })
-
-  onUnmounted(() => {
-    console.log('👋 Lista de Produtos por Categorias desmontada')
-  })
-
-  console.log(
-    `💡 Mobile: ${isMobile.value ? '5' : '10'} produtos por categoria`
-  )
 </script>
 
 <style scoped>
@@ -840,16 +607,138 @@
     backdrop-filter: blur(10px);
   }
 
+  /* Redesigned Promotion Cards */
   .promotion-card {
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.08);
   }
 
   .promotion-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  /* Logos Header Layout */
+  .logos-header {
+    background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+    padding: 16px;
+    border-radius: 12px;
+    margin: -16px -16px 16px -16px;
+  }
+
+  .logo-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 45%;
+  }
+
+  .logo-container {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .ecommerce-logo,
+  .program-logo {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .logo-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  .vs-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+
+  /* Promotion Value Section */
+  .promotion-value {
+    background: rgba(25, 118, 210, 0.02);
+    padding: 16px;
+    border-radius: 12px;
+    margin: 0 -16px -16px -16px;
+  }
+
+  /* Text Adjustments */
+  .logo-section .text-body-2 {
+    font-size: 0.7rem;
+    line-height: 1.2;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Dark Theme */
+  .v-theme--dark .logos-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  }
+
+  .v-theme--dark .logo-container {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .v-theme--dark .vs-divider {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .v-theme--dark .promotion-value {
+    background: rgba(25, 118, 210, 0.08);
+  }
+
+  .v-theme--dark .logo-error {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 600px) {
+    .logos-header {
+      padding: 12px;
+      margin: -16px -16px 12px -16px;
+    }
+    
+    .logo-container {
+      height: 50px;
+    }
+    
+    .vs-divider {
+      width: 24px;
+      height: 24px;
+      margin: 0 8px;
+    }
+    
+    .logo-section .text-body-2 {
+      font-size: 0.75rem;
+    }
   }
 
   .observer-target {
