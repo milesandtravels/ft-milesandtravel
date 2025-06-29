@@ -207,17 +207,14 @@
     showLogoutDialog.value = true
   }
 
-  const router = useRouter()
-  const cookies = useCookie('sanctum.token.cookie')
-
   const confirmLogout = async () => {
-    const { data } = await useSanctumFetch<any>('/api/logout', {
+    const { status } = await useSanctumFetch<any>('/api/logout', {
       method: 'POST',
     })
 
-    showLogoutDialog.value = false
-    cookies.value = ''
-    router.push('/login')
+    if (status.value === 'success') {
+      window.location.reload()
+    }
   }
 
   const showNotification = (message: string, color = 'success') => {
