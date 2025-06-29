@@ -6,7 +6,5 @@
 
   const tokenFlowEmail = computed(() => route.query.token || '')
 
-  const handleResetPassword = () => {
-   
-  }
+  const handleResetPassword = () => {}
 </script>

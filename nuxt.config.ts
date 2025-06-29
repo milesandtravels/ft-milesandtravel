@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   ssr: false,
   devtools: { enabled: true },
-  modules: ['vuetify-nuxt-module', 'nuxt-auth-sanctum'],
+  modules: ['vuetify-nuxt-module', 'nuxt-auth-sanctum', '@pinia/nuxt'],
   runtimeConfig: {
     public: {
       appCallbackRedirectUrl: process.env.APP_CALLBACK_REDIRECT_URL,

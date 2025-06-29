@@ -3,6 +3,8 @@
     <v-app>
       <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />
     </v-app>
+
+    <TheSnackbar />
   </NuxtLayout>
 </template>
 

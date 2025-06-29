@@ -1,177 +1,165 @@
 <template>
   <v-container class="fill-height">
     <v-row align="center" justify="center">
-      <v-col cols="12" lg="4" md="6" sm="8">
-        <v-card class="elevation-8 rounded-lg">
-          <v-card-title class="text-center pa-6">
-            <div class="d-flex flex-column align-center">
-              <img src="~/assets/logo.svg" width="100px" />
-            </div>
-          </v-card-title>
-
-          <v-card-text class="pa-6">
-            <!-- Success Message -->
-            <div v-if="isSuccess" class="text-center">
-              <v-icon class="mb-4" color="success" size="64"
-                >mdi-email-check</v-icon
-              >
-              <h3 class="text-h6 mb-3">Cadastro realizado com sucesso!</h3>
-              <p class="text-body-1 mb-3 text-medium-emphasis">
-                Um email de confirmação foi enviado para:
-              </p>
-              <p class="text-body-1 font-weight-bold mb-4 text-primary">
-                {{ registeredEmail }}
-              </p>
-              <p class="text-body-2 mb-6 text-medium-emphasis">
-                Verifique sua caixa de entrada e spam. Clique no link para criar
-                sua senha de acesso.
-              </p>
-
-              <v-btn
-                block
-                class="mb-4"
-                color="primary"
-                size="large"
-                @click="goToLogin"
-              >
-                <v-icon class="mr-2" left>mdi-login</v-icon>
-                Ir para Login
-              </v-btn>
-
-              <v-btn
-                block
-                class="text-none"
-                size="large"
-                variant="outlined"
-                @click="resetForm"
-              >
-                <v-icon class="mr-2" left>mdi-account-plus</v-icon>
-                Cadastrar outro usuário
-              </v-btn>
-            </div>
-
-            <!-- Register Form -->
-            <div v-else>
-              <div class="text-center mb-6">
-                <h3 class="text-h6 mb-2">Criar nova conta</h3>
-                <p class="text-body-2 text-medium-emphasis">
-                  Preencha os dados abaixo para começar
-                </p>
+      <v-col cols="12">
+        <div class="d-flex justify-center">
+          <v-card
+            class="elevation-8 rounded-lg"
+            :width="$vuetify.display.mobile ? '100%' : 700"
+          >
+            <v-card-title class="text-center pa-6">
+              <div class="d-flex flex-column align-center">
+                <img src="~/assets/logo.svg" width="100px" />
               </div>
+            </v-card-title>
 
-              <v-form
-                ref="form"
-                v-model="isFormValid"
-                @submit.prevent="onSubmit"
-              >
-                <v-text-field
-                  v-model="name"
-                  class="mb-4"
-                  clearable
-                  label="Nome completo"
-                  placeholder="Digite seu nome"
-                  prepend-inner-icon="mdi-account"
-                  required
-                  :rules="nameRules"
-                  variant="outlined"
-                />
+            <v-card-text class="pa-6">
+              <!-- Register Form -->
+              <div>
+                <div class="text-center mb-6">
+                  <h3 class="text-h6 mb-2">Criar nova conta</h3>
+                  <p class="text-body-2 text-medium-emphasis">
+                    Preencha os dados abaixo para começar
+                  </p>
+                </div>
 
-                <v-text-field
-                  v-model="email"
-                  class="mb-6"
-                  clearable
-                  label="Email"
-                  placeholder="Digite seu email"
-                  prepend-inner-icon="mdi-email"
-                  required
-                  :rules="emailRules"
-                  type="email"
-                  variant="outlined"
-                />
+                <v-form
+                  ref="form"
+                  v-model="isFormValid"
+                  @submit.prevent="onSubmit"
+                >
+                  <v-text-field
+                    v-model="name"
+                    class="mb-4"
+                    clearable
+                    label="Nome completo"
+                    placeholder="Digite seu nome"
+                    prepend-inner-icon="mdi-account"
+                    required
+                    :rules="nameRules"
+                    variant="outlined"
+                  />
+
+                  <v-text-field
+                    v-model="email"
+                    class="mb-4"
+                    clearable
+                    label="Email"
+                    placeholder="Digite seu email"
+                    prepend-inner-icon="mdi-email"
+                    required
+                    :rules="emailRules"
+                    type="email"
+                    variant="outlined"
+                  />
+
+                  <v-text-field
+                    v-model="password"
+                    class="mb-4"
+                    :append-inner-icon="
+                      showPassword ? 'mdi-eye' : 'mdi-eye-off'
+                    "
+                    label="Senha"
+                    placeholder="Digite sua senha"
+                    prepend-inner-icon="mdi-lock"
+                    required
+                    :rules="passwordRules"
+                    :type="showPassword ? 'text' : 'password'"
+                    variant="outlined"
+                    @click:append-inner="showPassword = !showPassword"
+                  />
+
+                  <v-text-field
+                    v-model="passwordConfirmation"
+                    class="mb-6"
+                    :append-inner-icon="
+                      showPasswordConfirmation ? 'mdi-eye' : 'mdi-eye-off'
+                    "
+                    label="Confirmar senha"
+                    placeholder="Confirme sua senha"
+                    prepend-inner-icon="mdi-lock-check"
+                    required
+                    :rules="passwordConfirmationRules"
+                    :type="showPasswordConfirmation ? 'text' : 'password'"
+                    variant="outlined"
+                    @click:append-inner="
+                      showPasswordConfirmation = !showPasswordConfirmation
+                    "
+                  />
+
+                  <v-btn
+                    block
+                    class="mb-4"
+                    color="primary"
+                    :loading="isLoading"
+                    size="large"
+                    type="submit"
+                    :disabled="!isFormValid"
+                  >
+                    <v-icon class="mr-2" left>mdi-account-plus</v-icon>
+                    {{ isLoading ? 'Criando conta...' : 'Criar Conta' }}
+                  </v-btn>
+                </v-form>
+
+                <v-divider class="my-4">
+                  <span class="text-body-2 px-3">OU</span>
+                </v-divider>
 
                 <v-btn
                   block
-                  class="mb-4"
-                  color="primary"
-                  :loading="isLoading"
+                  class="text-none mb-4"
+                  :loading="isGoogleLoading"
+                  prepend-icon="mdi-google"
                   size="large"
-                  type="submit"
+                  variant="outlined"
+                  @click="loginWithGoogle"
                 >
-                  <v-icon class="mr-2" left>mdi-account-plus</v-icon>
-                  {{ isLoading ? 'Criando conta...' : 'Criar Conta' }}
+                  {{
+                    isGoogleLoading ? 'Conectando...' : 'Continuar com Google'
+                  }}
                 </v-btn>
-              </v-form>
 
-              <v-divider class="my-4">
-                <span class="text-body-2 px-3">OU</span>
-              </v-divider>
-
-              <v-btn
-                block
-                class="text-none mb-4"
-                :loading="isGoogleLoading"
-                prepend-icon="mdi-google"
-                size="large"
-                variant="outlined"
-                @click="registerWithGoogle"
-              >
-                {{ isGoogleLoading ? 'Conectando...' : 'Continuar com Google' }}
-              </v-btn>
-
-              <!-- Back to Login Link -->
-              <div class="text-center">
-                <p class="text-body-2 mb-2">Já tem uma conta?</p>
-                <v-btn
-                  class="text-none"
-                  color="primary"
-                  size="small"
-                  variant="text"
-                  @click="goToLogin"
-                >
-                  Fazer Login
-                </v-btn>
+                <!-- Back to Login Link -->
+                <div class="text-center">
+                  <p class="text-body-2 mb-2">Já tem uma conta?</p>
+                  <v-btn
+                    class="text-none"
+                    color="primary"
+                    size="small"
+                    variant="text"
+                    @click="goToLogin"
+                  >
+                    Fazer Login
+                  </v-btn>
+                </div>
               </div>
-            </div>
-          </v-card-text>
-        </v-card>
+            </v-card-text>
+          </v-card>
+        </div>
       </v-col>
     </v-row>
-
-    <v-snackbar
-      v-model="showSnackbar"
-      :color="snackbarColor"
-      timeout="4000"
-      top
-    >
-      {{ snackbarMessage }}
-      <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
-      </template>
-    </v-snackbar>
   </v-container>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue'
-
+  import { useSnackbarStore } from '~/store/snackbar'
   const router = useRouter()
 
   // Form data
   const form = ref()
   const name = ref('')
   const email = ref('')
+  const password = ref('')
+  const passwordConfirmation = ref('')
   const isFormValid = ref(false)
+
+  // Password visibility
+  const showPassword = ref(false)
+  const showPasswordConfirmation = ref(false)
 
   // States
   const isLoading = ref(false)
-  const isGoogleLoading = ref(false)
-  const isSuccess = ref(false)
-  const registeredEmail = ref('')
-
-  // Snackbar
-  const showSnackbar = ref(false)
-  const snackbarMessage = ref('')
-  const snackbarColor = ref('error')
 
   // Validation rules
   const nameRules = [
@@ -185,110 +173,67 @@
     (v: string) => /.+@.+\..+/.test(v) || 'Email deve ser válido',
   ]
 
-  // Show notification
-  const showNotification = (message: string, color = 'error') => {
-    snackbarMessage.value = message
-    snackbarColor.value = color
-    showSnackbar.value = true
-  }
+  const passwordRules = [
+    (v: string) => !!v || 'Senha é obrigatória',
+    (v: string) => v.length >= 8 || 'Senha deve ter pelo menos 8 caracteres',
+    (v: string) =>
+      /(?=.*[a-z])/.test(v) ||
+      'Senha deve conter pelo menos uma letra minúscula',
+    (v: string) =>
+      /(?=.*[A-Z])/.test(v) ||
+      'Senha deve conter pelo menos uma letra maiúscula',
+    (v: string) =>
+      /(?=.*\d)/.test(v) || 'Senha deve conter pelo menos um número',
+  ]
 
-  // Mock API call for user registration
-  const mockRegister = async (name: string, email: string) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simula verificação de email já existente
-        if (email === 'exists@test.com') {
-          reject(new Error('Este email já está em uso'))
-        } else if (name.length >= 2 && email.includes('@')) {
-          resolve({
-            success: true,
-            message: 'Usuário cadastrado com sucesso',
-            email: email,
-          })
-        } else {
-          reject(new Error('Dados inválidos'))
-        }
-      }, 1500)
-    })
-  }
+  const passwordConfirmationRules = [
+    (v: string) => !!v || 'Confirmação de senha é obrigatória',
+    (v: string) => v === password.value || 'As senhas não coincidem',
+  ]
 
-  // Mock Google registration
-  const mockGoogleRegister = async () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          message: 'Cadastro com Google realizado',
-          user: {
-            name: 'Usuário Google',
-            email: 'user@gmail.com',
-          },
-        })
-      }, 1200)
-    })
-  }
+  const snackbarStore = useSnackbarStore()
 
-  // Submit handler
+  const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
+
   const onSubmit = async () => {
     if (!isFormValid.value) return
 
     isLoading.value = true
 
-    try {
-      const result = await mockRegister(name.value, email.value)
-      console.log('Register success:', result)
+    const payload = {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      confirm_password: passwordConfirmation.value,
+    }
 
-      // Show success state
-      registeredEmail.value = email.value
-      isSuccess.value = true
-    } catch (error: any) {
-      console.error('Register error:', error)
-      showNotification(error.message || 'Erro ao criar conta. Tente novamente.')
-    } finally {
+    const { status, error } = await useSanctumFetch('/api/register', {
+      method: 'POST',
+      body: payload,
+    })
+
+    if (status.value == 'success') {
+      snackbarStore.showSuccess('Cadastro realizado, confirmar e-mail.')
       isLoading.value = false
+      router.push({
+        path: '/confirmation-email',
+        query: {
+          email: email.value,
+        },
+      })
+    }
+
+    if (error.value) {
+      console.error('Register error:', error)
+      isLoading.value = false
+
+      snackbarStore.showError('Erro ao criar conta. Tente novamente.')
     }
   }
 
-  // Google register handler
-  const registerWithGoogle = async () => {
-    isGoogleLoading.value = true
-
-    try {
-      const result = await mockGoogleRegister()
-      console.log('Google register success:', result)
-
-      showNotification('Cadastro com Google realizado com sucesso!', 'success')
-
-      // Simula redirecionamento direto (Google já tem email verificado)
-      setTimeout(() => {
-        console.log('Redirecting to dashboard...')
-        // router.push('/dashboard')
-      }, 1500)
-    } catch (error) {
-      console.error('Google register error:', error)
-      showNotification('Erro ao cadastrar com Google. Tente novamente.')
-    } finally {
-      isGoogleLoading.value = false
-    }
-  }
-
-  // Navigation functions
   const goToLogin = () => {
     navigateTo('/login')
   }
-
-  const resetForm = () => {
-    isSuccess.value = false
-    name.value = ''
-    email.value = ''
-    registeredEmail.value = ''
-    form.value?.reset()
-  }
-
-  // Log test info
-  console.log('💡 Dicas para teste:')
-  console.log('✅ Qualquer nome (2+ chars) e email válido funcionará')
-  console.log('❌ Email "exists@test.com" simulará erro de email já existente')
 </script>
 
 <style scoped>
@@ -325,7 +270,7 @@
     transition: all 0.3s ease;
   }
 
-  .v-btn:hover {
+  .v-btn:hover:not(:disabled) {
     transform: translateY(-1px);
   }
 
@@ -335,5 +280,10 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  /* Password field styling */
+  .v-text-field :deep(.v-field__append-inner) {
+    cursor: pointer;
   }
 </style>
