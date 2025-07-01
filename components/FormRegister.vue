@@ -145,7 +145,9 @@
   import { ref } from 'vue'
   import { useSnackbarStore } from '~/store/snackbar'
   const router = useRouter()
-
+  interface RegisterResponse {
+    token: string
+  }
   // Form data
   const form = ref()
   const name = ref('')
@@ -207,14 +209,25 @@
       confirm_password: passwordConfirmation.value,
     }
 
-    const { status, error } = await useSanctumFetch('/api/register', {
-      method: 'POST',
-      body: payload,
-    })
+    const { data, status, error } = await useSanctumFetch<RegisterResponse>(
+      '/api/register',
+      {
+        method: 'POST',
+        body: payload,
+        query: {
+          device_name: navigator.userAgent,
+        },
+      }
+    )
 
     if (status.value == 'success') {
       snackbarStore.showSuccess('Cadastro realizado, confirmar e-mail.')
       isLoading.value = false
+
+      useCookie('sanctum.token.cookie').value = data.value?.token
+      const { refreshIdentity } = useSanctumAuth()
+      await refreshIdentity()
+
       router.push({
         path: '/confirmation-email',
         query: {
@@ -226,6 +239,12 @@
     if (error.value) {
       console.error('Register error:', error)
       isLoading.value = false
+
+      const errorMessage = (error.value?.data as any).message
+      if (errorMessage) {
+        snackbarStore.showError(errorMessage)
+        return
+      }
 
       snackbarStore.showError('Erro ao criar conta. Tente novamente.')
     }

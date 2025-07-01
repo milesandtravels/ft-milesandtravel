@@ -17,7 +17,7 @@
               </p>
               <p class="text-body-2 mb-6 text-medium-emphasis">
                 Verifique sua caixa de entrada e spam. Clique no link para
-                confirmar sua conta.
+                confirmar sua conta para ter acesso a plataforma.
               </p>
 
               <!-- Alerta se não há email -->
@@ -29,16 +29,12 @@
               />
 
               <!-- Timer para reenvio -->
-              <v-card
-                v-if="hasEmail && showResendOption"
-                variant="outlined"
-                class="mb-4 pa-3"
-              >
+              <div v-if="hasEmail && showResendOption" class="mb-4 pa-3">
                 <p class="text-body-2 mb-2">Não recebeu o email?</p>
                 <v-btn
                   :disabled="isResending || resendCooldown > 0"
                   :loading="isResending"
-                  color="secondary"
+                  color="primary"
                   size="small"
                   variant="outlined"
                   @click="resendConfirmationEmail"
@@ -48,29 +44,7 @@
                   </template>
                   <template v-else> Reenviar Email </template>
                 </v-btn>
-              </v-card>
-
-              <v-btn
-                block
-                class="mb-4"
-                color="primary"
-                size="large"
-                @click="goToLogin"
-              >
-                <v-icon class="mr-2">mdi-login</v-icon>
-                Ir para Login
-              </v-btn>
-
-              <v-btn
-                block
-                class="text-none"
-                size="large"
-                variant="outlined"
-                @click="resetForm"
-              >
-                <v-icon class="mr-2">mdi-account-plus</v-icon>
-                Cadastrar outro usuário
-              </v-btn>
+              </div>
             </div>
           </v-card-text>
         </v-card>
@@ -83,7 +57,7 @@
   import { useSnackbarStore } from '../store/snackbar'
 
   const route = useRoute()
-  const router = useRouter()
+  const { value } = useSanctumUser()
   const snackbarStore = useSnackbarStore()
 
   // Estados reativos
@@ -93,23 +67,21 @@
 
   // Computed properties
   const emailDisplay = computed(() => {
-    const email = route.query.email
-    return typeof email === 'string' ? email : 'Não informado'
+    const queryEmail = route.query.email
+
+    // Prioriza email da query, depois email do usuário, por último fallback
+    return typeof queryEmail === 'string' && queryEmail.length > 0
+      ? queryEmail
+      : value?.email || 'Não informado'
   })
 
   const hasEmail = computed(() => {
-    return typeof route.query.email === 'string' && route.query.email.length > 0
+    return (
+      (typeof route.query?.email === 'string' &&
+        route.query.email.length > 0) ||
+      !!value?.email
+    )
   })
-
-  // Função para ir para a página de login
-  const goToLogin = (): void => {
-    router.push('/login')
-  }
-
-  // Função para voltar ao formulário de cadastro
-  const resetForm = (): void => {
-    router.push('/register')
-  }
 
   // Função para reenviar email de confirmação
   const resendConfirmationEmail = async (): Promise<void> => {
@@ -118,10 +90,16 @@
     isResending.value = true
 
     try {
+      // Usa o email da query se disponível, senão usa email do usuário
+      const emailToSend =
+        typeof route.query.email === 'string' && route.query.email.length > 0
+          ? route.query.email
+          : value?.email
+
       await useSanctumFetch('/api/email/verification-notification', {
         method: 'POST',
         body: {
-          email: route.query.email,
+          email: emailToSend,
         },
       })
 
@@ -153,7 +131,7 @@
   // Verificar se há email na URL ao montar o componente
   onMounted(() => {
     if (!hasEmail.value) {
-      snackbarStore.showWarning('Email não encontrado na URL')
+      snackbarStore.showWarning('Email não encontrado')
     }
   })
 

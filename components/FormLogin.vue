@@ -86,7 +86,7 @@
                   prepend-icon="mdi-google"
                   size="large"
                   variant="outlined"
-                  @click="loginWith('google')"
+                  @click="loginWithGoogle('google')"
                 >
                   Continuar com Google
                 </v-btn>
@@ -160,7 +160,6 @@
 
   // Loading states
   const isLoading = ref(false)
-  const isGoogleLoading = ref(false)
 
   // Snackbar
   const showSnackbar = ref(false)
@@ -213,31 +212,7 @@
     }
   }
 
-  const router = useRouter()
-
-  // Google login handler
-  const loginWith = async (provider: string) => {
-    isGoogleLoading.value = true
-    try {
-      const config = useRuntimeConfig()
-      // Busca a URL de redirecionamento do Google
-      const { data } = await useSanctumFetch<{ redirect_url: string }>(
-        `/api/auth/${provider}/redirect`,
-        {
-          query: {
-            device_name: navigator.userAgent,
-            app_callback_redirect_url: config.public.appCallbackRedirectUrl,
-          },
-        }
-      )
-      if (data.value?.redirect_url) {
-        window.location.href = data.value.redirect_url
-      }
-    } catch (error) {
-      showNotification(`Falha ao conectar com ${provider}.`)
-      isGoogleLoading.value = false
-    }
-  }
+  const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
 
   // Forgot password handler
   const handleForgotPassword = () => {

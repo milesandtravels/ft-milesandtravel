@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <TheHeader
-      :user="currentUser"
+      :user="value"
       @account-settings="handleAccountSettings"
       @help="handleHelp"
       @notifications="handleNotifications"
@@ -26,15 +26,12 @@
 
 <script setup lang="ts">
   const route = useRoute()
-  const { value } = useSanctumUser()
+  const { value }: any = useSanctumUser()
 
-  console.log('value', value)
   const sidebarOpen = ref(false)
 
-  // Computed properties
   const currentRoute = computed(() => route.path)
 
-  // Methods
   const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value
   }
