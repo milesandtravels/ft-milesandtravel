@@ -101,6 +101,10 @@
         body: {
           email: emailToSend,
         },
+        query: {
+          device_name: navigator.userAgent,
+          redirect_url: window.location.href,
+        },
       })
 
       snackbarStore.showSuccess('Email de confirmação reenviado!')

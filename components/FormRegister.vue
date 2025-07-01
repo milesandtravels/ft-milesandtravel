@@ -216,6 +216,7 @@
         body: payload,
         query: {
           device_name: navigator.userAgent,
+          redirect_url: window.location.href,
         },
       }
     )

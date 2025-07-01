@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     '/reset-password/',
     '/faq/',
     '/confirmation-email/',
-    '/callback-email-confirmation/'
+    '/callback-email-confirmation/',
   ]
 
   // ✅ PRIMEIRA VERIFICAÇÃO: Se é rota pública, SEMPRE permite acesso
