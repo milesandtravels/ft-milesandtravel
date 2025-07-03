@@ -16,7 +16,7 @@
       @navigate="handleNavigation"
     />
 
-    <TermsModal v-if="value" />
+    <TermsModal v-if="value && value.email_verified_at" />
 
     <v-main class="main-content">
       <v-container class="responsive-main-container pa-6">
