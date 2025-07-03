@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
 
   // Manda para home se já tiver com e-mail verificado
-   if (to.path === '/confirmation-email' && user.email_verified_at) {
+   if (to.path === '/confirmation-email' && user?.email_verified_at) {
     return navigateTo('/')
   }
 
@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return
   }
 
-  if (user && !user.email_verified_at) {
+  if (user && !user?.email_verified_at) {
     console.log('⚠️ Email not verified - redirecting to confirmation')
     return navigateTo(
       '/confirmation-email?email=' + encodeURIComponent(user.email)
