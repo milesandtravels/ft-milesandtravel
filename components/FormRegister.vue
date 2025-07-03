@@ -143,7 +143,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { useSnackbarStore } from '~/store/snackbar'
+import { useSnackbarStore } from '~/store/snackbar'
   const router = useRouter()
   interface RegisterResponse {
     token: string
@@ -221,7 +221,7 @@
       }
     )
 
-    if (status.value == 'success') {
+    if (data.value) {
       snackbarStore.showSuccess('Cadastro realizado, confirmar e-mail.')
       isLoading.value = false
 

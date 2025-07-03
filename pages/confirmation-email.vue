@@ -145,10 +145,4 @@
     description:
       'Cadastro realizado com sucesso. Verifique seu email para confirmar a conta.',
   })
-
-  // Middleware para verificar se veio da página correta (opcional)
-  definePageMeta({
-    layout: 'auth', // se você tiver um layout específico para auth
-    middleware: 'auth',
-  })
 </script>
