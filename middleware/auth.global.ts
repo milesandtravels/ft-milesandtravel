@@ -7,7 +7,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
   }
 
   // Excluir a rota de confirmação da verificação
-  if (to.path === '/confirmation-email' || to.path === '/callback-email-confirmation') {
+  if (
+    to.path === '/confirmation-email' ||
+    to.path === '/callback-email-confirmation'
+  ) {
     return
   }
 

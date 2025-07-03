@@ -94,122 +94,122 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useSnackbarStore } from '~/store/snackbar'
+  import { ref } from 'vue'
+  import { useSnackbarStore } from '~/store/snackbar'
 
-interface ForgotPasswordResponse {
-  message: string
-}
-
-// Form data
-const form = ref()
-const email = ref('')
-const isFormValid = ref(false)
-
-// States
-const isLoading = ref(false)
-const isSuccess = ref(false)
-
-// Use validators composable
-const { emailRules } = useValidators()
-
-const snackbarStore = useSnackbarStore()
-
-// Submit handler
-const onSubmit = async () => {
-  if (!isFormValid.value) return
-
-  isLoading.value = true
-
-  const payload = {
-    email: email.value,
+  interface ForgotPasswordResponse {
+    message: string
   }
 
-  const { data, status, error } = await useSanctumFetch<ForgotPasswordResponse>(
-    '/api/forgot-password',
-    {
-      method: 'POST',
-      body: payload,
-      query: {
-        redirect_url: window.location.origin + '/reset-password',
-      },
-    }
-  )
+  // Form data
+  const form = ref()
+  const email = ref('')
+  const isFormValid = ref(false)
 
-  if (data.value) {
-    console.log('Forgot password success:', data.value)
-    
-    // Show success state
-    isSuccess.value = true
-    isLoading.value = false
-  }
+  // States
+  const isLoading = ref(false)
+  const isSuccess = ref(false)
 
-  if (error.value) {
-    console.error('Forgot password error:', error)
-    isLoading.value = false
+  // Use validators composable
+  const { emailRules } = useValidators()
 
-    const errorMessage = (error.value?.data as any).message
-    if (errorMessage) {
-      snackbarStore.showError(errorMessage)
-      return
+  const snackbarStore = useSnackbarStore()
+
+  // Submit handler
+  const onSubmit = async () => {
+    if (!isFormValid.value) return
+
+    isLoading.value = true
+
+    const payload = {
+      email: email.value,
     }
 
-    snackbarStore.showError('Erro ao enviar email. Verifique se o email está correto.')
+    const { data, status, error } =
+      await useSanctumFetch<ForgotPasswordResponse>('/api/forgot-password', {
+        method: 'POST',
+        body: payload,
+        query: {
+          redirect_url: window.location.origin + '/reset-password',
+        },
+      })
+
+    if (data.value) {
+      console.log('Forgot password success:', data.value)
+
+      // Show success state
+      isSuccess.value = true
+      isLoading.value = false
+    }
+
+    if (error.value) {
+      console.error('Forgot password error:', error)
+      isLoading.value = false
+
+      const errorMessage = (error.value?.data as any).message
+      if (errorMessage) {
+        snackbarStore.showError(errorMessage)
+        return
+      }
+
+      snackbarStore.showError(
+        'Erro ao enviar email. Verifique se o email está correto.'
+      )
+    }
   }
-}
 
-const router = useRouter()
+  const router = useRouter()
 
-// Go back to login
-const goBackToLogin = () => {
-  navigateTo('/login')
-}
-
-// Reset form when going back from success state
-const resetForm = () => {
-  if (isSuccess.value) {
-    isSuccess.value = false
-    email.value = ''
-    form.value?.reset()
+  // Go back to login
+  const goBackToLogin = () => {
+    navigateTo('/login')
   }
-}
+
+  // Reset form when going back from success state
+  const resetForm = () => {
+    if (isSuccess.value) {
+      isSuccess.value = false
+      email.value = ''
+      form.value?.reset()
+    }
+  }
 </script>
 
 <style scoped>
-.v-card {
-  max-width: 100%;
-}
-
-.v-btn {
-  text-transform: none;
-}
-
-/* Success state styling */
-.v-icon.mdi-check-circle {
-  animation: success-bounce 0.6s ease-out;
-}
-
-@keyframes success-bounce {
-  0% {
-    transform: scale(0);
-    opacity: 0;
+  .v-card {
+    max-width: 100%;
   }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
 
-/* Smooth transitions */
-.v-btn {
-  transition: all 0.3s ease;
-}
+  .v-btn {
+    text-transform: none;
+  }
 
-.v-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
+  /* Success state styling */
+  .v-icon.mdi-check-circle {
+    animation: success-bounce 0.6s ease-out;
+  }
+
+  @keyframes success-bounce {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Smooth transitions */
+  .v-btn {
+    transition: all 0.3s ease;
+  }
+
+  .v-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
 </style>

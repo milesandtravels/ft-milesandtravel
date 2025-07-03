@@ -113,146 +113,144 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+  import { ref } from 'vue'
 import { useSnackbarStore } from '~/store/snackbar'
 
-const router = useRouter()
-const route = useRoute()
+  const route = useRoute()
 
-interface ResetPasswordResponse {
-  message: string
-}
-
-// Form data
-const form = ref()
-const email = ref('')
-const password = ref('')
-const passwordConfirmation = ref('')
-const isFormValid = ref(false)
-const token = ref('')
-
-// Password visibility
-const showPassword = ref(false)
-const showPasswordConfirmation = ref(false)
-
-// States
-const isLoading = ref(false)
-
-// Use validators composable
-const { passwordRules, passwordConfirmationRules, emailRules } = useValidators()
-
-const snackbarStore = useSnackbarStore()
-
-// Initialize email and token from query params
-onMounted(() => {
-  email.value = (route.query.email as string) || ''
-  
-  // Decode token from query params
-  const encodedToken = route.query.token as string
-  if (encodedToken) {
-    token.value = decodeURIComponent(encodedToken)
-  }
-})
-
-const onSubmit = async () => {
-  if (!isFormValid.value) return
-
-  isLoading.value = true
-
-  const payload = {
-    email: email.value,
-    password: password.value,
-    password_confirmation: passwordConfirmation.value,
-    token: token.value,
+  interface ResetPasswordResponse {
+    message: string
   }
 
-  const { data, status, error } = await useSanctumFetch<ResetPasswordResponse>(
-    '/api/reset-password',
-    {
-      method: 'POST',
-      body: payload,
-      query: {
-        device_name: navigator.userAgent,
-        redirect_url: window.location.href,
-      },
+  // Form data
+  const form = ref()
+  const email = ref('')
+  const password = ref('')
+  const passwordConfirmation = ref('')
+  const isFormValid = ref(false)
+  const token = ref('')
+
+  // Password visibility
+  const showPassword = ref(false)
+  const showPasswordConfirmation = ref(false)
+
+  // States
+  const isLoading = ref(false)
+
+  // Use validators composable
+  const { passwordRules, passwordConfirmationRules, emailRules } =
+    useValidators()
+
+  const snackbarStore = useSnackbarStore()
+
+  // Initialize email and token from query params
+  onMounted(() => {
+    email.value = (route.query.email as string) || ''
+
+    // Decode token from query params
+    const encodedToken = route.query.token as string
+    if (encodedToken) {
+      token.value = decodeURIComponent(encodedToken)
     }
-  )
+  })
 
-  if (data.value) {
-    snackbarStore.showSuccess('Senha redefinida com sucesso!')
-    isLoading.value = false
+  const onSubmit = async () => {
+    if (!isFormValid.value) return
 
-    // Redirect to login page after successful password reset
-    await navigateTo('/login')
-  }
+    isLoading.value = true
 
-  if (error.value) {
-    console.error('Reset password error:', error)
-    isLoading.value = false
-
-    const errorMessage = (error.value?.data as any).message
-    if (errorMessage) {
-      snackbarStore.showError(errorMessage)
-      return
+    const payload = {
+      email: email.value,
+      password: password.value,
+      password_confirmation: passwordConfirmation.value,
+      token: token.value,
     }
 
-    snackbarStore.showError('Erro ao redefinir senha. Tente novamente.')
-  }
-}
+    const { data, status, error } =
+      await useSanctumFetch<ResetPasswordResponse>('/api/reset-password', {
+        method: 'POST',
+        body: payload,
+        query: {
+          device_name: navigator.userAgent,
+          redirect_url: window.location.href,
+        },
+      })
 
-const goToLogin = () => {
-  navigateTo('/login')
-}
+    if (data.value) {
+      snackbarStore.showSuccess('Senha redefinida com sucesso!')
+      isLoading.value = false
+
+      // Redirect to login page after successful password reset
+      await navigateTo('/login')
+    }
+
+    if (error.value) {
+      console.error('Reset password error:', error)
+      isLoading.value = false
+
+      const errorMessage = (error.value?.data as any).message
+      if (errorMessage) {
+        snackbarStore.showError(errorMessage)
+        return
+      }
+
+      snackbarStore.showError('Erro ao redefinir senha. Tente novamente.')
+    }
+  }
+
+  const goToLogin = () => {
+    navigateTo('/login')
+  }
 </script>
 
 <style scoped>
-.v-card {
-  max-width: 100%;
-}
-
-.v-btn {
-  text-transform: none;
-}
-
-/* Success state styling */
-.v-icon.mdi-lock-reset {
-  animation: success-bounce 0.6s ease-out;
-}
-
-@keyframes success-bounce {
-  0% {
-    transform: scale(0) rotate(-45deg);
-    opacity: 0;
+  .v-card {
+    max-width: 100%;
   }
-  50% {
-    transform: scale(1.1) rotate(0deg);
-    opacity: 1;
+
+  .v-btn {
+    text-transform: none;
   }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
+
+  /* Success state styling */
+  .v-icon.mdi-lock-reset {
+    animation: success-bounce 0.6s ease-out;
   }
-}
 
-/* Smooth transitions */
-.v-btn {
-  transition: all 0.3s ease;
-}
+  @keyframes success-bounce {
+    0% {
+      transform: scale(0) rotate(-45deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
 
-.v-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
+  /* Smooth transitions */
+  .v-btn {
+    transition: all 0.3s ease;
+  }
 
-/* Email highlight */
-.text-primary {
-  background: linear-gradient(45deg, #1976d2, #42a5f5);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+  .v-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
 
-/* Password field styling */
-.v-text-field :deep(.v-field__append-inner) {
-  cursor: pointer;
-}
+  /* Email highlight */
+  .text-primary {
+    background: linear-gradient(45deg, #1976d2, #42a5f5);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Password field styling */
+  .v-text-field :deep(.v-field__append-inner) {
+    cursor: pointer;
+  }
 </style>

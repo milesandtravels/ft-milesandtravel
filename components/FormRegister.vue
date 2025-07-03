@@ -142,144 +142,145 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useSnackbarStore } from '~/store/snackbar'
+  import { ref } from 'vue'
+  import { useSnackbarStore } from '~/store/snackbar'
 
-const router = useRouter()
+  const router = useRouter()
 
-interface RegisterResponse {
-  token: string
-}
-
-// Form data
-const form = ref()
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const passwordConfirmation = ref('')
-const isFormValid = ref(false)
-
-// Password visibility
-const showPassword = ref(false)
-const showPasswordConfirmation = ref(false)
-
-// States
-const isLoading = ref(false)
-
-// Use validators composable
-const { passwordRules, passwordConfirmationRules, emailRules, nameRules } = useValidators()
-
-const snackbarStore = useSnackbarStore()
-
-const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
-
-const onSubmit = async () => {
-  if (!isFormValid.value) return
-
-  isLoading.value = true
-
-  const payload = {
-    name: name.value,
-    email: email.value,
-    password: password.value,
-    confirm_password: passwordConfirmation.value,
+  interface RegisterResponse {
+    token: string
   }
 
-  const { data, status, error } = await useSanctumFetch<RegisterResponse>(
-    '/api/register',
-    {
-      method: 'POST',
-      body: payload,
-      query: {
-        device_name: navigator.userAgent,
-        redirect_url: window.location.origin + '/callback-email-confirmation',
-      },
-    }
-  )
+  // Form data
+  const form = ref()
+  const name = ref('')
+  const email = ref('')
+  const password = ref('')
+  const passwordConfirmation = ref('')
+  const isFormValid = ref(false)
 
-  if (data.value) {
-    snackbarStore.showSuccess('Cadastro realizado, confirmar e-mail.')
-    isLoading.value = false
+  // Password visibility
+  const showPassword = ref(false)
+  const showPasswordConfirmation = ref(false)
 
-    useCookie('sanctum.token.cookie').value = data.value?.token
-    const { refreshIdentity } = useSanctumAuth()
-    await refreshIdentity()
+  // States
+  const isLoading = ref(false)
 
-    router.push({
-      path: '/confirmation-email',
-      query: {
-        email: email.value,
-      },
-    })
-  }
+  // Use validators composable
+  const { passwordRules, passwordConfirmationRules, emailRules, nameRules } =
+    useValidators()
 
-  if (error.value) {
-    console.error('Register error:', error)
-    isLoading.value = false
+  const snackbarStore = useSnackbarStore()
 
-    const errorMessage = (error.value?.data as any).message
-    if (errorMessage) {
-      snackbarStore.showError(errorMessage)
-      return
+  const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
+
+  const onSubmit = async () => {
+    if (!isFormValid.value) return
+
+    isLoading.value = true
+
+    const payload = {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      confirm_password: passwordConfirmation.value,
     }
 
-    snackbarStore.showError('Erro ao criar conta. Tente novamente.')
-  }
-}
+    const { data, status, error } = await useSanctumFetch<RegisterResponse>(
+      '/api/register',
+      {
+        method: 'POST',
+        body: payload,
+        query: {
+          device_name: navigator.userAgent,
+          redirect_url: window.location.origin + '/callback-email-confirmation',
+        },
+      }
+    )
 
-const goToLogin = () => {
-  navigateTo('/login')
-}
+    if (data.value) {
+      snackbarStore.showSuccess('Cadastro realizado, confirmar e-mail.')
+      isLoading.value = false
+
+      useCookie('sanctum.token.cookie').value = data.value?.token
+      const { refreshIdentity } = useSanctumAuth()
+      await refreshIdentity()
+
+      router.push({
+        path: '/confirmation-email',
+        query: {
+          email: email.value,
+        },
+      })
+    }
+
+    if (error.value) {
+      console.error('Register error:', error)
+      isLoading.value = false
+
+      const errorMessage = (error.value?.data as any).message
+      if (errorMessage) {
+        snackbarStore.showError(errorMessage)
+        return
+      }
+
+      snackbarStore.showError('Erro ao criar conta. Tente novamente.')
+    }
+  }
+
+  const goToLogin = () => {
+    navigateTo('/login')
+  }
 </script>
 
 <style scoped>
-.v-card {
-  max-width: 100%;
-}
-
-.v-btn {
-  text-transform: none;
-}
-
-/* Success state styling */
-.v-icon.mdi-email-check {
-  animation: success-bounce 0.6s ease-out;
-}
-
-@keyframes success-bounce {
-  0% {
-    transform: scale(0) rotate(-45deg);
-    opacity: 0;
+  .v-card {
+    max-width: 100%;
   }
-  50% {
-    transform: scale(1.1) rotate(0deg);
-    opacity: 1;
+
+  .v-btn {
+    text-transform: none;
   }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
+
+  /* Success state styling */
+  .v-icon.mdi-email-check {
+    animation: success-bounce 0.6s ease-out;
   }
-}
 
-/* Smooth transitions */
-.v-btn {
-  transition: all 0.3s ease;
-}
+  @keyframes success-bounce {
+    0% {
+      transform: scale(0) rotate(-45deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
 
-.v-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
+  /* Smooth transitions */
+  .v-btn {
+    transition: all 0.3s ease;
+  }
 
-/* Email highlight */
-.text-primary {
-  background: linear-gradient(45deg, #1976d2, #42a5f5);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+  .v-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
 
-/* Password field styling */
-.v-text-field :deep(.v-field__append-inner) {
-  cursor: pointer;
-}
+  /* Email highlight */
+  .text-primary {
+    background: linear-gradient(45deg, #1976d2, #42a5f5);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Password field styling */
+  .v-text-field :deep(.v-field__append-inner) {
+    cursor: pointer;
+  }
 </style>

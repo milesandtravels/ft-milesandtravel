@@ -12,8 +12,8 @@
           method: 'GET',
           query: {
             expires: route.query?.expires,
-            signature: route.query?.signature
-          }
+            signature: route.query?.signature,
+          },
         }
       )
 

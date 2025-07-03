@@ -64,7 +64,6 @@
 
   import type { VForm } from 'vuetify/components'
   import type { SearchRecord } from '~/interfaces/search'
-  import { mockProductsAdvancedSearch } from '~/mocks/productsAdvancedSearch'
 
   const searchId = ref<number>()
   const searchForm = ref<VForm | null>(null)
@@ -92,14 +91,6 @@
     }
 
     searchId.value = data.value?.data.id
-  }
-
-  const mockResponse = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(mockProductsAdvancedSearch)
-      }, 1000)
-    })
   }
 
   const fetchProducts = async () => {

@@ -75,123 +75,174 @@
               E-commerces
             </h3>
 
-            <v-select
-              v-model="selectedEcommerces"
-              :items="ecommerceOptions"
-              item-title="label"
-              item-value="value"
-              label="Selecionar marketplaces"
-              variant="outlined"
-              multiple
-              chips
-              closable-chips
-              hide-details
-              class="ecommerce-select mb-3"
-            >
-              <template #prepend-item>
-                <v-list-item
-                  title="Selecionar todos"
-                  @click="toggleAllEcommerces"
-                  class="select-all-item"
-                >
-                  <template #prepend>
-                    <v-checkbox-btn
-                      :model-value="isAllEcommercesSelected"
-                      :indeterminate="
-                        isSomeEcommercesSelected && !isAllEcommercesSelected
-                      "
-                      color="primary"
-                    />
-                  </template>
-                </v-list-item>
-                <v-divider class="mt-2" />
-              </template>
+            <!-- Loading State -->
+            <div v-if="isLoadingEcommerces" class="text-center py-4">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                size="32"
+              ></v-progress-circular>
+              <p class="text-body-2 mt-2">Carregando e-commerces...</p>
+            </div>
 
-              <template #item="{ props, item }">
-                <v-list-item v-bind="props">
-                  <template #prepend>
-                    <v-checkbox-btn
-                      :model-value="selectedEcommerces.includes(item.raw.value)"
-                      color="primary"
-                    />
-                  </template>
+            <!-- Error State -->
+            <div v-else-if="errorLoadingEcommerces" class="text-center py-4">
+              <v-icon color="error" size="48" class="mb-2"
+                >mdi-alert-circle</v-icon
+              >
+              <p class="text-body-2 mb-3">Erro ao carregar e-commerces</p>
+              <v-btn
+                color="primary"
+                variant="outlined"
+                size="small"
+                @click="fetchEcommerces"
+              >
+                Tentar novamente
+              </v-btn>
+            </div>
 
-                  <template #title>
-                    <div class="d-flex align-center">
-                      <v-avatar size="24" :color="item.raw.color" class="me-3">
-                        <v-icon :icon="item.raw.icon" size="14" color="white" />
-                      </v-avatar>
-                      <span>{{ item.raw.label }}</span>
-                    </div>
-                  </template>
+            <!-- E-commerces Select -->
+            <div v-else>
+              <v-select
+                v-model="selectedEcommerces"
+                :items="ecommerceOptions"
+                item-title="name"
+                item-value="id"
+                label="Selecionar marketplaces"
+                variant="outlined"
+                multiple
+                chips
+                closable-chips
+                hide-details
+                class="ecommerce-select mb-3"
+                :disabled="ecommerceOptions.length === 0"
+              >
+                <template #prepend-item>
+                  <v-list-item
+                    title="Selecionar todos"
+                    @click="toggleAllEcommerces"
+                    class="select-all-item"
+                  >
+                    <template #prepend>
+                      <v-checkbox-btn
+                        :model-value="isAllEcommercesSelected"
+                        :indeterminate="
+                          isSomeEcommercesSelected && !isAllEcommercesSelected
+                        "
+                        color="primary"
+                      />
+                    </template>
+                  </v-list-item>
+                  <v-divider class="mt-2" />
+                </template>
 
-                  <template #append>
-                    <v-chip
-                      size="small"
-                      :color="item.raw.color"
-                      variant="tonal"
+                <template #item="{ props, item }">
+                  <v-list-item v-bind="props">
+                    <template #prepend>
+                      <v-checkbox-btn
+                        :model-value="selectedEcommerces.includes(item.raw.id)"
+                        color="primary"
+                      />
+                    </template>
+
+                    <template #title>
+                      <div class="d-flex align-center">
+                        <v-avatar v-if="item.raw.logo" size="24" class="me-3">
+                          <v-img :src="item.raw.logo" :alt="item.raw.name" />
+                        </v-avatar>
+                        <v-avatar v-else size="24" color="primary" class="me-3">
+                          <v-icon icon="mdi-store" size="14" color="white" />
+                        </v-avatar>
+                        <span>{{ item.raw.name }}</span>
+                      </div>
+                    </template>
+
+                    <template #append>
+                      <v-chip
+                        v-if="item.raw.products_count"
+                        size="small"
+                        color="primary"
+                        variant="tonal"
+                      >
+                        {{ formatCount(item.raw.products_count) }}
+                      </v-chip>
+                    </template>
+                  </v-list-item>
+                </template>
+
+                <template #chip="{ props, item }">
+                  <v-chip
+                    v-bind="props"
+                    color="primary"
+                    size="small"
+                    variant="tonal"
+                    class="ma-1"
+                  >
+                    <v-avatar v-if="item.raw.logo" size="16" start>
+                      <v-img :src="item.raw.logo" :alt="item.raw.name" />
+                    </v-avatar>
+                    <v-icon v-else icon="mdi-store" size="16" start />
+                    {{ item.raw.name }}
+                  </v-chip>
+                </template>
+
+                <template #selection="{ item, index }">
+                  <v-chip
+                    v-if="index < 2"
+                    color="primary"
+                    size="small"
+                    variant="tonal"
+                    closable
+                    @click:close="removeEcommerce(item.raw.id)"
+                    class="ma-1"
+                  >
+                    <v-avatar v-if="item.raw.logo" size="16" start>
+                      <v-img :src="item.raw.logo" :alt="item.raw.name" />
+                    </v-avatar>
+                    <v-icon v-else icon="mdi-store" size="16" start />
+                    {{ item.raw.name }}
+                  </v-chip>
+                  <span
+                    v-else-if="index === 2"
+                    class="text-grey text-caption align-self-center"
+                  >
+                    (+{{ selectedEcommerces.length - 2 }} outros)
+                  </span>
+                </template>
+
+                <template #no-data>
+                  <div class="text-center py-4">
+                    <v-icon color="grey" size="48" class="mb-2"
+                      >mdi-store-off</v-icon
                     >
-                      {{ item.raw.count }}
-                    </v-chip>
-                  </template>
-                </v-list-item>
-              </template>
+                    <p class="text-body-2">Nenhum e-commerce disponível</p>
+                  </div>
+                </template>
+              </v-select>
 
-              <template #chip="{ props, item }">
-                <v-chip
-                  v-bind="props"
-                  :color="getEcommerceColor(item.raw.value)"
-                  size="small"
-                  variant="tonal"
-                  class="ma-1"
-                >
-                  <v-icon
-                    :icon="getEcommerceIcon(item.raw.value)"
-                    size="16"
-                    start
-                  />
-                  {{ item.raw.label }}
-                </v-chip>
-              </template>
-
-              <template #selection="{ item, index }">
-                <v-chip
-                  v-if="index < 2"
-                  :color="item.raw.color"
-                  size="small"
-                  variant="tonal"
-                  closable
-                  @click:close="removeEcommerce(item.raw.value)"
-                  class="ma-1"
-                >
-                  <v-icon :icon="item.raw.icon" size="16" start />
-                  {{ item.raw.label }}
-                </v-chip>
-                <span
-                  v-else-if="index === 2"
-                  class="text-grey text-caption align-self-center"
-                >
-                  (+{{ selectedEcommerces.length - 2 }} outros)
-                </span>
-              </template>
-            </v-select>
-
-            <!-- Selected Summary -->
-            <div v-if="selectedEcommerces.length > 0" class="selected-summary">
-              <v-chip-group class="selected-chips">
-                <v-chip
-                  v-for="ecommerce in selectedEcommercesDetails"
-                  :key="ecommerce.value"
-                  :color="ecommerce.color"
-                  size="small"
-                  variant="tonal"
-                  closable
-                  @click:close="removeEcommerce(ecommerce.value)"
-                >
-                  <v-icon :icon="ecommerce.icon" size="14" start />
-                  {{ ecommerce.label }}
-                </v-chip>
-              </v-chip-group>
+              <!-- Selected Summary -->
+              <div
+                v-if="selectedEcommerces.length > 0"
+                class="selected-summary"
+              >
+                <v-chip-group class="selected-chips">
+                  <v-chip
+                    v-for="ecommerce in selectedEcommercesDetails"
+                    :key="ecommerce.id"
+                    color="primary"
+                    size="small"
+                    variant="tonal"
+                    closable
+                    @click:close="removeEcommerce(ecommerce.id)"
+                  >
+                    <v-avatar v-if="ecommerce.logo" size="14" start>
+                      <v-img :src="ecommerce.logo" :alt="ecommerce.name" />
+                    </v-avatar>
+                    <v-icon v-else icon="mdi-store" size="14" start />
+                    {{ ecommerce.name }}
+                  </v-chip>
+                </v-chip-group>
+              </div>
             </div>
           </div>
         </v-container>
@@ -257,87 +308,40 @@
     },
   ])
 
-  // E-commerce options with fake data
-  const ecommerceOptions = ref([
-    {
-      label: 'Amazon',
-      value: 'amazon',
-      icon: 'mdi-amazon',
-      color: 'orange-darken-2',
-      count: '2.3k',
-    },
-    {
-      label: 'Mercado Livre',
-      value: 'mercadolivre',
-      icon: 'mdi-shopping',
-      color: 'yellow-darken-2',
-      count: '1.8k',
-    },
-    {
-      label: 'Shopee',
-      value: 'shopee',
-      icon: 'mdi-store',
-      color: 'orange-darken-1',
-      count: '950',
-    },
-    {
-      label: 'Magazine Luiza',
-      value: 'magazineluiza',
-      icon: 'mdi-store-outline',
-      color: 'blue-darken-2',
-      count: '1.2k',
-    },
-    {
-      label: 'Americanas',
-      value: 'americanas',
-      icon: 'mdi-cart',
-      color: 'red-darken-2',
-      count: '840',
-    },
-    {
-      label: 'Submarino',
-      value: 'submarino',
-      icon: 'mdi-submarine',
-      color: 'blue-darken-3',
-      count: '650',
-    },
-    {
-      label: 'Casas Bahia',
-      value: 'casasbahia',
-      icon: 'mdi-home-city',
-      color: 'yellow-darken-3',
-      count: '720',
-    },
-    {
-      label: 'AliExpress',
-      value: 'aliexpress',
-      icon: 'mdi-shopping-outline',
-      color: 'red-darken-1',
-      count: '3.1k',
-    },
-  ])
+  // E-commerce options from API
+  const ecommerceOptions = ref([])
+  const isLoadingEcommerces = ref(false)
+  const errorLoadingEcommerces = ref(false)
 
+  // Fetch e-commerces from API
   const fetchEcommerces = async () => {
-    searchForm.value
+    isLoadingEcommerces.value = true
+    errorLoadingEcommerces.value = false
 
-    isSearching.value = true
-    isLoading.value = true
+    try {
+      const { data, error } = await useSanctumFetch('/api/ecommerces', {
+        method: 'GET',
+      })
 
-    const { data, error } = await useSanctumFetch(`/api/ecommerces`, {
-      method: 'GET',
-    })
+      if (data.value) {
+        // Assumindo que a API retorna { data: [...] }
+        ecommerceOptions.value = data.value.data || data.value
+      }
 
-    if (data.value) {
-      ecommerceOptions.value = data.value.data
-    }
-
-    if (error.value) {
+      if (error.value) {
+        throw new Error('Failed to fetch ecommerces')
+      }
+    } catch (err) {
+      console.error('Error fetching ecommerces:', err)
+      errorLoadingEcommerces.value = true
       ecommerceOptions.value = []
+    } finally {
+      isLoadingEcommerces.value = false
     }
   }
 
   // Filter states
-  const selectedSort = ref('relevance')
+  const selectedSort = ref('id')
   const selectedEcommerces = ref([])
   const selectedRating = ref(null)
 
@@ -345,7 +349,7 @@
   const activeFiltersCount = computed(() => {
     let count = 0
 
-    if (selectedSort.value !== 'relevance') count++
+    if (selectedSort.value !== 'id') count++
     if (selectedEcommerces.value.length > 0) count++
     if (selectedRating.value !== null) count++
 
@@ -354,12 +358,15 @@
 
   const selectedEcommercesDetails = computed(() => {
     return ecommerceOptions.value.filter(ecommerce =>
-      selectedEcommerces.value.includes(ecommerce.value)
+      selectedEcommerces.value.includes(ecommerce.id)
     )
   })
 
   const isAllEcommercesSelected = computed(() => {
-    return selectedEcommerces.value.length === ecommerceOptions.value.length
+    return (
+      selectedEcommerces.value.length === ecommerceOptions.value.length &&
+      ecommerceOptions.value.length > 0
+    )
   })
 
   const isSomeEcommercesSelected = computed(() => {
@@ -372,42 +379,39 @@
   // Methods
   const getSortIcon = value => {
     const icons = {
-      relevance: 'mdi-star-outline',
-      price_asc: 'mdi-arrow-up',
-      price_desc: 'mdi-arrow-down',
-      reviews_count: 'mdi-comment-multiple-outline',
-      reviews_rating: 'mdi-star',
+      id: 'mdi-star-outline',
+      price: 'mdi-arrow-up',
+      reviews: 'mdi-comment-multiple-outline',
+      rating: 'mdi-star',
     }
     return icons[value] || 'mdi-sort'
   }
 
-  const getEcommerceColor = value => {
-    const ecommerce = ecommerceOptions.value.find(e => e.value === value)
-    return ecommerce?.color || 'grey'
-  }
+  const formatCount = count => {
+    if (!count) return '0'
 
-  const getEcommerceIcon = value => {
-    const ecommerce = ecommerceOptions.value.find(e => e.value === value)
-    return ecommerce?.icon || 'mdi-store'
+    if (count >= 1000000) {
+      return (count / 1000000).toFixed(1) + 'M'
+    } else if (count >= 1000) {
+      return (count / 1000).toFixed(1) + 'k'
+    }
+
+    return count.toString()
   }
 
   const toggleAllEcommerces = () => {
     if (isAllEcommercesSelected.value) {
       selectedEcommerces.value = []
     } else {
-      selectedEcommerces.value = ecommerceOptions.value.map(e => e.value)
+      selectedEcommerces.value = ecommerceOptions.value.map(e => e.id)
     }
   }
 
-  const removeEcommerce = value => {
-    const index = selectedEcommerces.value.indexOf(value)
+  const removeEcommerce = id => {
+    const index = selectedEcommerces.value.indexOf(id)
     if (index > -1) {
       selectedEcommerces.value.splice(index, 1)
     }
-  }
-
-  const formatPrice = value => {
-    return new Intl.NumberFormat('pt-BR').format(value)
   }
 
   const closeModal = () => {
@@ -415,7 +419,7 @@
   }
 
   const clearAllFilters = () => {
-    selectedSort.value = 'relevance'
+    selectedSort.value = 'id'
     selectedEcommerces.value = []
     selectedRating.value = null
   }
@@ -431,6 +435,7 @@
     closeModal()
   }
 
+  // Initialize on mount
   onMounted(() => {
     fetchEcommerces()
   })
@@ -516,59 +521,10 @@
     margin: 2px 4px 2px 0;
   }
 
-  .price-inputs {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .price-input {
-    flex: 1;
-  }
-
-  .price-separator {
-    color: #757575;
-    font-size: 0.875rem;
-    white-space: nowrap;
-  }
-
-  .price-slider {
-    margin-top: 16px;
-  }
-
-  .rating-options {
-    display: flex;
-    justify-content: center;
-  }
-
-  .rating-toggle {
-    width: 100%;
-  }
-
-  .rating-btn {
-    flex: 1;
-    flex-direction: column;
-    padding: 16px 8px;
-    min-height: 80px;
-  }
-
   .filter-actions {
     flex-shrink: 0;
     border-top: 1px solid #e0e0e0;
     background: #fafafa;
-  }
-
-  /* Mobile optimizations */
-  @media (max-width: 600px) {
-    .rating-toggle {
-      flex-direction: column;
-    }
-
-    .rating-btn {
-      width: 100%;
-      margin-bottom: 8px;
-      min-height: 60px;
-    }
   }
 
   /* Custom scrollbar */
