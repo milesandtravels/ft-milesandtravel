@@ -174,6 +174,7 @@
     id: number
     name: string
     logo_url: string
+    type: ProgramType
   }
 
   interface Ecommerce {
@@ -185,9 +186,7 @@
   type ProgramType = 'miles' | 'points' | 'cashback'
 
   interface Promotion {
-    id: number
     current_value: number
-    program_type: ProgramType
     program: Program
     ecommerce: Ecommerce
   }
@@ -258,23 +257,19 @@
   // Filter options - fetch in parallel
   const [
     { data: ecommercesData },
-    { data: pointsProgramsData },
-    { data: milesProgramsData },
-    { data: cashbackProgramsData },
+    { data: programsData },
     { data: categoriesData },
   ] = await Promise.all([
     useSanctumFetch<any[]>('/api/ecommerces'),
-    useSanctumFetch<any[]>('/api/points-programs'),
-    useSanctumFetch<any[]>('/api/miles-programs'),
-    useSanctumFetch<any[]>('/api/cashback-programs'),
+    useSanctumFetch<any[]>('/api/programs'),
     useSanctumFetch<string[]>('/api/categories'),
   ])
 
   const filterOptions = computed(() => ({
     ecommerces: ecommercesData.value?.data || [],
-    pointsPrograms: pointsProgramsData.value?.data || [],
-    milesPrograms: milesProgramsData.value?.data || [],
-    cashbackPrograms: cashbackProgramsData.value?.data || [],
+    pointsPrograms: programsData.value?.points || [],
+    milesPrograms: programsData.value?.miles || [],
+    cashbackPrograms: programsData.value?.cashback || [],
     categories: categoriesData.value || [],
     ...FILTER_CONFIGS,
   }))

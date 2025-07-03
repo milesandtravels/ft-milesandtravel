@@ -75,7 +75,7 @@
             Valor Atual da Promoção
           </p>
           <p class="text-h4 font-weight-bold text-primary mb-0">
-            {{ formatValue(promotion.current_value, promotion.program_type) }}
+            {{ formatValue(promotion.current_value, promotion.program.type) }}
           </p>
         </div>
       </div>
@@ -97,15 +97,16 @@
 </template>
 
 <script setup lang="ts">
+  type ProgramType = 'miles' | 'points' | 'cashback'
   interface Props {
     promotion: {
       id: number
       current_value: number
-      program_type: 'miles' | 'points' | 'cashback'
       program: {
         id: number
         name: string
         logo_url: string
+        type: ProgramType
       }
       ecommerce: {
         id: number

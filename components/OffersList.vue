@@ -30,11 +30,11 @@
               </div>
 
               <v-chip
-                :color="getProgramTypeColor(offer.program_type)"
+                :color="getProgramTypeColor(offer.program.type)"
                 size="small"
                 variant="flat"
               >
-                {{ getProgramTypeLabel(offer.program_type) }}
+                {{ getProgramTypeLabel(offer.program.type) }}
               </v-chip>
             </div>
           </v-card-item>
@@ -126,18 +126,18 @@
               </div>
 
               <v-chip
-                :color="getProgramTypeColor(offer.program_type)"
+                :color="getProgramTypeColor(offer.program.type)"
                 variant="tonal"
                 size="small"
                 class="reward-chip"
               >
                 <v-icon
-                  :icon="getProgramTypeIcon(offer.program_type)"
+                  :icon="getProgramTypeIcon(offer.program.type)"
                   size="16"
                   class="me-1"
                 />
                 {{ offer.reward_value }} de
-                {{ offer.program_type === 'points' ? 'pontos' : 'cashback' }}
+                {{ offer.program.type === 'points' ? 'pontos' : 'cashback' }}
               </v-chip>
             </div>
           </v-card-text>
@@ -205,14 +205,14 @@
     created_at: string
     updated_at: string | null
     value_per_mile?: number
+    type: ProgramType
   }
 
-  type ProgramType = 'cashback' | 'points'
+  type ProgramType = 'cashback' | 'points' | 'miles'
 
   interface OfferItem {
     ecommerce: Ecommerce
     product: Product
-    program_type: ProgramType
     program: Program
     current_value_promotion: number
     selected: boolean
