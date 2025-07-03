@@ -103,7 +103,7 @@
         },
         query: {
           device_name: navigator.userAgent,
-          redirect_url: window.location.href,
+          redirect_url: window.location.origin + '/callback-email-confirmation',
         },
       })
 
