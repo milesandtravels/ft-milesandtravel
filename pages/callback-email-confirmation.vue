@@ -10,6 +10,10 @@
         `/api/email/verify/${route.query?.id_verification}/${route.query?.hash}`,
         {
           method: 'GET',
+          query: {
+            expires: route.query?.expires,
+            signature: route.query?.signature
+          }
         }
       )
 

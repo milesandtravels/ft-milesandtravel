@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <TheHeader
+      v-if="value"
       :user="value"
       @account-settings="handleAccountSettings"
       @help="handleHelp"
@@ -9,12 +10,13 @@
     />
 
     <TheSidebar
+      v-if="value"
       v-model="sidebarOpen"
       :current-route="currentRoute"
       @navigate="handleNavigation"
     />
 
-    <TermsModal />
+    <TermsModal v-if="value" />
 
     <v-main class="main-content">
       <v-container class="responsive-main-container pa-6">

@@ -79,7 +79,7 @@
                     placeholder="Confirme sua senha"
                     prepend-inner-icon="mdi-lock-check"
                     required
-                    :rules="passwordConfirmationRules"
+                    :rules="passwordConfirmationRules(password)"
                     :type="showPasswordConfirmation ? 'text' : 'password'"
                     variant="outlined"
                     @click:append-inner="
@@ -142,168 +142,144 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+import { ref } from 'vue'
 import { useSnackbarStore } from '~/store/snackbar'
-  const router = useRouter()
-  interface RegisterResponse {
-    token: string
-  }
-  // Form data
-  const form = ref()
-  const name = ref('')
-  const email = ref('')
-  const password = ref('')
-  const passwordConfirmation = ref('')
-  const isFormValid = ref(false)
 
-  // Password visibility
-  const showPassword = ref(false)
-  const showPasswordConfirmation = ref(false)
+const router = useRouter()
 
-  // States
-  const isLoading = ref(false)
+interface RegisterResponse {
+  token: string
+}
 
-  // Validation rules
-  const nameRules = [
-    (v: string) => !!v || 'Nome é obrigatório',
-    (v: string) => v.length >= 2 || 'Nome deve ter pelo menos 2 caracteres',
-    (v: string) => v.length <= 50 || 'Nome muito longo',
-  ]
+// Form data
+const form = ref()
+const name = ref('')
+const email = ref('')
+const password = ref('')
+const passwordConfirmation = ref('')
+const isFormValid = ref(false)
 
-  const emailRules = [
-    (v: string) => !!v || 'Email é obrigatório',
-    (v: string) => /.+@.+\..+/.test(v) || 'Email deve ser válido',
-  ]
+// Password visibility
+const showPassword = ref(false)
+const showPasswordConfirmation = ref(false)
 
-  const passwordRules = [
-    (v: string) => !!v || 'Senha é obrigatória',
-    (v: string) => v.length >= 8 || 'Senha deve ter pelo menos 8 caracteres',
-    (v: string) =>
-      /(?=.*[a-z])/.test(v) ||
-      'Senha deve conter pelo menos uma letra minúscula',
-    (v: string) =>
-      /(?=.*[A-Z])/.test(v) ||
-      'Senha deve conter pelo menos uma letra maiúscula',
-    (v: string) =>
-      /(?=.*\d)/.test(v) || 'Senha deve conter pelo menos um número',
-  ]
+// States
+const isLoading = ref(false)
 
-  const passwordConfirmationRules = [
-    (v: string) => !!v || 'Confirmação de senha é obrigatória',
-    (v: string) => v === password.value || 'As senhas não coincidem',
-  ]
+// Use validators composable
+const { passwordRules, passwordConfirmationRules, emailRules, nameRules } = useValidators()
 
-  const snackbarStore = useSnackbarStore()
+const snackbarStore = useSnackbarStore()
 
-  const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
+const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
 
-  const onSubmit = async () => {
-    if (!isFormValid.value) return
+const onSubmit = async () => {
+  if (!isFormValid.value) return
 
-    isLoading.value = true
+  isLoading.value = true
 
-    const payload = {
-      name: name.value,
-      email: email.value,
-      password: password.value,
-      confirm_password: passwordConfirmation.value,
-    }
-
-    const { data, status, error } = await useSanctumFetch<RegisterResponse>(
-      '/api/register',
-      {
-        method: 'POST',
-        body: payload,
-        query: {
-          device_name: navigator.userAgent,
-          redirect_url: window.location.href,
-        },
-      }
-    )
-
-    if (data.value) {
-      snackbarStore.showSuccess('Cadastro realizado, confirmar e-mail.')
-      isLoading.value = false
-
-      useCookie('sanctum.token.cookie').value = data.value?.token
-      const { refreshIdentity } = useSanctumAuth()
-      await refreshIdentity()
-
-      router.push({
-        path: '/confirmation-email',
-        query: {
-          email: email.value,
-        },
-      })
-    }
-
-    if (error.value) {
-      console.error('Register error:', error)
-      isLoading.value = false
-
-      const errorMessage = (error.value?.data as any).message
-      if (errorMessage) {
-        snackbarStore.showError(errorMessage)
-        return
-      }
-
-      snackbarStore.showError('Erro ao criar conta. Tente novamente.')
-    }
+  const payload = {
+    name: name.value,
+    email: email.value,
+    password: password.value,
+    confirm_password: passwordConfirmation.value,
   }
 
-  const goToLogin = () => {
-    navigateTo('/login')
+  const { data, status, error } = await useSanctumFetch<RegisterResponse>(
+    '/api/register',
+    {
+      method: 'POST',
+      body: payload,
+      query: {
+        device_name: navigator.userAgent,
+        redirect_url: window.location.origin + '/callback-email-confirmation',
+      },
+    }
+  )
+
+  if (data.value) {
+    snackbarStore.showSuccess('Cadastro realizado, confirmar e-mail.')
+    isLoading.value = false
+
+    useCookie('sanctum.token.cookie').value = data.value?.token
+    const { refreshIdentity } = useSanctumAuth()
+    await refreshIdentity()
+
+    router.push({
+      path: '/confirmation-email',
+      query: {
+        email: email.value,
+      },
+    })
   }
+
+  if (error.value) {
+    console.error('Register error:', error)
+    isLoading.value = false
+
+    const errorMessage = (error.value?.data as any).message
+    if (errorMessage) {
+      snackbarStore.showError(errorMessage)
+      return
+    }
+
+    snackbarStore.showError('Erro ao criar conta. Tente novamente.')
+  }
+}
+
+const goToLogin = () => {
+  navigateTo('/login')
+}
 </script>
 
 <style scoped>
-  .v-card {
-    max-width: 100%;
-  }
+.v-card {
+  max-width: 100%;
+}
 
-  .v-btn {
-    text-transform: none;
-  }
+.v-btn {
+  text-transform: none;
+}
 
-  /* Success state styling */
-  .v-icon.mdi-email-check {
-    animation: success-bounce 0.6s ease-out;
-  }
+/* Success state styling */
+.v-icon.mdi-email-check {
+  animation: success-bounce 0.6s ease-out;
+}
 
-  @keyframes success-bounce {
-    0% {
-      transform: scale(0) rotate(-45deg);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.1) rotate(0deg);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1) rotate(0deg);
-      opacity: 1;
-    }
+@keyframes success-bounce {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
   }
+  50% {
+    transform: scale(1.1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
 
-  /* Smooth transitions */
-  .v-btn {
-    transition: all 0.3s ease;
-  }
+/* Smooth transitions */
+.v-btn {
+  transition: all 0.3s ease;
+}
 
-  .v-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-  }
+.v-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
 
-  /* Email highlight */
-  .text-primary {
-    background: linear-gradient(45deg, #1976d2, #42a5f5);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+/* Email highlight */
+.text-primary {
+  background: linear-gradient(45deg, #1976d2, #42a5f5);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-  /* Password field styling */
-  .v-text-field :deep(.v-field__append-inner) {
-    cursor: pointer;
-  }
+/* Password field styling */
+.v-text-field :deep(.v-field__append-inner) {
+  cursor: pointer;
+}
 </style>

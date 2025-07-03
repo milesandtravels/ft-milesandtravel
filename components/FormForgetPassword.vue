@@ -67,6 +67,7 @@
                   :loading="isLoading"
                   size="large"
                   type="submit"
+                  :disabled="!isFormValid"
                 >
                   <v-icon class="mr-2" left>mdi-email-send</v-icon>
                   {{ isLoading ? 'Enviando...' : 'Recuperar Senha' }}
@@ -89,144 +90,126 @@
         </v-card>
       </v-col>
     </v-row>
-
-    <v-snackbar
-      v-model="showSnackbar"
-      :color="snackbarColor"
-      timeout="4000"
-      top
-    >
-      {{ snackbarMessage }}
-      <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
-      </template>
-    </v-snackbar>
   </v-container>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+import { ref } from 'vue'
+import { useSnackbarStore } from '~/store/snackbar'
 
-  // Form data
-  const form = ref()
-  const email = ref('')
-  const isFormValid = ref(false)
+interface ForgotPasswordResponse {
+  message: string
+}
 
-  // States
-  const isLoading = ref(false)
-  const isSuccess = ref(false)
+// Form data
+const form = ref()
+const email = ref('')
+const isFormValid = ref(false)
 
-  // Snackbar
-  const showSnackbar = ref(false)
-  const snackbarMessage = ref('')
-  const snackbarColor = ref('error')
+// States
+const isLoading = ref(false)
+const isSuccess = ref(false)
 
-  // Validation rules
-  const emailRules = [
-    (v: string) => !!v || 'Email é obrigatório',
-    (v: string) => /.+@.+\..+/.test(v) || 'Email deve ser válido',
-  ]
+// Use validators composable
+const { emailRules } = useValidators()
 
-  // Show notification
-  const showNotification = (message: string, color = 'error') => {
-    snackbarMessage.value = message
-    snackbarColor.value = color
-    showSnackbar.value = true
+const snackbarStore = useSnackbarStore()
+
+// Submit handler
+const onSubmit = async () => {
+  if (!isFormValid.value) return
+
+  isLoading.value = true
+
+  const payload = {
+    email: email.value,
   }
 
-  // Mock API call for password recovery
-  const mockForgotPassword = async (email: string) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simula diferentes cenários
-        if (email.includes('@')) {
-          resolve({
-            success: true,
-            message: 'Link de recuperação enviado com sucesso',
-          })
-        } else {
-          reject(new Error('Email não encontrado'))
-        }
-      }, 1200)
-    })
-  }
-
-  // Submit handler
-  const onSubmit = async () => {
-    if (!isFormValid.value) return
-
-    isLoading.value = true
-
-    try {
-      const result = await mockForgotPassword(email.value)
-      console.log('Forgot password success:', result)
-
-      // Show success state
-      isSuccess.value = true
-    } catch (error) {
-      console.error('Forgot password error:', error)
-      showNotification(
-        'Erro ao enviar email. Verifique se o email está correto.'
-      )
-    } finally {
-      isLoading.value = false
+  const { data, status, error } = await useSanctumFetch<ForgotPasswordResponse>(
+    '/api/forgot-password',
+    {
+      method: 'POST',
+      body: payload,
+      query: {
+        redirect_url: window.location.origin + '/reset-password',
+      },
     }
+  )
+
+  if (data.value) {
+    console.log('Forgot password success:', data.value)
+    
+    // Show success state
+    isSuccess.value = true
+    isLoading.value = false
   }
 
-  const router = useRouter()
-  // Go back to login
-  const goBackToLogin = () => {
-    console.log('Going back to login')
-    // Em uma aplicação real:
-    navigateTo('/login')
+  if (error.value) {
+    console.error('Forgot password error:', error)
+    isLoading.value = false
 
-    // Para demo, reseta o formulário
-    if (isSuccess.value) {
-      isSuccess.value = false
-      email.value = ''
-      form.value?.reset()
+    const errorMessage = (error.value?.data as any).message
+    if (errorMessage) {
+      snackbarStore.showError(errorMessage)
+      return
     }
-  }
 
-  // Log test info
-  console.log('💡 Qualquer email válido funcionará para teste')
+    snackbarStore.showError('Erro ao enviar email. Verifique se o email está correto.')
+  }
+}
+
+const router = useRouter()
+
+// Go back to login
+const goBackToLogin = () => {
+  navigateTo('/login')
+}
+
+// Reset form when going back from success state
+const resetForm = () => {
+  if (isSuccess.value) {
+    isSuccess.value = false
+    email.value = ''
+    form.value?.reset()
+  }
+}
 </script>
 
 <style scoped>
-  .v-card {
-    max-width: 100%;
-  }
+.v-card {
+  max-width: 100%;
+}
 
-  .v-btn {
-    text-transform: none;
-  }
+.v-btn {
+  text-transform: none;
+}
 
-  /* Success state styling */
-  .v-icon.mdi-check-circle {
-    animation: success-bounce 0.6s ease-out;
-  }
+/* Success state styling */
+.v-icon.mdi-check-circle {
+  animation: success-bounce 0.6s ease-out;
+}
 
-  @keyframes success-bounce {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
+@keyframes success-bounce {
+  0% {
+    transform: scale(0);
+    opacity: 0;
   }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
-  /* Smooth transitions */
-  .v-btn {
-    transition: all 0.3s ease;
-  }
+/* Smooth transitions */
+.v-btn {
+  transition: all 0.3s ease;
+}
 
-  .v-btn:hover {
-    transform: translateY(-1px);
-  }
+.v-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
 </style>
