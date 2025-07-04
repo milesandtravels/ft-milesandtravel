@@ -60,10 +60,10 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import type { Product } from '~/interfaces/products'
+import type { Product } from '~/interfaces/products'
 
   import type { VForm } from 'vuetify/components'
-  import type { SearchRecord } from '~/interfaces/search'
+import type { SearchRecord } from '~/interfaces/search'
 
   const searchId = ref<number>()
   const searchForm = ref<VForm | null>(null)
@@ -73,9 +73,25 @@
   const isSearching = ref(false)
   const hasSearched = ref(false)
 
+  const route = useRoute()
+  const router = useRouter()
+
   onMounted(() => {
-    fetchGenerateSearchId()
+    initializeSearch()
   })
+
+  const initializeSearch = async () => {
+    // Verifica se há um searchId na URL
+    const urlSearchId = route.query.searchId as string
+    
+    if (urlSearchId && !isNaN(Number(urlSearchId))) {
+      // Se tem searchId na URL, usa ele
+      searchId.value = Number(urlSearchId)
+    } else {
+      // Se não tem searchId na URL, gera um novo e adiciona na URL
+      await fetchGenerateSearchId()
+    }
+  }
 
   const fetchGenerateSearchId = async () => {
     const { data, refresh } = await useSanctumFetch<SearchRecord>(
@@ -91,6 +107,16 @@
     }
 
     searchId.value = data.value?.data.id
+    
+    // Adiciona o searchId na URL
+    if (searchId.value) {
+      await router.push({
+        query: {
+          ...route.query,
+          searchId: searchId.value.toString()
+        }
+      })
+    }
   }
 
   const fetchProducts = async () => {
@@ -120,8 +146,6 @@
       results.value = []
     }
 
-    // const { data } = (await mockResponse()) as any
-    // results.value = data
   }
 
   const handleSearch = async () => {
