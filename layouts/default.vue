@@ -23,6 +23,8 @@
         <slot />
       </v-container>
     </v-main>
+
+    <UniversalLoading />
   </v-app>
 </template>
 

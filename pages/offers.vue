@@ -7,12 +7,11 @@
           <div>
             <h1 class="text-h4 font-weight-bold mb-2">Ofertas Encontradas</h1>
             <p class="text-body-1 text-medium-emphasis">
-              {{ offers.length }} ofertas disponíveis com cashback, pontos e
-              milhas
+              {{ filteredOffers.length }} de {{ offers.length }} ofertas disponíveis com cashback, pontos e milhas
             </p>
           </div>
 
-          <!-- Filtros -->
+          <!-- Filtros rápidos (chips) -->
           <div class="d-flex align-center gap-2 flex-wrap">
             <v-chip-group
               v-model="selectedProgramType"
@@ -28,6 +27,10 @@
                 <v-icon icon="mdi-star" size="16" class="me-1" />
                 Pontos
               </v-chip>
+              <v-chip value="miles" filter>
+                <v-icon icon="mdi-airplane" size="16" class="me-1" />
+                Milhas
+              </v-chip>
             </v-chip-group>
 
             <v-btn
@@ -42,6 +45,15 @@
         </div>
       </v-col>
     </v-row>
+
+    <!-- Componente de Filtros -->
+    <OffersFilters
+      ref="filtersComponent"
+      :available-offers="offers"
+      :loading="loading"
+      @filter:apply="handleFilterApply"
+      @filter:clear="handleFilterClear"
+    />
 
     <!-- Loading state -->
     <div v-if="loading" class="text-center py-8">
@@ -76,149 +88,259 @@
 </template>
 
 <script setup lang="ts">
-  import OffersList from '~/components/OffersList.vue'
-  import type { OfferItem, ProgramType } from '~/interfaces/offers'
-  definePageMeta({
-    middleware: ['sanctum:auth'],
-  })
-  // Estados reativo
-  const loading = ref<boolean>(false)
-  const route = useRoute()
-  const offers = ref<OfferItem[]>([])
-  const selectedProgramType = ref<ProgramType[]>([])
-  const snackbar = ref({
-    show: false,
-    message: '',
-    color: 'success',
+import OffersFilters from '~/components/OffersFilters.vue'
+import OffersList from '~/components/OffersList.vue'
+import type { FilterOptions, OfferItem, ProgramType } from '~/interfaces/offers'
+
+definePageMeta({
+  middleware: ['sanctum:auth'],
+})
+
+// Estados reativos
+const loading = ref<boolean>(false)
+const route = useRoute()
+const offers = ref<OfferItem[]>([])
+const selectedProgramType = ref<ProgramType[]>([])
+const activeFilters = ref<FilterOptions>({
+  ecommerces: [],
+  products: [],
+  miles_programs: [],
+  points_programs: [],
+  cashback_programs: [],
+  program_types: []
+})
+
+const snackbar = ref({
+  show: false,
+  message: '',
+  color: 'success',
+})
+
+// Referência para o componente de filtros
+const filtersComponent = ref()
+
+// Computed
+const selectedOffers = computed<OfferItem[]>(() =>
+  offers.value.filter(offer => offer.selected)
+)
+
+const filteredOffers = computed<OfferItem[]>(() => {
+  let filtered = offers.value
+
+  // Aplicar filtros rápidos (chips)
+  if (selectedProgramType.value.length > 0) {
+    filtered = filtered.filter(offer =>
+      selectedProgramType.value.includes(offer.program.type)
+    )
+  }
+
+  // Aplicar filtros avançados
+  if (activeFilters.value.ecommerces.length > 0) {
+    filtered = filtered.filter(offer =>
+      activeFilters.value.ecommerces.includes(offer.ecommerce.id)
+    )
+  }
+
+  if (activeFilters.value.products.length > 0) {
+    filtered = filtered.filter(offer =>
+      activeFilters.value.products.includes(offer.product.id)
+    )
+  }
+
+  if (activeFilters.value.miles_programs.length > 0) {
+    filtered = filtered.filter(offer =>
+      activeFilters.value.miles_programs.includes(offer.program.id)
+    )
+  }
+
+  if (activeFilters.value.points_programs.length > 0) {
+    filtered = filtered.filter(offer =>
+      activeFilters.value.points_programs.includes(offer.program.id)
+    )
+  }
+
+  if (activeFilters.value.cashback_programs.length > 0) {
+    filtered = filtered.filter(offer =>
+      activeFilters.value.cashback_programs.includes(offer.program.id)
+    )
+  }
+
+  if (activeFilters.value.program_types.length > 0) {
+    filtered = filtered.filter(offer =>
+      activeFilters.value.program_types.includes(offer.program.type)
+    )
+  }
+
+  return filtered
+})
+
+// Métodos
+const buildQueryString = (filters: FilterOptions): string => {
+  const queryParts: string[] = []
+
+  // Adicionar filtros de array
+  const arrayFilters = [
+    { filter: filters.ecommerces, param: 'ecommerces[]' },
+    { filter: filters.products, param: 'products[]' },
+    { filter: filters.miles_programs, param: 'miles_programs[]' },
+    { filter: filters.points_programs, param: 'points_programs[]' },
+    { filter: filters.cashback_programs, param: 'cashback_programs[]' },
+    { filter: filters.program_types, param: 'program_types[]' }
+  ]
+
+  arrayFilters.forEach(({ filter, param }) => {
+    filter.forEach(value => {
+      queryParts.push(`${param}=${encodeURIComponent(value)}`)
+    })
   })
 
-  // Computed
-  const selectedOffers = computed<OfferItem[]>(() =>
-    offers.value.filter(offer => offer.selected)
+  return queryParts.join('&')
+}
+
+const fetchOffers = async (filters?: FilterOptions): Promise<void> => {
+  try {
+    loading.value = true
+    
+    const hasFilters = filters && Object.values(filters).some(
+      val => Array.isArray(val) && val.length > 0
+    )
+
+    let response
+
+    if (hasFilters) {
+      // Se há filtros, usar query string como no exemplo das promoções
+      const queryString = buildQueryString(filters)
+      response = await useSanctumFetch<any>(
+        `/api/searches/${route.query.searchId}/offers?${queryString}`
+      )
+    } else {
+      // Se não há filtros, fazer requisição simples
+      response = await useSanctumFetch<any>(
+        `/api/searches/${route.query.searchId}/offers`
+      )
+    }
+
+    console.log('data', response.data.value.data)
+    offers.value = response.data.value.data.map((offer: any) => ({
+      ...offer,
+      selected: false,
+    }))
+
+    showSnackbar('Ofertas carregadas com sucesso!', 'success')
+  } catch (error) {
+    console.error('Erro ao buscar ofertas:', error)
+    showSnackbar('Erro ao carregar ofertas. Tente novamente.', 'error')
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleFilterApply = async (filters: FilterOptions): Promise<void> => {
+  activeFilters.value = { ...filters }
+  await fetchOffers(filters)
+}
+
+const handleFilterClear = async (): Promise<void> => {
+  activeFilters.value = {
+    ecommerces: [],
+    products: [],
+    miles_programs: [],
+    points_programs: [],
+    cashback_programs: [],
+    program_types: []
+  }
+  selectedProgramType.value = []
+  await fetchOffers()
+}
+
+const handleOfferSelection = (updatedOffer: OfferItem): void => {
+  const index = offers.value.findIndex(
+    offer =>
+      offer.ecommerce.id === updatedOffer.ecommerce.id &&
+      offer.product.id === updatedOffer.product.id &&
+      offer.program.id === updatedOffer.program.id
   )
 
-  const filteredOffers = computed<OfferItem[]>(() => {
-    if (selectedProgramType.value.length === 0) {
-      return offers.value
-    }
+  if (index !== -1) {
+    offers.value[index] = { ...updatedOffer }
 
-    return offers.value.filter(offer =>
-      selectedProgramType.value.includes(offer.program_type)
-    )
+    const action = updatedOffer.selected ? 'selecionada' : 'removida'
+    showSnackbar(`Oferta ${action}!`, 'info')
+  }
+}
+
+const processSelectedOffers = (): void => {
+  if (selectedOffers.value.length === 0) {
+    showSnackbar('Selecione pelo menos uma oferta', 'warning')
+    return
+  }
+
+  // Aqui você implementaria a lógica de processamento das ofertas selecionadas
+  console.log('Ofertas selecionadas:', selectedOffers.value)
+
+  showSnackbar(
+    `${selectedOffers.value.length} ofertas processadas com sucesso!`,
+    'success'
+  )
+
+  // Reset das seleções após processamento
+  offers.value.forEach(offer => {
+    offer.selected = false
   })
+}
 
-  // Métodos
-  const fetchOffers = async (): Promise<void> => {
-    try {
-      loading.value = true
-      const { data, refresh } = await useSanctumFetch<any>(
-        `/api/searches/${route.query.searchId}/offers`,
-        {
-          method: 'GET',
-        }
-      )
-
-      console.log('data', data.value.data)
-      offers.value = data.value.data.map((offer: any) => {
-        return {
-          ...offer,
-          selected: false,
-        }
-      })
-
-      showSnackbar('Ofertas carregadas com sucesso!', 'success')
-      loading.value = false
-      await Promise.resolve()
-    } catch (error) {
-      console.error('Erro ao buscar ofertas:', error)
-      showSnackbar('Erro ao carregar ofertas. Tente novamente.', 'error')
-    } finally {
-      loading.value = false
-    }
+const showSnackbar = (message: string, color: string = 'success'): void => {
+  snackbar.value = {
+    show: true,
+    message,
+    color,
   }
+}
 
-  const handleOfferSelection = (updatedOffer: OfferItem): void => {
-    const index = offers.value.findIndex(
-      offer =>
-        offer.ecommerce.id === updatedOffer.ecommerce.id &&
-        offer.product.id === updatedOffer.product.id &&
-        offer.program.id === updatedOffer.program.id
-    )
+// Watchers
+watch(selectedProgramType, async () => {
+  // Os filtros rápidos são aplicados automaticamente via computed
+  // Mas se quiser fazer nova requisição para a API quando mudar:
+  // await fetchOffers({ ...activeFilters.value, program_types: selectedProgramType.value })
+}, { deep: true })
 
-    if (index !== -1) {
-      offers.value[index] = { ...updatedOffer }
+// Lifecycle
+onMounted(async () => {
+  await fetchOffers()
+})
 
-      const action = updatedOffer.selected ? 'selecionada' : 'removida'
-      showSnackbar(`Oferta ${action}!`, 'info')
-    }
-  }
-
-  const processSelectedOffers = (): void => {
-    if (selectedOffers.value.length === 0) {
-      showSnackbar('Selecione pelo menos uma oferta', 'warning')
-      return
-    }
-
-    // Aqui você implementaria a lógica de processamento das ofertas selecionadas
-    console.log('Ofertas selecionadas:', selectedOffers.value)
-
-    showSnackbar(
-      `${selectedOffers.value.length} ofertas processadas com sucesso!`,
-      'success'
-    )
-
-    // Reset das seleções após processamento
-    offers.value.forEach(offer => {
-      offer.selected = false
-    })
-  }
-
-  const showSnackbar = (message: string, color: string = 'success'): void => {
-    snackbar.value = {
-      show: true,
-      message,
-      color,
-    }
-  }
-
-  // Lifecycle
-  onMounted(() => {
-    fetchOffers()
-  })
-
-  // Meta tags para SEO
-  useSeoMeta({
-    title: 'Ofertas com Cashback, Pontos e Milhas',
-    ogTitle: 'Ofertas com Cashback, Pontos e Milhas',
-    description:
-      'Encontre as melhores ofertas com cashback, pontos e milhas dos principais e-commerces',
-    ogDescription:
-      'Encontre as melhores ofertas com cashback, pontos e milhas dos principais e-commerces',
-    ogImage: '/images/og-offers.jpg',
-  })
+// Meta tags para SEO
+useSeoMeta({
+  title: 'Ofertas com Cashback, Pontos e Milhas',
+  ogTitle: 'Ofertas com Cashback, Pontos e Milhas',
+  description:
+    'Encontre as melhores ofertas com cashback, pontos e milhas dos principais e-commerces',
+  ogDescription:
+    'Encontre as melhores ofertas com cashback, pontos e milhas dos principais e-commerces',
+})
 </script>
 
 <style scoped>
+.offers-page {
+  min-height: 100vh;
+  background-color: rgb(var(--v-theme-surface));
+}
+
+@media (max-width: 960px) {
   .offers-page {
-    min-height: 100vh;
-    background-color: rgb(var(--v-theme-surface));
+    padding: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .d-flex.justify-space-between {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 
-  @media (max-width: 960px) {
-    .offers-page {
-      padding: 8px;
-    }
+  .gap-2 {
+    gap: 8px;
   }
-
-  @media (max-width: 600px) {
-    .d-flex.justify-space-between {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-    }
-
-    .gap-2 {
-      gap: 8px;
-    }
-  }
+}
 </style>

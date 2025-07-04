@@ -60,10 +60,12 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-import type { Product } from '~/interfaces/products'
-
   import type { VForm } from 'vuetify/components'
-import type { SearchRecord } from '~/interfaces/search'
+  import type { Product } from '~/interfaces/products'
+  import type { SearchRecord } from '~/interfaces/search'
+  import { useLoadingStore } from '~/store/loading'
+
+  const loadingStore = useLoadingStore()
 
   const searchId = ref<number>()
   const searchForm = ref<VForm | null>(null)
@@ -81,15 +83,80 @@ import type { SearchRecord } from '~/interfaces/search'
   })
 
   const initializeSearch = async () => {
-    // Verifica se há um searchId na URL
-    const urlSearchId = route.query.searchId as string
-    
-    if (urlSearchId && !isNaN(Number(urlSearchId))) {
-      // Se tem searchId na URL, usa ele
-      searchId.value = Number(urlSearchId)
-    } else {
-      // Se não tem searchId na URL, gera um novo e adiciona na URL
-      await fetchGenerateSearchId()
+    // Inicia loading universal
+    loadingStore.startLoading('Inicializando busca...', true)
+
+    try {
+      // Simula progresso
+      loadingStore.updateProgress(20)
+
+      // Verifica se há um searchId na URL
+      const urlSearchId = route.query.searchId as string
+
+      loadingStore.updateProgress(40)
+
+      if (urlSearchId && !isNaN(Number(urlSearchId))) {
+        // Se tem searchId na URL, usa ele e carrega o search_term
+        searchId.value = Number(urlSearchId)
+        loadingStore.updateText('Carregando dados da busca...')
+        loadingStore.updateProgress(60)
+
+        await loadSearchTerm()
+      } else {
+        // Se não tem searchId na URL, gera um novo e adiciona na URL
+        loadingStore.updateText('Gerando nova busca...')
+        loadingStore.updateProgress(60)
+
+        await fetchGenerateSearchId()
+      }
+
+      loadingStore.updateProgress(100)
+
+      // Pequeno delay para suavizar a transição
+      await new Promise(resolve => setTimeout(resolve, 300))
+    } catch (error) {
+      console.error('Erro na inicialização:', error)
+    } finally {
+      loadingStore.stopLoading()
+    }
+  }
+
+  const loadSearchTerm = async () => {
+    if (!searchId.value) return
+
+    try {
+      loadingStore.updateProgress(70)
+
+      const { data, error } = await useSanctumFetch<SearchRecord>(
+        `/api/searches/${searchId.value}`,
+        {
+          method: 'GET',
+        }
+      )
+
+      loadingStore.updateProgress(85)
+
+      if (data.value && data.value.data) {
+        const searchData = data.value.data
+
+        // Carrega o search_term no campo de busca
+        if (searchData.search_term) {
+          searchQuery.value = searchData.search_term
+          hasSearched.value = true
+
+          loadingStore.updateText('Buscando produtos...')
+          loadingStore.updateProgress(90)
+
+          // Executa a busca automaticamente com o termo carregado
+          await fetchProducts(false) // false = não mostrar loading adicional
+        }
+      }
+
+      if (error.value) {
+        console.error('Erro ao carregar search term:', error.value)
+      }
+    } catch (err) {
+      console.error('Erro ao carregar search term:', err)
     }
   }
 
@@ -107,45 +174,62 @@ import type { SearchRecord } from '~/interfaces/search'
     }
 
     searchId.value = data.value?.data.id
-    
+
+    loadingStore.updateProgress(80)
+
     // Adiciona o searchId na URL
     if (searchId.value) {
       await router.push({
         query: {
           ...route.query,
-          searchId: searchId.value.toString()
-        }
+          searchId: searchId.value.toString(),
+        },
       })
     }
   }
 
-  const fetchProducts = async () => {
-    searchForm.value
+  const fetchProducts = async (showIndividualLoading = true) => {
+    if (!searchQuery.value.trim()) return
 
-    isSearching.value = true
-    isLoading.value = true
-
-    const { data, error } = await useSanctumFetch(
-      `/api/searches/${searchId.value}/automatic-products`,
-      {
-        method: 'GET',
-        query: {
-          search_term: searchQuery.value.trim().toLocaleLowerCase(),
-        },
+    try {
+      if (showIndividualLoading) {
+        loadingStore.startLoading('Buscando produtos...')
       }
-    ).finally(() => {
+
+      isSearching.value = true
+      isLoading.value = true
+
+      const { data, error } = await useSanctumFetch(
+        `/api/searches/${searchId.value}/automatic-products`,
+        {
+          method: 'GET',
+          query: {
+            search_term: searchQuery.value.trim().toLocaleLowerCase(),
+          },
+        }
+      )
+
+      if (data.value) {
+        results.value = data.value.data
+        hasSearched.value = true
+      }
+
+      if (error.value) {
+        results.value = []
+        hasSearched.value = true
+      }
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error)
+      results.value = []
+      hasSearched.value = true
+    } finally {
       isSearching.value = false
       isLoading.value = false
-    })
 
-    if (data.value) {
-      results.value = data.value.data
+      if (showIndividualLoading) {
+        loadingStore.stopLoading()
+      }
     }
-
-    if (error.value) {
-      results.value = []
-    }
-
   }
 
   const handleSearch = async () => {
@@ -154,7 +238,8 @@ import type { SearchRecord } from '~/interfaces/search'
     if (!valid) {
       return // Para a execução se inválido
     }
-    fetchProducts()
+
+    await fetchProducts()
   }
 
   const clearAll = () => {
