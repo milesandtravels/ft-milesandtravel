@@ -263,11 +263,6 @@
   }
 
   const handleViewDetails = (promotion: Promotion) => {
-    console.log('Visualizar detalhes da promoção:', promotion.id)
-    // Navegar para página de detalhes ou abrir modal
-    // navigateTo(`/promocoes/${promotion.id}`)
-
-    // Ou mostrar notificação temporária
     showNotification(
       `Visualizando promoção: ${promotion.ecommerce.name} + ${promotion.program.name}`,
       'info'

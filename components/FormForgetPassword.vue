@@ -135,8 +135,6 @@
       })
 
     if (data.value) {
-      console.log('Forgot password success:', data.value)
-
       // Show success state
       isSuccess.value = true
       isLoading.value = false

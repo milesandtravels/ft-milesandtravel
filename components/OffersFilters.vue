@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    v-model="dialogModel"
-    max-width="900px"
-    persistent
-    scrollable
-  >
+  <v-dialog v-model="dialogModel" max-width="900px" persistent scrollable>
     <v-card>
       <v-card-title class="pa-4 bg-primary text-white">
         <div class="d-flex align-center justify-space-between">
@@ -299,256 +294,272 @@
 </template>
 
 <script setup lang="ts">
-import type { FilterData, OfferItem, ProgramType } from '~/interfaces/offers'
+  import type { FilterData, OfferItem, ProgramType } from '~/interfaces/offers'
 
-interface LocalFilters {
-  promotionTypes: ProgramType[]
-  ecommerces: any[]
-  products: number[]
-  milesPrograms: any[]
-  pointsPrograms: any[]
-  cashbackPrograms: any[]
-}
+  interface LocalFilters {
+    promotionTypes: ProgramType[]
+    ecommerces: any[]
+    products: number[]
+    milesPrograms: any[]
+    pointsPrograms: any[]
+    cashbackPrograms: any[]
+  }
 
-interface FilterOptions {
-  ecommerces: number[]
-  products: number[]
-  miles_programs: number[]
-  points_programs: number[]
-  cashback_programs: number[]
-  program_types: ProgramType[]
-}
+  interface FilterOptions {
+    ecommerces: number[]
+    products: number[]
+    miles_programs: number[]
+    points_programs: number[]
+    cashback_programs: number[]
+    program_types: ProgramType[]
+  }
 
-interface Props {
-  modelValue: boolean
-  availableOffers: OfferItem[]
-  filters: FilterOptions
-}
+  interface Props {
+    modelValue: boolean
+    availableOffers: OfferItem[]
+    filters: FilterOptions
+  }
 
-const props = defineProps<Props>()
+  const props = defineProps<Props>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
-  'apply': [filters: FilterOptions]
-  'clear': []
-}>()
+  const emit = defineEmits<{
+    'update:modelValue': [value: boolean]
+    apply: [filters: FilterOptions]
+    clear: []
+  }>()
 
-// Computed para controlar o dialog
-const dialogModel = computed({
-  get: () => props.modelValue,
-  set: (value: boolean) => emit('update:modelValue', value)
-})
-
-// Estados locais
-const loadingOptions = ref(false)
-const applyingFilters = ref(false)
-
-// Filtros locais (cópia dos filtros para edição na modal)
-const localFilters = ref<LocalFilters>({
-  promotionTypes: [],
-  ecommerces: [],
-  products: [],
-  milesPrograms: [],
-  pointsPrograms: [],
-  cashbackPrograms: []
-})
-
-// Dados das opções dos filtros vindos da API
-const filterData = ref<FilterData>({
-  ecommerces: [],
-  points: [],
-  miles: [],
-  cashback: []
-})
-
-// Opções dos filtros
-const programTypeOptions = [
-  { label: 'Cashback', value: 'cashback' as ProgramType },
-  { label: 'Pontos', value: 'points' as ProgramType },
-  { label: 'Milhas', value: 'miles' as ProgramType }
-]
-
-const ecommerceOptions = computed(() => {
-  return filterData.value.ecommerces.map(ecommerce => ({
-    title: ecommerce.name,
-    value: ecommerce,
-    raw: ecommerce
-  })).sort((a, b) => a.title.localeCompare(b.title))
-})
-
-const productOptions = computed(() => {
-  const products = new Map()
-  props.availableOffers.forEach(offer => {
-    if (!products.has(offer.product.id)) {
-      products.set(offer.product.id, {
-        title: offer.product.name,
-        value: offer.product.id,
-        raw: offer.product
-      })
-    }
+  // Computed para controlar o dialog
+  const dialogModel = computed({
+    get: () => props.modelValue,
+    set: (value: boolean) => emit('update:modelValue', value),
   })
-  return Array.from(products.values()).sort((a, b) => a.title.localeCompare(b.title))
-})
 
-const milesProgramOptions = computed(() => {
-  return filterData.value.miles.map(program => ({
-    title: program.name,
-    value: program,
-    raw: program
-  })).sort((a, b) => a.title.localeCompare(b.title))
-})
+  // Estados locais
+  const loadingOptions = ref(false)
+  const applyingFilters = ref(false)
 
-const pointsProgramOptions = computed(() => {
-  return filterData.value.points.map(program => ({
-    title: program.name,
-    value: program,
-    raw: program
-  })).sort((a, b) => a.title.localeCompare(b.title))
-})
-
-const cashbackProgramOptions = computed(() => {
-  return filterData.value.cashback.map(program => ({
-    title: program.name,
-    value: program,
-    raw: program
-  })).sort((a, b) => a.title.localeCompare(b.title))
-})
-
-// Computed para verificar filtros ativos
-const hasActiveFilters = computed(() => {
-  return localFilters.value.promotionTypes.length > 0 ||
-         localFilters.value.ecommerces.length > 0 ||
-         localFilters.value.products.length > 0 ||
-         localFilters.value.milesPrograms.length > 0 ||
-         localFilters.value.pointsPrograms.length > 0 ||
-         localFilters.value.cashbackPrograms.length > 0
-})
-
-// Computed para items selecionados (para exibição)
-const selectedEcommerceItems = computed(() => localFilters.value.ecommerces)
-const selectedProgramItems = computed(() => [
-  ...localFilters.value.milesPrograms.map(p => ({ ...p, type: 'miles' })),
-  ...localFilters.value.pointsPrograms.map(p => ({ ...p, type: 'points' })),
-  ...localFilters.value.cashbackPrograms.map(p => ({ ...p, type: 'cashback' }))
-])
-
-// Métodos auxiliares
-const getProgramTypeIcon = (type: ProgramType) => {
-  const icons = {
-    cashback: 'mdi-cash',
-    points: 'mdi-star',
-    miles: 'mdi-airplane'
-  }
-  return icons[type] || 'mdi-gift'
-}
-
-const getProgramTypeColor = (type: string) => {
-  const colors = {
-    cashback: 'green',
-    points: 'blue',
-    miles: 'purple'
-  }
-  return colors[type] || 'primary'
-}
-
-const getProgramTypeLabel = (type: ProgramType) => {
-  const option = programTypeOptions.find(opt => opt.value === type)
-  return option?.label || type
-}
-
-// Buscar opções dos filtros via API
-const fetchFilterOptions = async () => {
-  try {
-    loadingOptions.value = true
-    
-    const [
-      { data: ecommercesData },
-      { data: programsData }
-    ] = await Promise.all([
-      useSanctumFetch<any>('/api/ecommerces'),
-      useSanctumFetch<any>('/api/programs')
-    ])
-
-    filterData.value = {
-      ecommerces: ecommercesData.value?.data || [],
-      points: programsData.value?.points || [],
-      miles: programsData.value?.miles || [],
-      cashback: programsData.value?.cashback || []
-    }
-  } catch (error) {
-    console.error('Erro ao buscar opções dos filtros:', error)
-  } finally {
-    loadingOptions.value = false
-  }
-}
-
-// Métodos principais
-const applyFilters = async () => {
-  try {
-    applyingFilters.value = true
-    
-    const filters: FilterOptions = {
-      ecommerces: localFilters.value.ecommerces.map(e => e.id),
-      products: localFilters.value.products,
-      miles_programs: localFilters.value.milesPrograms.map(p => p.id),
-      points_programs: localFilters.value.pointsPrograms.map(p => p.id),
-      cashback_programs: localFilters.value.cashbackPrograms.map(p => p.id),
-      program_types: localFilters.value.promotionTypes
-    }
-
-    emit('apply', filters)
-    dialogModel.value = false
-  } finally {
-    applyingFilters.value = false
-  }
-}
-
-const clearAllFilters = () => {
-  localFilters.value = {
+  // Filtros locais (cópia dos filtros para edição na modal)
+  const localFilters = ref<LocalFilters>({
     promotionTypes: [],
     ecommerces: [],
     products: [],
     milesPrograms: [],
     pointsPrograms: [],
-    cashbackPrograms: []
+    cashbackPrograms: [],
+  })
+
+  // Dados das opções dos filtros vindos da API
+  const filterData = ref<FilterData>({
+    ecommerces: [],
+    points: [],
+    miles: [],
+    cashback: [],
+  })
+
+  // Opções dos filtros
+  const programTypeOptions = [
+    { label: 'Cashback', value: 'cashback' as ProgramType },
+    { label: 'Pontos', value: 'points' as ProgramType },
+    { label: 'Milhas', value: 'miles' as ProgramType },
+  ]
+
+  const ecommerceOptions = computed(() => {
+    return filterData.value.ecommerces
+      .map(ecommerce => ({
+        title: ecommerce.name,
+        value: ecommerce,
+        raw: ecommerce,
+      }))
+      .sort((a, b) => a.title.localeCompare(b.title))
+  })
+
+  const productOptions = computed(() => {
+    const products = new Map()
+    props.availableOffers.forEach(offer => {
+      if (!products.has(offer.product.id)) {
+        products.set(offer.product.id, {
+          title: offer.product.name,
+          value: offer.product.id,
+          raw: offer.product,
+        })
+      }
+    })
+    return Array.from(products.values()).sort((a, b) =>
+      a.title.localeCompare(b.title)
+    )
+  })
+
+  const milesProgramOptions = computed(() => {
+    return filterData.value.miles
+      .map(program => ({
+        title: program.name,
+        value: program,
+        raw: program,
+      }))
+      .sort((a, b) => a.title.localeCompare(b.title))
+  })
+
+  const pointsProgramOptions = computed(() => {
+    return filterData.value.points
+      .map(program => ({
+        title: program.name,
+        value: program,
+        raw: program,
+      }))
+      .sort((a, b) => a.title.localeCompare(b.title))
+  })
+
+  const cashbackProgramOptions = computed(() => {
+    return filterData.value.cashback
+      .map(program => ({
+        title: program.name,
+        value: program,
+        raw: program,
+      }))
+      .sort((a, b) => a.title.localeCompare(b.title))
+  })
+
+  // Computed para verificar filtros ativos
+  const hasActiveFilters = computed(() => {
+    return (
+      localFilters.value.promotionTypes.length > 0 ||
+      localFilters.value.ecommerces.length > 0 ||
+      localFilters.value.products.length > 0 ||
+      localFilters.value.milesPrograms.length > 0 ||
+      localFilters.value.pointsPrograms.length > 0 ||
+      localFilters.value.cashbackPrograms.length > 0
+    )
+  })
+
+  // Computed para items selecionados (para exibição)
+  const selectedEcommerceItems = computed(() => localFilters.value.ecommerces)
+  const selectedProgramItems = computed(() => [
+    ...localFilters.value.milesPrograms.map(p => ({ ...p, type: 'miles' })),
+    ...localFilters.value.pointsPrograms.map(p => ({ ...p, type: 'points' })),
+    ...localFilters.value.cashbackPrograms.map(p => ({
+      ...p,
+      type: 'cashback',
+    })),
+  ])
+
+  // Métodos auxiliares
+  const getProgramTypeIcon = (type: ProgramType) => {
+    const icons = {
+      cashback: 'mdi-cash',
+      points: 'mdi-star',
+      miles: 'mdi-airplane',
+    }
+    return icons[type] || 'mdi-gift'
   }
-}
 
-const closeDialog = () => {
-  dialogModel.value = false
-}
-
-// Sincronizar filtros externos com filtros locais
-const syncFiltersFromProps = () => {
-  // Aqui você pode sincronizar os filtros recebidos via props
-  // com os filtros locais se necessário
-}
-
-// Watchers
-watch(() => props.modelValue, (newValue) => {
-  if (newValue) {
-    syncFiltersFromProps()
+  const getProgramTypeColor = (type: string) => {
+    const colors = {
+      cashback: 'green',
+      points: 'blue',
+      miles: 'purple',
+    }
+    return colors[type] || 'primary'
   }
-})
 
-// Inicialização
-onMounted(async () => {
-  await fetchFilterOptions()
-})
+  const getProgramTypeLabel = (type: ProgramType) => {
+    const option = programTypeOptions.find(opt => opt.value === type)
+    return option?.label || type
+  }
+
+  // Buscar opções dos filtros via API
+  const fetchFilterOptions = async () => {
+    try {
+      loadingOptions.value = true
+
+      const [{ data: ecommercesData }, { data: programsData }] =
+        await Promise.all([
+          useSanctumFetch<any>('/api/ecommerces'),
+          useSanctumFetch<any>('/api/programs'),
+        ])
+
+      filterData.value = {
+        ecommerces: ecommercesData.value?.data || [],
+        points: programsData.value?.points || [],
+        miles: programsData.value?.miles || [],
+        cashback: programsData.value?.cashback || [],
+      }
+    } catch (error) {
+      console.error('Erro ao buscar opções dos filtros:', error)
+    } finally {
+      loadingOptions.value = false
+    }
+  }
+
+  // Métodos principais
+  const applyFilters = async () => {
+    try {
+      applyingFilters.value = true
+
+      const filters: FilterOptions = {
+        ecommerces: localFilters.value.ecommerces.map(e => e.id),
+        products: localFilters.value.products,
+        miles_programs: localFilters.value.milesPrograms.map(p => p.id),
+        points_programs: localFilters.value.pointsPrograms.map(p => p.id),
+        cashback_programs: localFilters.value.cashbackPrograms.map(p => p.id),
+        program_types: localFilters.value.promotionTypes,
+      }
+
+      emit('apply', filters)
+      dialogModel.value = false
+    } finally {
+      applyingFilters.value = false
+    }
+  }
+
+  const clearAllFilters = () => {
+    localFilters.value = {
+      promotionTypes: [],
+      ecommerces: [],
+      products: [],
+      milesPrograms: [],
+      pointsPrograms: [],
+      cashbackPrograms: [],
+    }
+  }
+
+  const closeDialog = () => {
+    dialogModel.value = false
+  }
+
+  // Sincronizar filtros externos com filtros locais
+  const syncFiltersFromProps = () => {
+    // Aqui você pode sincronizar os filtros recebidos via props
+    // com os filtros locais se necessário
+  }
+
+  // Watchers
+  watch(
+    () => props.modelValue,
+    newValue => {
+      if (newValue) {
+        syncFiltersFromProps()
+      }
+    }
+  )
+
+  // Inicialização
+  onMounted(async () => {
+    await fetchFilterOptions()
+  })
 </script>
 
 <style scoped>
-.gap-2 {
-  gap: 8px;
-}
+  .gap-2 {
+    gap: 8px;
+  }
 
-:deep(.v-dialog) {
-  align-items: flex-start;
-  padding-top: 50px;
-}
+  :deep(.v-dialog) {
+    align-items: flex-start;
+    padding-top: 50px;
+  }
 
-:deep(.v-card-text) {
-  max-height: 70vh;
-  overflow-y: auto;
-}
+  :deep(.v-card-text) {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
 </style>

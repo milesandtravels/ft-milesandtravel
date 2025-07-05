@@ -216,7 +216,7 @@
   const handleNotifications = () => {
     showUserMenu.value = false
     showNotification('Abrindo configurações de notificações...', 'info')
-    emit('notifications')
+    navigateTo('/notifications')
   }
 
   const handleHelp = () => {
