@@ -516,26 +516,11 @@
   // Computed
   const currentStep = computed(() => {
     const step = onboardingSteps[currentStepIndex.value]
-    console.log(
-      'Current step:',
-      step?.id,
-      'index:',
-      currentStepIndex.value,
-      'total steps:',
-      onboardingSteps.length
-    )
     return step
   })
 
   const isLastStep = computed(() => {
     const isLast = currentStepIndex.value >= onboardingSteps.length - 1
-    console.log('🔚 isLastStep calculado:', {
-      currentIndex: currentStepIndex.value,
-      totalSteps: onboardingSteps.length,
-      isLast,
-      calculation: `${currentStepIndex.value} >= ${onboardingSteps.length - 1}`,
-      stepIds: onboardingSteps.map(s => s.id),
-    })
     return isLast
   })
 
@@ -678,13 +663,11 @@
   }
 
   const skipTour = () => {
-    console.log('❌ skipTour chamado - FECHANDO MODAL')
     showOnboarding.value = false
     emit('tour-skipped')
   }
 
   const finishTour = () => {
-    console.log('🏆 finishTour chamado - COMPLETANDO TOUR')
     showOnboarding.value = false
     showCompletion.value = false
 
@@ -695,7 +678,6 @@
   }
 
   const handleOverlayClick = event => {
-    console.log('🎯 Clique no overlay detectado:', event.target)
     // Só fechar se clicar diretamente no overlay, não em elementos filhos
     if (event.target === event.currentTarget) {
       console.log('✅ Clique direto no overlay - fechando tour')
@@ -721,32 +703,14 @@
 
   // Watchers
   watch(showOnboarding, (newValue, oldValue) => {
-    console.log('🔄 showOnboarding mudou:', oldValue, '->', newValue)
     if (newValue) {
       if (props.autoStart) {
-        console.log('🚀 Auto-start ativado, iniciando tour')
         startTour()
       } else {
-        console.log('👋 Mostrando modal de boas-vindas')
         showWelcome.value = true
       }
     }
   })
-
-  watch(showCompletion, (newValue, oldValue) => {
-    console.log('🎉 showCompletion mudou:', oldValue, '->', newValue)
-  })
-
-  watch(currentStepIndex, (newValue, oldValue) => {
-    console.log('📈 currentStepIndex mudou:', oldValue, '->', newValue)
-  })
-
-  watch(
-    () => currentStep.value,
-    (newStep, oldStep) => {
-      console.log('📋 currentStep mudou:', oldStep?.id, '->', newStep?.id)
-    }
-  )
 
   // Lifecycle
   onMounted(() => {

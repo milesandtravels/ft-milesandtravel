@@ -273,7 +273,12 @@
       localStorage.setItem('miles-travels-terms-date', new Date().toISOString())
       showModal.value = false
     }
+     emit('terms-accepted')
+    console.log('🔥 EVENTO terms-accepted EMITIDO!')
   }
+
+  // ADICIONAR APENAS ESTA LINHA
+  const emit = defineEmits(['terms-accepted'])
 
   // Check on component mount
   onMounted(() => {

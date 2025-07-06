@@ -20,6 +20,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "0.11.1",
+    "@vueuse/nuxt": "^13.5.0",
     "nuxt": "^3.17.5",
     "nuxt-auth-sanctum": "0.6.7",
     "pinia": "^3.0.3",

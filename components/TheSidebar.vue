@@ -94,8 +94,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, onUnmounted, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+  import { computed, ref } from 'vue'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -207,17 +207,6 @@
       props.currentRoute === route || props.currentRoute.startsWith(route + '/')
     )
   }
-
-  // Lifecycle
-  onMounted(() => {
-    console.log('🎯 Sidebar montada')
-    console.log('📱 Mobile:', isMobile.value)
-    console.log('🎨 Tema:', props.theme)
-  })
-
-  onUnmounted(() => {
-    console.log('👋 Sidebar desmontada')
-  })
 </script>
 
 <style scoped>
