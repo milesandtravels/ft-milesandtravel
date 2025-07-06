@@ -111,10 +111,12 @@
         lg="4"
         xl="4"
       >
-        <PromotionsCard
-          :promotion="promotion"
-          @view-details="handleViewDetails"
-        />
+        <div data-onboarding="promotions-highlight">
+          <PromotionsCard
+            :promotion="promotion"
+            @view-details="handleViewDetails"
+          />
+        </div>
       </v-col>
     </v-row>
 

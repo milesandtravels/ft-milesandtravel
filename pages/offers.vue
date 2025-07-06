@@ -10,7 +10,7 @@
               {{ filteredOffers.length }} de {{ offers.length }} ofertas
               disponíveis com cashback, pontos e milhas
             </p>
-            
+
             <!-- Botão Voltar -->
             <v-btn
               color="primary"
@@ -101,12 +101,12 @@
 
 <script setup lang="ts">
   import OffersFilters from '~/components/OffersFilters.vue'
-import OffersList from '~/components/OffersList.vue'
-import type {
-  FilterOptions,
-  OfferItem,
-  ProgramType,
-} from '~/interfaces/offers'
+  import OffersList from '~/components/OffersList.vue'
+  import type {
+    FilterOptions,
+    OfferItem,
+    ProgramType,
+  } from '~/interfaces/offers'
 
   definePageMeta({
     middleware: ['sanctum:auth'],

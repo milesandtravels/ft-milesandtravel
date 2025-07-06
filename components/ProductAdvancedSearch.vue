@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-card class="elevation-4 rounded-lg mb-4 mb-md-6 mx-auto search-card">
+    <v-card
+      class="elevation-4 rounded-lg mb-4 mb-md-6 mx-auto search-card"
+      data-onboarding="search-input"
+    >
       <v-card-title class="pa-4 pa-md-6 pb-2 pb-md-4">
         <h2 class="text-h6 font-weight-bold">Buscar Produtos</h2>
       </v-card-title>

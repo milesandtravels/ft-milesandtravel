@@ -23,7 +23,12 @@
         <slot />
       </v-container>
     </v-main>
-
+    <OnboardingTour
+      v-model="showOnboarding"
+      :auto-start="true"
+      @tour-completed="onTourCompleted"
+      @tour-skipped="onTourSkipped"
+    />
     <UniversalLoading />
   </v-app>
 </template>
@@ -31,7 +36,15 @@
 <script setup lang="ts">
   const route = useRoute()
   const { value }: any = useSanctumUser()
+  const showOnboarding = ref(false)
 
+  const onTourCompleted = () => {
+    console.log('Tour completado!')
+  }
+
+  const onTourSkipped = () => {
+    console.log('Tour pulado')
+  }
   const sidebarOpen = ref(false)
 
   const currentRoute = computed(() => route.path)

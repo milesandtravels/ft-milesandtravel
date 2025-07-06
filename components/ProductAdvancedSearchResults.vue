@@ -154,6 +154,7 @@
           :lg="$vuetify.display.lgAndUp ? 3 : 4"
           :xl="$vuetify.display.xlAndUp ? 3 : 3"
           class="product-col"
+          data-onboarding="product-list"
         >
           <v-card
             class="product-card h-100"
