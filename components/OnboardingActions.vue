@@ -1,10 +1,7 @@
 <!-- OnboardingActions.vue -->
 <template>
   <div class="actions-section">
-    <div
-      class="actions-container"
-      :class="{ 'mobile-actions': isMobile }"
-    >
+    <div class="actions-container" :class="{ 'mobile-actions': isMobile }">
       <!-- Left side - Skip button (desktop only) -->
       <div v-if="!isMobile" class="actions-left">
         <v-btn
@@ -67,123 +64,123 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  stepIndex: number
-  isLastStep: boolean
-  isMobile: boolean
-}
+  interface Props {
+    stepIndex: number
+    isLastStep: boolean
+    isMobile: boolean
+  }
 
-defineProps<Props>()
+  defineProps<Props>()
 
-defineEmits<{
-  'next': []
-  'previous': []
-  'skip': []
-}>()
+  defineEmits<{
+    next: []
+    previous: []
+    skip: []
+  }>()
 </script>
 
 <style scoped>
-.actions-section {
-  background: #f5f5f5;
-  border-top: 1px solid #e0e0e0;
-  flex-shrink: 0;
-}
+  .actions-section {
+    background: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+    flex-shrink: 0;
+  }
 
-.actions-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  min-height: 72px;
-}
-
-.actions-left {
-  flex-shrink: 0;
-}
-
-.actions-right {
-  display: flex;
-  gap: 12px;
-  flex: 1;
-  justify-content: flex-end;
-  max-width: 280px;
-}
-
-.mobile-actions {
-  flex-direction: column;
-  gap: 12px;
-  align-items: stretch;
-  min-height: auto;
-}
-
-.mobile-full {
-  width: 100%;
-  justify-content: stretch;
-  max-width: none;
-}
-
-.mobile-btn {
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-}
-
-.mobile-skip {
-  padding: 0 24px 16px;
-  border-top: 1px solid #e0e0e0;
-}
-
-.next-btn {
-  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3) !important;
-  min-width: 120px;
-}
-
-.next-btn:hover {
-  box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4) !important;
-  transform: translateY(-1px);
-}
-
-.skip-btn {
-  opacity: 0.7;
-}
-
-.skip-btn:hover {
-  opacity: 1;
-}
-
-.w-100 {
-  width: 100% !important;
-}
-
-/* Mobile */
-@media screen and (max-width: 768px) {
   .actions-container {
-    padding: 12px 16px !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    min-height: auto !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    min-height: 72px;
   }
 
   .actions-left {
-    order: 2;
-    max-width: none !important;
+    flex-shrink: 0;
   }
 
   .actions-right {
-    order: 1;
-    width: 100% !important;
-    max-width: none !important;
-    min-width: auto !important;
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    justify-content: flex-end;
+    max-width: 280px;
+  }
+
+  .mobile-actions {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    min-height: auto;
+  }
+
+  .mobile-full {
+    width: 100%;
+    justify-content: stretch;
+    max-width: none;
+  }
+
+  .mobile-btn {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
   }
 
   .mobile-skip {
-    padding: 0 16px 12px;
+    padding: 0 24px 16px;
+    border-top: 1px solid #e0e0e0;
   }
 
-  .prev-btn,
   .next-btn {
-    min-width: 0 !important;
-    flex: 1 !important;
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3) !important;
+    min-width: 120px;
   }
-}
+
+  .next-btn:hover {
+    box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4) !important;
+    transform: translateY(-1px);
+  }
+
+  .skip-btn {
+    opacity: 0.7;
+  }
+
+  .skip-btn:hover {
+    opacity: 1;
+  }
+
+  .w-100 {
+    width: 100% !important;
+  }
+
+  /* Mobile */
+  @media screen and (max-width: 768px) {
+    .actions-container {
+      padding: 12px 16px !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      min-height: auto !important;
+    }
+
+    .actions-left {
+      order: 2;
+      max-width: none !important;
+    }
+
+    .actions-right {
+      order: 1;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: auto !important;
+    }
+
+    .mobile-skip {
+      padding: 0 16px 12px;
+    }
+
+    .prev-btn,
+    .next-btn {
+      min-width: 0 !important;
+      flex: 1 !important;
+    }
+  }
 </style>

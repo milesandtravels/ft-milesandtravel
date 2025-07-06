@@ -1,10 +1,7 @@
 <template>
   <div class="progress-container">
     <div class="progress-bar">
-      <div
-        class="progress-fill"
-        :style="{ width: progressPercentage + '%' }"
-      />
+      <div class="progress-fill" :style="{ width: progressPercentage + '%' }" />
     </div>
     <div class="progress-text">
       {{ Math.round(progressPercentage) }}% concluído
@@ -13,52 +10,52 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  currentStep: number
-  totalSteps: number
-}
+  interface Props {
+    currentStep: number
+    totalSteps: number
+  }
 
-const props = defineProps<Props>()
+  const props = defineProps<Props>()
 
-const progressPercentage = computed(() => {
-  return ((props.currentStep + 1) / props.totalSteps) * 100
-})
+  const progressPercentage = computed(() => {
+    return ((props.currentStep + 1) / props.totalSteps) * 100
+  })
 </script>
 
 <style scoped>
-.progress-container {
-  padding: 0 24px 16px;
-  position: relative;
-  z-index: 1;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4caf50 0%, #66bb6a 100%);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-}
-
-.progress-text {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-}
-
-/* Mobile */
-@media screen and (max-width: 768px) {
   .progress-container {
-    padding: 0 16px 12px;
+    padding: 0 24px 16px;
+    position: relative;
+    z-index: 1;
   }
-}
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50 0%, #66bb6a 100%);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  }
+
+  .progress-text {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+  }
+
+  /* Mobile */
+  @media screen and (max-width: 768px) {
+    .progress-container {
+      padding: 0 16px 12px;
+    }
+  }
 </style>

@@ -59,49 +59,54 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  modelValue: boolean
-  isMobile: boolean
-}
+  interface Props {
+    modelValue: boolean
+    isMobile: boolean
+  }
 
-const props = defineProps<Props>()
+  const props = defineProps<Props>()
 
-defineEmits<{
-  'update:modelValue': [value: boolean]
-  'finish-tour': []
-}>()
+  defineEmits<{
+    'update:modelValue': [value: boolean]
+    'finish-tour': []
+  }>()
 
-const dialogMaxWidth = computed(() => {
-  if (typeof window === 'undefined') return '600px'
-  return window.innerWidth <= 768 ? '95vw' : '600px'
-})
+  const dialogMaxWidth = computed(() => {
+    if (typeof window === 'undefined') return '600px'
+    return window.innerWidth <= 768 ? '95vw' : '600px'
+  })
 </script>
 
 <style scoped>
-@keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
-    transform: translate3d(0, 0, 0);
+  @keyframes bounce {
+    0%,
+    20%,
+    53%,
+    80%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    40%,
+    43% {
+      transform: translate3d(0, -15px, 0);
+    }
+    70% {
+      transform: translate3d(0, -7px, 0);
+    }
+    90% {
+      transform: translate3d(0, -2px, 0);
+    }
   }
-  40%, 43% {
-    transform: translate3d(0, -15px, 0);
-  }
-  70% {
-    transform: translate3d(0, -7px, 0);
-  }
-  90% {
-    transform: translate3d(0, -2px, 0);
-  }
-}
 
-.animate-bounce {
-  animation: bounce 1s ease-in-out 3;
-}
+  .animate-bounce {
+    animation: bounce 1s ease-in-out 3;
+  }
 
-.w-100 {
-  width: 100% !important;
-}
+  .w-100 {
+    width: 100% !important;
+  }
 
-.flex-grow-1 {
-  flex-grow: 1 !important;
-}
+  .flex-grow-1 {
+    flex-grow: 1 !important;
+  }
 </style>

@@ -32,114 +32,114 @@
 </template>
 
 <script setup lang="ts">
-import { onboardingSteps } from '~/constants/onboardingSteps';
-import type { OnboardingProps } from '~/interfaces/onboarding';
-import OnboardingCompletionModal from './OnboardingCompletionModal.vue';
-import OnboardingModal from './OnboardingModal.vue';
-import OnboardingWelcomeModal from './OnboardingWelcomeModal.vue';
+  import { onboardingSteps } from '~/constants/onboardingSteps'
+  import type { OnboardingProps } from '~/interfaces/onboarding'
+  import OnboardingCompletionModal from './OnboardingCompletionModal.vue'
+  import OnboardingModal from './OnboardingModal.vue'
+  import OnboardingWelcomeModal from './OnboardingWelcomeModal.vue'
 
-const props = withDefaults(defineProps<OnboardingProps>(), {
-  autoStart: false,
-})
+  const props = withDefaults(defineProps<OnboardingProps>(), {
+    autoStart: false,
+  })
 
-const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
-  'tour-completed': []
-  'tour-skipped': []
-}>()
+  const emit = defineEmits<{
+    'update:modelValue': [value: boolean]
+    'tour-completed': []
+    'tour-skipped': []
+  }>()
 
-// Estado do onboarding
-const showOnboarding = computed({
-  get: () => props.modelValue,
-  set: (value: boolean) => emit('update:modelValue', value),
-})
+  // Estado do onboarding
+  const showOnboarding = computed({
+    get: () => props.modelValue,
+    set: (value: boolean) => emit('update:modelValue', value),
+  })
 
-const showWelcome = ref(false)
-const showCompletion = ref(false)
-const currentStepIndex = ref(0)
+  const showWelcome = ref(false)
+  const showCompletion = ref(false)
+  const currentStepIndex = ref(0)
 
-// Computed
-const currentStep = computed(() => {
-  return onboardingSteps[currentStepIndex.value]
-})
+  // Computed
+  const currentStep = computed(() => {
+    return onboardingSteps[currentStepIndex.value]
+  })
 
-const isLastStep = computed(() => {
-  return currentStepIndex.value >= onboardingSteps.length - 1
-})
+  const isLastStep = computed(() => {
+    return currentStepIndex.value >= onboardingSteps.length - 1
+  })
 
-const isMobile = computed(() => {
-  if (typeof window === 'undefined') return false
-  return window.innerWidth <= 768
-})
+  const isMobile = computed(() => {
+    if (typeof window === 'undefined') return false
+    return window.innerWidth <= 768
+  })
 
-// Métodos
-const startTour = () => {
-  showWelcome.value = false
-  currentStepIndex.value = 0
-  highlightElement()
-}
-
-const nextStep = () => {
-  if (isLastStep.value) {
-    showCompletion.value = true
-  } else {
-    currentStepIndex.value++
+  // Métodos
+  const startTour = () => {
+    showWelcome.value = false
+    currentStepIndex.value = 0
     highlightElement()
   }
-}
 
-const previousStep = () => {
-  if (currentStepIndex.value > 0) {
-    currentStepIndex.value--
-    highlightElement()
+  const nextStep = () => {
+    if (isLastStep.value) {
+      showCompletion.value = true
+    } else {
+      currentStepIndex.value++
+      highlightElement()
+    }
   }
-}
 
-const skipTour = () => {
-  showOnboarding.value = false
-  emit('tour-skipped')
-}
+  const previousStep = () => {
+    if (currentStepIndex.value > 0) {
+      currentStepIndex.value--
+      highlightElement()
+    }
+  }
 
-const finishTour = () => {
-  showOnboarding.value = false
-  showCompletion.value = false
-  
-  // Salvar que o usuário completou o onboarding
-  localStorage.setItem('onboarding-completed', 'true')
-  
-  emit('tour-completed')
-}
+  const skipTour = () => {
+    showOnboarding.value = false
+    emit('tour-skipped')
+  }
 
-const highlightElement = () => {
-  nextTick(() => {
-    if (currentStep.value?.target) {
-      const element = document.querySelector(currentStep.value.target)
-      if (element) {
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        })
+  const finishTour = () => {
+    showOnboarding.value = false
+    showCompletion.value = false
+
+    // Salvar que o usuário completou o onboarding
+    localStorage.setItem('onboarding-completed', 'true')
+
+    emit('tour-completed')
+  }
+
+  const highlightElement = () => {
+    nextTick(() => {
+      if (currentStep.value?.target) {
+        const element = document.querySelector(currentStep.value.target)
+        if (element) {
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          })
+        }
+      }
+    })
+  }
+
+  // Watchers
+  watch(showOnboarding, newValue => {
+    if (newValue) {
+      if (props.autoStart) {
+        startTour()
+      } else {
+        showWelcome.value = true
       }
     }
   })
-}
 
-// Watchers
-watch(showOnboarding, (newValue) => {
-  if (newValue) {
-    if (props.autoStart) {
-      startTour()
-    } else {
-      showWelcome.value = true
+  // Lifecycle
+  onMounted(() => {
+    const hasCompletedOnboarding = localStorage.getItem('onboarding-completed')
+    if (!hasCompletedOnboarding && props.autoStart) {
+      showOnboarding.value = true
     }
-  }
-})
-
-// Lifecycle
-onMounted(() => {
-  const hasCompletedOnboarding = localStorage.getItem('onboarding-completed')
-  if (!hasCompletedOnboarding && props.autoStart) {
-    showOnboarding.value = true
-  }
-})
+  })
 </script>

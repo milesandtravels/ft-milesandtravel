@@ -41,9 +41,7 @@
         </v-alert>
       </v-card-text>
 
-      <v-card-actions
-        :class="isMobile ? 'pa-4 pt-0 flex-column' : 'pa-6 pt-0'"
-      >
+      <v-card-actions :class="isMobile ? 'pa-4 pt-0 flex-column' : 'pa-6 pt-0'">
         <v-btn
           variant="outlined"
           color="grey"
@@ -70,48 +68,48 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  modelValue: boolean
-  isMobile: boolean
-}
+  interface Props {
+    modelValue: boolean
+    isMobile: boolean
+  }
 
-const props = defineProps<Props>()
+  const props = defineProps<Props>()
 
-defineEmits<{
-  'update:modelValue': [value: boolean]
-  'start-tour': []
-  'skip-tour': []
-}>()
+  defineEmits<{
+    'update:modelValue': [value: boolean]
+    'start-tour': []
+    'skip-tour': []
+  }>()
 
-const dialogMaxWidth = computed(() => {
-  if (typeof window === 'undefined') return '600px'
-  return window.innerWidth <= 768 ? '95vw' : '600px'
-})
+  const dialogMaxWidth = computed(() => {
+    if (typeof window === 'undefined') return '600px'
+    return window.innerWidth <= 768 ? '95vw' : '600px'
+  })
 </script>
 
 <style scoped>
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
-  to {
-    transform: rotate(360deg);
+
+  .animate-spin-slow {
+    animation: spin-slow 4s linear infinite;
   }
-}
 
-.animate-spin-slow {
-  animation: spin-slow 4s linear infinite;
-}
+  .w-100 {
+    width: 100% !important;
+  }
 
-.w-100 {
-  width: 100% !important;
-}
+  .flex-column {
+    flex-direction: column !important;
+  }
 
-.flex-column {
-  flex-direction: column !important;
-}
-
-.flex-grow-1 {
-  flex-grow: 1 !important;
-}
+  .flex-grow-1 {
+    flex-grow: 1 !important;
+  }
 </style>

@@ -24,68 +24,68 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  features: string[]
-  isMobile: boolean
-}
+  interface Props {
+    features: string[]
+    isMobile: boolean
+  }
 
-defineProps<Props>()
+  defineProps<Props>()
 </script>
 
 <style scoped>
-.features-section {
-  margin-bottom: 24px;
-}
-
-.features-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1976d2;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-}
-
-.features-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.feature-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 12px;
-  border-left: 3px solid #1976d2;
-}
-
-.feature-number {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #1976d2;
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.feature-text {
-  color: #555;
-  line-height: 1.4;
-}
-
-/* Mobile */
-@media screen and (max-width: 768px) {
-  .feature-item {
-    padding: 10px;
+  .features-section {
+    margin-bottom: 24px;
   }
-}
+
+  .features-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1976d2;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+  }
+
+  .features-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 3px solid #1976d2;
+  }
+
+  .feature-number {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #1976d2;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .feature-text {
+    color: #555;
+    line-height: 1.4;
+  }
+
+  /* Mobile */
+  @media screen and (max-width: 768px) {
+    .feature-item {
+      padding: 10px;
+    }
+  }
 </style>

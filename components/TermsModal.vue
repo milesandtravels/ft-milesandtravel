@@ -273,7 +273,7 @@
       localStorage.setItem('miles-travels-terms-date', new Date().toISOString())
       showModal.value = false
     }
-     emit('terms-accepted')
+    emit('terms-accepted')
     console.log('🔥 EVENTO terms-accepted EMITIDO!')
   }
 
