@@ -9,7 +9,7 @@
           <v-btn
             icon
             variant="text"
-            @click="$router.go(-1)"
+            @click="value ? $router.go(-1) : $router.push('/login')"
             class="back-btn"
             size="large"
           >
@@ -258,6 +258,9 @@
 
 <script setup>
   // Meta tags for SEO
+
+    const { value } = useSanctumUser()
+
   useSeoMeta({
     title: 'Termos de Uso - Miles&Travels',
     description:
@@ -265,10 +268,11 @@
     keywords: 'termos de uso, miles and travels, condições de uso, política',
   })
 
-  // Page setup
   definePageMeta({
-    layout: 'default',
+    middleware: ['sanctum:guest'],
+    layout: 'default'
   })
+ 
 </script>
 
 <style scoped>
