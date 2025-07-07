@@ -15,7 +15,7 @@ export const useAuthGoogle = () => {
           query: {
             device_name: navigator.userAgent,
             app_callback_redirect_url: config.public.appCallbackRedirectUrl,
-            redirect_url: window.location.origin + '/confirmation-email'
+            redirect_url: window.location.origin + '/confirmation-email',
           },
         }
       )

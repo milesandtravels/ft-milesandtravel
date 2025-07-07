@@ -12,6 +12,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appCallbackRedirectUrl: process.env.APP_CALLBACK_REDIRECT_URL,
+      appEnv: process.env.APP_ENV || 'local',
+      googleTagCode: process.env.GOOGLE_TAG_CODE || '',
     },
   },
   vuetify: {
