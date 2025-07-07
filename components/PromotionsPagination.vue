@@ -68,14 +68,10 @@
 </template>
 
 <script setup lang="ts">
+  import type { PromotionMeta } from '~/interfaces/promotions'
+
   interface Props {
-    meta: {
-      current_page: number
-      from: number
-      last_page: number
-      to: number
-      total: number
-    }
+    meta: PromotionMeta
     pending: boolean
   }
 

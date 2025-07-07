@@ -103,8 +103,8 @@
     <!-- Promotions Grid -->
     <v-row v-else-if="promotions?.length">
       <v-col
-        v-for="promotion in promotions"
-        :key="promotion.id"
+        v-for="(promotion, index) in promotions"
+        :key="index"
         cols="12"
         sm="6"
         md="6"
@@ -137,7 +137,7 @@
 
     <!-- Pagination -->
     <PromotionsPagination
-      v-if="meta?.last_page > 1"
+      v-if="meta.last_page > 1"
       :meta="meta"
       :pending="pending"
       @go-to-page="goToPage"
@@ -157,6 +157,7 @@
 </template>
 
 <script setup lang="ts">
+  import type { Promotion, PromotionMeta } from '~/interfaces/promotions'
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
@@ -170,42 +171,6 @@
     ogDescription:
       'Descubra os principais programas de pontos, milhas e cashback e compare vantagens entre os maiores marketplaces do Brasil.',
   })
-
-  // Types
-  interface Program {
-    id: number
-    name: string
-    logo_url: string
-    type: ProgramType
-  }
-
-  interface Ecommerce {
-    id: number
-    name: string
-    logo_url: string
-  }
-
-  type ProgramType = 'miles' | 'points' | 'cashback'
-
-  interface Promotion {
-    current_value: number
-    program: Program
-    ecommerce: Ecommerce
-  }
-
-  interface Meta {
-    current_page: number
-    from: number
-    last_page: number
-    per_page: number
-    to: number
-    total: number
-  }
-
-  interface Response {
-    data: Promotion[]
-    meta: Meta
-  }
 
   // Constants
   const FILTER_CONFIGS = {
@@ -443,7 +408,7 @@
   } = await fetchPromotions(initialQueryParams)
 
   const promotions = ref<Promotion[]>(initialResponse.value?.data || [])
-  const meta = ref<Meta | undefined>(initialResponse.value?.meta)
+  const meta = ref<PromotionMeta>(initialResponse.value?.meta)
   const pending = ref(initialPending.value)
   const error = ref(initialError.value)
 

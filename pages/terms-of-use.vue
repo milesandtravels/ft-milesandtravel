@@ -259,7 +259,7 @@
 <script setup>
   // Meta tags for SEO
 
-    const { value } = useSanctumUser()
+  const { value } = useSanctumUser()
 
   useSeoMeta({
     title: 'Termos de Uso - Miles&Travels',
@@ -270,9 +270,8 @@
 
   definePageMeta({
     middleware: ['sanctum:guest'],
-    layout: 'default'
+    layout: 'default',
   })
- 
 </script>
 
 <style scoped>
