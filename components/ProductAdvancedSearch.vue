@@ -5,7 +5,7 @@
       data-onboarding="search-input"
     >
       <v-card-title class="pa-4 pa-md-6 pb-2 pb-md-4">
-        <h2 class="text-h6 font-weight-bold">Buscar Produtos</h2>
+        <h2 class="text-h6 font-weight-bold">Buscar Produto(s)</h2>
       </v-card-title>
 
       <v-card-text class="pa-4 pa-md-6 pt-2">
@@ -63,10 +63,10 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import type { VForm } from 'vuetify/components'
-  import type { Product } from '~/interfaces/products'
-  import type { SearchRecord } from '~/interfaces/search'
-  import { useLoadingStore } from '~/store/loading'
+import type { VForm } from 'vuetify/components'
+import type { Product } from '~/interfaces/products'
+import type { SearchRecord } from '~/interfaces/search'
+import { useLoadingStore } from '~/store/loading'
 
   const loadingStore = useLoadingStore()
 
@@ -222,7 +222,7 @@
         hasSearched.value = true
       }
     } catch (error) {
-      console.error('Erro ao buscar produtos:', error)
+      console.error('Erro ao Compras Bonificadas:', error)
       results.value = []
       hasSearched.value = true
     } finally {

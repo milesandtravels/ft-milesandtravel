@@ -26,7 +26,7 @@
         >
           <v-icon start size="20">mdi-magnify</v-icon>
           <span class="btn-text">
-            <span class="btn-main-text">Buscar Produtos</span>
+            <span class="btn-main-text">Compras Bonificadas</span>
             <span class="btn-sub-text">Encontre ofertas exclusivas</span>
           </span>
           <v-icon end size="16" class="ml-2">mdi-arrow-right</v-icon>
@@ -145,7 +145,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface Program {
@@ -331,7 +331,7 @@
     backdrop-filter: blur(10px);
   }
 
-  /* Botão Buscar Produtos - Padrão Vuetify */
+  /* Botão Compras Bonificadas - Padrão Vuetify */
   .search-products-btn {
     height: 56px !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

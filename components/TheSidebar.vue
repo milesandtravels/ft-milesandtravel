@@ -95,7 +95,7 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -150,7 +150,7 @@
       route: '/',
     },
     {
-      title: 'Buscar Produtos',
+      title: 'Compras Bonificadas',
       subtitle: 'Encontrar produtos e ofertas',
       icon: 'mdi-magnify',
       route: '/search-products',
