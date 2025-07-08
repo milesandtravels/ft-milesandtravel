@@ -5,7 +5,7 @@
         <v-img :src="offer.program.logo_url" :alt="offer.program.name" />
       </v-avatar>
       <span class="text-caption font-weight-medium">
-        {{ offer.program.name }}
+        {{ formatters.toTitleCase(offer.program.name) }}
       </span>
     </div>
 

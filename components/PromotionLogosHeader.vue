@@ -15,7 +15,7 @@
 
       <PromotionLogoSection
         :logo-url="program.logo_url"
-        :name="program.name"
+        :name="formatters.toTitleCase(program.name)"
         :alt="program.name"
         label="Programa"
         fallback-icon="mdi-card-giftcard"

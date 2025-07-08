@@ -25,7 +25,7 @@
         <v-icon size="18" class="me-2">
           {{ getProgramTypeIcon(offer.program.type) }}
         </v-icon>
-        {{ offer.program.name.toUpperCase() }}
+        {{ formatters.toTitleCase(offer.program.name) }}
       </v-btn>
     </v-card-actions>
   </div>

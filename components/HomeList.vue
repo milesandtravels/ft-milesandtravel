@@ -263,7 +263,7 @@
 
   const handleViewDetails = (promotion: Promotion) => {
     showNotification(
-      `Visualizando promoção: ${promotion.ecommerce.name} + ${promotion.program.name}`,
+      `Visualizando promoção: ${promotion.ecommerce.name} + ${formatters.toTitleCase(promotion.program.name)}`,
       'info'
     )
   }

@@ -20,7 +20,6 @@
       class="mb-3"
     />
 
-    <!-- Programa de recompensa -->
     <OfferRewardSection :offer="offer" />
   </v-card-text>
 </template>

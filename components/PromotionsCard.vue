@@ -18,6 +18,7 @@
         color="primary"
         block
         size="large"
+        class="text-none"
         @click="handleViewDetails"
       >
         <v-icon start>mdi-external-link</v-icon>
@@ -29,15 +30,14 @@
       v-model="showConfirmationModal"
       :program="promotion.program"
       :guidelines="guidelines"
-      @cancel="handleModalCancel"
       @confirm="handleModalConfirm"
     />
   </v-card>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import type { Promotion } from '~/interfaces/promotions'
+  import { ref } from 'vue';
+import type { Promotion } from '~/interfaces/promotions';
 
   interface Props {
     promotion: Promotion
@@ -71,14 +71,9 @@
     emit('view-details', props.promotion)
   }
 
-  const handleModalCancel = (): void => {
-    console.log('Modal cancelado para:', props.promotion.program.name)
-  }
-
   const handleModalConfirm = (): void => {
     window.open(props.promotion.promotion_link, '_blank', 'noopener,noreferrer')
     emit('program-accessed', props.promotion)
-    console.log('Redirecionando para:', props.promotion.program.name)
   }
 </script>
 

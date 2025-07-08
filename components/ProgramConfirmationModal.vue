@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { Program } from '~/interfaces/program'
+  import type { Program } from '~/interfaces/program';
 
   interface Props {
     modelValue: boolean
@@ -46,7 +46,6 @@
 
   const handleCancel = (): void => {
     emit('update:modelValue', false)
-    emit('cancel')
   }
 
   const handleConfirm = (): void => {
