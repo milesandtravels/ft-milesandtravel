@@ -95,7 +95,7 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -170,12 +170,12 @@
   ])
 
   const settingsMenuItems = ref<MenuItem[]>([
-    {
-      title: 'Configurações',
-      subtitle: 'Preferências do sistema',
-      icon: 'mdi-cog',
-      route: '/settings',
-    },
+    // {
+    //   title: 'Configurações',
+    //   subtitle: 'Preferências do sistema',
+    //   icon: 'mdi-cog',
+    //   route: '/settings',
+    // },
     {
       title: 'Perfil',
       subtitle: 'Dados pessoais',
