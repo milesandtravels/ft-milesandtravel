@@ -81,6 +81,14 @@
 
           <v-list-item
             class="menu-item"
+            prepend-icon="mdi-lock-outline"
+            subtitle="Alterar senha de acesso"
+            title="Alterar Senha"
+            @click="handleChangePassword"
+          />
+
+          <v-list-item
+            class="menu-item"
             prepend-icon="mdi-help-circle-outline"
             subtitle="Central de ajuda e FAQ"
             title="Ajuda e Suporte"
@@ -217,6 +225,12 @@
     showUserMenu.value = false
     showNotification('Abrindo configurações de notificações...', 'info')
     navigateTo('/notifications')
+  }
+
+  const handleChangePassword = () => {
+    showUserMenu.value = false
+    showNotification('Redirecionando para alterar senha...', 'info')
+    navigateTo('/change-password')
   }
 
   const handleHelp = () => {
