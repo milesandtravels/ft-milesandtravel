@@ -175,7 +175,6 @@
     user?: User
   }
 
-  // Emits
   interface Emits {
     'toggle-drawer': []
     logout: []
@@ -184,14 +183,7 @@
     help: []
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    user: () => ({
-      id: '1',
-      name: 'João Silva',
-      email: 'joao.silva@email.com',
-    }),
-  })
-
+  const props = defineProps<Props>()
   const emit = defineEmits<Emits>()
 
   // State

@@ -5,20 +5,22 @@
   const router = useRouter()
 
   onMounted(async () => {
-    try {
-      await useSanctumFetch<any>(
-        `/api/email/verify/${route.query?.id_verification}/${route.query?.hash}`,
-        {
-          method: 'GET',
-          query: {
-            expires: route.query?.expires,
-            signature: route.query?.signature,
-          },
-        }
-      )
+    const { status, error, data } = await useSanctumFetch<any>(
+      `/api/email/verify/${route.query?.id_verification}/${route.query?.hash}`,
+      {
+        method: 'GET',
+        query: {
+          expires: route.query?.expires,
+          signature: route.query?.signature,
+        },
+      }
+    )
 
+    if (status.value === 'success') {
       router.push('/')
-    } catch (error) {
+    }
+
+    if (error.value) {
       router.push('/confirmation-email')
     }
   })
