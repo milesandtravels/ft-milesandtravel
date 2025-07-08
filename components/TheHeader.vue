@@ -21,10 +21,11 @@
           <v-avatar class="user-avatar" color="primary" size="40">
             <!-- Avatar image if available -->
             <v-img
-              v-if="user.avatar_url"
+              v-if="user?.avatar_url"
               :src="user.avatar_url"
-              :alt="user.name"
+              :alt="user?.name"
               cover
+              :key="avatarKey"
             />
             <!-- Fallback to initials -->
             <span v-else class="text-h6 font-weight-bold text-white">
@@ -40,10 +41,11 @@
             <v-avatar class="mr-4" color="primary" size="56">
               <!-- Avatar image if available -->
               <v-img
-                v-if="user.avatar_url"
+                v-if="user?.avatar_url"
                 :src="user.avatar_url"
-                :alt="user.name"
+                :alt="user?.name"
                 cover
+                :key="avatarKey"
               />
               <!-- Fallback to initials -->
               <span v-else class="text-h5 font-weight-bold text-white">
@@ -51,9 +53,9 @@
               </span>
             </v-avatar>
             <div class="flex-grow-1">
-              <div class="text-h6 font-weight-bold">{{ user.name }}</div>
+              <div class="text-h6 font-weight-bold">{{ user?.name }}</div>
               <div class="text-body-2 text-medium-emphasis">
-                {{ user.email }}
+                {{ user?.email }}
               </div>
             </div>
           </div>
@@ -65,10 +67,10 @@
         <v-list class="pa-0" density="comfortable">
           <v-list-item
             class="menu-item"
-            prepend-icon="mdi-account-cog"
-            subtitle="Gerenciar perfil e preferências"
-            title="Configurações da Conta"
-            @click="handleAccountSettings"
+            prepend-icon="mdi-account-edit"
+            subtitle="Editar foto, nome e informações pessoais"
+            title="Editar Perfil"
+            @click="handleEditProfile"
           />
 
           <v-list-item
@@ -153,7 +155,10 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch } from 'vue'
+
+  // Use Sanctum Auth para dados reativos do usuário
+  const { user } = useSanctumAuth()
 
   // Types
   interface User {
@@ -170,11 +175,6 @@
     terms_accepted_at?: any
   }
 
-  // Props
-  interface Props {
-    user?: User
-  }
-
   interface Emits {
     'toggle-drawer': []
     logout: []
@@ -183,7 +183,6 @@
     help: []
   }
 
-  const props = defineProps<Props>()
   const emit = defineEmits<Emits>()
 
   // State
@@ -192,10 +191,23 @@
   const showSnackbar = ref(false)
   const snackbarMessage = ref('')
   const snackbarColor = ref('success')
+  const avatarKey = ref(0)
+
+  // Watch for avatar changes to force image reload
+  watch(
+    () => user.value?.avatar_url,
+    (newAvatar, oldAvatar) => {
+      if (newAvatar !== oldAvatar) {
+        // Force image reload by changing key
+        avatarKey.value++
+      }
+    }
+  )
 
   // Computed
   const userInitials = computed(() => {
-    const names = props.user.name.split(' ')
+    if (!user.value?.name) return 'US'
+    const names = user.value.name.split(' ')
     if (names.length >= 2) {
       return (names[0][0] + names.at(-1)[0]).toUpperCase()
     }
@@ -207,10 +219,10 @@
     emit('toggle-drawer')
   }
 
-  const handleAccountSettings = () => {
+  const handleEditProfile = () => {
     showUserMenu.value = false
-    showNotification('Abrindo configurações da conta...', 'info')
-    emit('account-settings')
+    showNotification('Redirecionando para perfil...', 'info')
+    navigateTo('/profile')
   }
 
   const handleNotifications = () => {
@@ -237,11 +249,17 @@
   }
 
   const confirmLogout = async () => {
-    const { status } = await useSanctumFetch<any>('/api/logout', {
-      method: 'POST',
-    })
+    try {
+      const { status } = await useSanctumFetch<any>('/api/logout', {
+        method: 'POST',
+      })
 
-    if (status.value === 'success') {
+      if (status.value === 'success') {
+        window.location.reload()
+      }
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Force reload even if API fails
       window.location.reload()
     }
   }
@@ -391,5 +409,10 @@
 
   .v-theme--dark .menu-item:focus {
     background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Image transition for smooth avatar updates */
+  .v-img {
+    transition: opacity 0.3s ease;
   }
 </style>

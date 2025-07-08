@@ -63,10 +63,10 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-import type { VForm } from 'vuetify/components'
-import type { Product } from '~/interfaces/products'
-import type { SearchRecord } from '~/interfaces/search'
-import { useLoadingStore } from '~/store/loading'
+  import type { VForm } from 'vuetify/components'
+  import type { Product } from '~/interfaces/products'
+  import type { SearchRecord } from '~/interfaces/search'
+  import { useLoadingStore } from '~/store/loading'
 
   const loadingStore = useLoadingStore()
 

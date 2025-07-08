@@ -138,7 +138,10 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-import { useSnackbarStore } from '~/store/snackbar'
+  import { useSnackbarStore } from '~/store/snackbar'
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
 
   const router = useRouter()
 
@@ -208,12 +211,6 @@ import { useSnackbarStore } from '~/store/snackbar'
     showSuccessDialog.value = false
     navigateTo('/')
   }
-
-  // Set page meta
-  definePageMeta({
-    auth: true,
-    layout: 'auth',
-  })
 </script>
 
 <style scoped>

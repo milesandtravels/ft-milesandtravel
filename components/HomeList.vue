@@ -24,7 +24,6 @@
           class="search-products-btn"
           @click="navigateTo('/search-products')"
         >
-          <v-icon start size="20">mdi-magnify</v-icon>
           <span class="btn-text">
             <span class="btn-main-text">Compras Bonificadas</span>
             <span class="btn-sub-text">Encontre ofertas exclusivas</span>
@@ -145,7 +144,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-import { useDisplay } from 'vuetify'
+  import { useDisplay } from 'vuetify'
 
   // Types
   interface Program {
