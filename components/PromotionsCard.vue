@@ -36,8 +36,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
-import type { Promotion } from '~/interfaces/promotions';
+  import { ref } from 'vue'
+  import type { Promotion } from '~/interfaces/promotions'
 
   interface Props {
     promotion: Promotion

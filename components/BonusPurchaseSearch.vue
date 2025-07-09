@@ -51,13 +51,13 @@
     </v-card>
 
     <template v-if="results.length > 0">
-      <product-advanced-search-results
+      <BonusPurchaseResults
         :results="results"
         :searchId="searchId"
       />
     </template>
-    <product-advanced-search-empty-results v-else-if="hasSearched" />
-    <product-advanced-search-initial-state v-else />
+    <BonusPurchaseEmptyResults v-else-if="hasSearched" />
+    <BonusPurchaseInitialState v-else />
   </div>
 </template>
 

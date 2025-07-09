@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { Program } from '~/interfaces/program';
+  import type { Program } from '~/interfaces/program'
 
   interface Props {
     modelValue: boolean
