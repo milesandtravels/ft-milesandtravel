@@ -4,9 +4,7 @@
     class="products-container"
     :class="{ 'mobile-container': $vuetify.display.mobile }"
   >
-    <v-row
-      :class="$vuetify.display.mobile ? 'mobile-row' : 'desktop-row'"
-    >
+    <v-row :class="$vuetify.display.mobile ? 'mobile-row' : 'desktop-row'">
       <v-col
         v-for="product in products"
         :key="product.id"
@@ -24,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-  import type { Product } from '~/interfaces/products';
+  import type { Product } from '~/interfaces/products'
 
   interface Props {
     products: Product[]

@@ -50,14 +50,48 @@
       </v-card-text>
     </v-card>
 
+    <!-- Botão de Filtros (aparece apenas quando há resultados) -->
     <template v-if="results.length > 0">
-      <BonusPurchaseResults
-        :results="results"
-        :searchId="searchId"
-      />
+      <div class="filters-section mb-4">
+        <v-btn
+          @click="openFiltersModal"
+          :disabled="!availableFilters.length"
+          color="primary"
+          variant="outlined"
+          prepend-icon="mdi-filter-variant"
+          size="default"
+        >
+          Filtrar
+
+          <v-badge
+            v-if="activeFiltersCount > 0"
+            :content="activeFiltersCount"
+            color="error"
+            floating
+          />
+        </v-btn>
+
+        <!-- Indicador de filtros ativos -->
+        <div v-if="activeFiltersCount > 0" class="mt-2">
+          <v-chip size="small" color="primary" variant="outlined">
+            {{ activeFiltersCount }} filtro(s) ativo(s)
+          </v-chip>
+        </div>
+      </div>
+
+      <BonusPurchaseResults :results="results" :searchId="searchId" />
     </template>
     <BonusPurchaseEmptyResults v-else-if="hasSearched" />
     <BonusPurchaseInitialState v-else />
+
+    <!-- Modal de Filtros -->
+    <BonusPurchaseFiltersModal
+      v-model="showFiltersModal"
+      :filters="availableFilters"
+      :searchId="searchId"
+      :searchTerm="searchQuery"
+      @filtersApplied="onFiltersApplied"
+    />
   </div>
 </template>
 
@@ -67,6 +101,7 @@ import type { VForm } from 'vuetify/components'
 import type { Product } from '~/interfaces/products'
 import type { SearchRecord } from '~/interfaces/search'
 import { useLoadingStore } from '~/store/loading'
+import BonusPurchaseFiltersModal from './BonusPurchaseFiltersModal.vue'
 
   const loadingStore = useLoadingStore()
 
@@ -76,6 +111,9 @@ import { useLoadingStore } from '~/store/loading'
   const results = ref<Product[]>([])
   const isSearching = ref(false)
   const hasSearched = ref(false)
+  const showFiltersModal = ref(false)
+  const availableFilters = ref<any[]>([])
+  const activeFiltersCount = ref(0)
 
   const route = useRoute()
   const router = useRouter()
@@ -204,16 +242,28 @@ import { useLoadingStore } from '~/store/loading'
       if (data.value) {
         results.value = data.value.data
         hasSearched.value = true
+
+        // Extrair filtros do meta
+        if (data.value.meta && data.value.meta.filters) {
+          try {
+            availableFilters.value = JSON.parse(data.value.meta.filters)
+          } catch (e) {
+            console.error('Erro ao parsear filtros:', e)
+            availableFilters.value = []
+          }
+        }
       }
 
       if (error.value) {
         results.value = []
         hasSearched.value = true
+        availableFilters.value = []
       }
     } catch (error) {
       console.error('Erro ao Compras Bonificadas:', error)
       results.value = []
       hasSearched.value = true
+      availableFilters.value = []
     } finally {
       isSearching.value = false
 
@@ -230,6 +280,8 @@ import { useLoadingStore } from '~/store/loading'
       return
     }
 
+    // Reset filtros ativos ao fazer nova busca
+    activeFiltersCount.value = 0
     await fetchProducts()
   }
 
@@ -237,6 +289,19 @@ import { useLoadingStore } from '~/store/loading'
     searchQuery.value = ''
     results.value = []
     hasSearched.value = false
+    availableFilters.value = []
+    activeFiltersCount.value = 0
+  }
+
+  const openFiltersModal = () => {
+    showFiltersModal.value = true
+  }
+
+  const onFiltersApplied = (newResults: Product[]) => {
+    results.value = newResults
+    // Aqui você pode implementar lógica para contar filtros ativos
+    // Por exemplo, baseado nos parâmetros da última busca
+    activeFiltersCount.value++ // Simplificado - implemente conforme sua necessidade
   }
 </script>
 
@@ -252,6 +317,13 @@ import { useLoadingStore } from '~/store/loading'
     gap: 12px;
     align-items: end;
     justify-content: end;
+  }
+
+  .filters-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
   }
 
   @media (max-width: 600px) {

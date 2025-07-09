@@ -109,16 +109,6 @@
               >
                 Remover seleção
               </v-btn>
-
-              <v-btn
-                color="primary"
-                variant="outlined"
-                prepend-icon="mdi-filter-variant"
-                size="default"
-                @click="$emit('open-filter')"
-              >
-                Filtrar
-              </v-btn>
             </div>
           </div>
         </div>
