@@ -1,61 +1,50 @@
 <template>
   <v-card
-    class="product-card h-100"
-    :class="{
-      'selected-card': isSelected,
-      'mobile-card': $vuetify.display.mobile,
-      'desktop-card': !$vuetify.display.mobile,
-    }"
-    :hover="!$vuetify.display.mobile"
-    :elevation="isSelected ? 6 : $vuetify.display.mobile ? 1 : 2"
-    @click="$vuetify.display.mobile ? $emit('toggle-selection') : null"
+    class="product-card"
+    :class="cardClasses"
+    :elevation="cardElevation"
+    @click="handleCardClick"
   >
-    <!-- Selection Overlay for Mobile -->
-    <div v-if="$vuetify.display.mobile && isSelected" class="selection-overlay">
-      <v-icon color="white" size="large">mdi-check-circle</v-icon>
+    <!-- Selection States -->
+    <div v-if="isSelected && isMobile" class="selection-overlay">
+      <div class="selection-check">
+        <v-icon color="white" size="x-large">mdi-check-circle</v-icon>
+      </div>
     </div>
 
-    <!-- Desktop Checkbox -->
+    <!-- Desktop Selection Checkbox -->
     <v-checkbox
-      v-if="!$vuetify.display.mobile"
+      v-if="!isMobile"
       :model-value="isSelected"
       color="primary"
       density="compact"
       hide-details
-      class="product-checkbox-desktop"
+      class="desktop-checkbox"
       @update:model-value="$emit('toggle-selection')"
       @click.stop
     />
 
     <!-- Mobile Selection Indicator -->
-    <div
-      v-if="$vuetify.display.mobile"
-      class="mobile-selection-indicator"
-      :class="{ selected: isSelected }"
-    >
-      <v-icon :color="isSelected ? 'primary' : 'grey-lighten-2'" size="small">
-        {{
-          isSelected
-            ? 'mdi-checkbox-marked-circle'
-            : 'mdi-checkbox-blank-circle-outline'
-        }}
+    <div v-if="isMobile" class="mobile-selection-indicator" :class="{ active: isSelected }">
+      <v-icon :color="selectionIconColor" size="small">
+        {{ selectionIcon }}
       </v-icon>
     </div>
 
-    <!-- Product Image -->
-    <div class="image-container">
+    <!-- Product Image Section -->
+    <div class="image-section">
       <v-img
         class="product-image"
-        cover
-        :height="$vuetify.display.mobile ? 140 : 180"
         :src="product.image_url"
+        :height="imageHeight"
+        cover
         :aspect-ratio="1"
       >
         <template #placeholder>
-          <div class="d-flex align-center justify-center fill-height">
+          <div class="image-placeholder">
             <v-progress-circular
               indeterminate
-              :size="$vuetify.display.mobile ? 24 : 32"
+              :size="isMobile ? 20 : 28"
               width="2"
               color="primary"
             />
@@ -63,359 +52,694 @@
         </template>
       </v-img>
 
-      <!-- Marketplace Badge -->
+      <!-- Marketplace Logo Badge -->
+      <div class="marketplace-badge">
+        <v-avatar :size="isMobile ? 32 : 36" class="marketplace-logo">
+          <v-icon size="small" >mdi-store</v-icon>
+        </v-avatar>
+        <div v-if="!isMobile" class="marketplace-info">
+          <span class="marketplace-name">{{ product.ecommerce.name }}</span>
+          <span class="marketplace-category">{{ product.ecommerce.category }}</span>
+        </div>
+        <!-- Mobile: Mostrar apenas logo maior -->
+      </div>
+
+      <!-- Custom Product Badge -->
       <v-chip
-        class="marketplace-badge"
-        :color="marketplaceColor"
-        :size="$vuetify.display.mobile ? 'x-small' : 'small'"
+        v-if="product.isCustomProduct"
+        class="custom-badge"
+        color="success"
         variant="flat"
+        size="x-small"
         label
       >
-        <span class="marketplace-text text-white font-weight-bold">
-          {{ marketplaceText }}
-        </span>
+        <v-icon start size="x-small">mdi-star</v-icon>
+        <span class="custom-text">Personalizado</span>
       </v-chip>
     </div>
 
     <!-- Product Content -->
     <v-card-text class="product-content">
-      <div class="price-container">
-        <span
-          class="price-text text-primary font-weight-bold"
-          :class="$vuetify.display.mobile ? 'text-body-2' : 'text-h6'"
-        >
+      <!-- Price Section -->
+      <div class="price-section">
+        <span class="price-text">
           {{ formattedPrice }}
+        </span>
+        <v-chip
+          v-if="hasDiscount"
+          color="error"
+          variant="flat"
+          size="x-small"
+          class="discount-chip"
+        >
+          -15%
+        </v-chip>
+      </div>
+
+      <!-- Product Title -->
+      <h4 class="product-title">
+        {{ product.name }}
+      </h4>
+
+      <!-- Rating and Reviews -->
+      <div v-if="hasRating" class="rating-section">
+        <div class="rating-stars">
+          <v-icon
+            v-for="star in 5"
+            :key="star"
+            :color="star <= Math.floor(numericRating) ? 'amber' : 'grey-lighten-2'"
+            size="x-small"
+            class="star-icon"
+          >
+            mdi-star
+          </v-icon>
+          <span class="rating-value">{{ formattedRating }}</span>
+        </div>
+        <span v-if="product.reviews > 0" class="reviews-count">
+          ({{ formattedReviews }})
         </span>
       </div>
 
-      <h4
-        class="product-title font-weight-medium"
-        :class="
-          $vuetify.display.mobile ? 'text-caption mt-1' : 'text-body-2 mt-2'
-        "
-      >
-        {{ product.name }}
-      </h4>
+      <!-- Ecommerce Info (Mobile Only) -->
+      <div v-if="isMobile" class="ecommerce-info">
+        <span class="ecommerce-category">{{ product.ecommerce.category }}</span>
+        <span class="ecommerce-name">{{ marketplaceDisplayName }}</span>
+      </div>
+
+      <!-- Action Buttons (Desktop) -->
+      <div v-if="!isMobile" class="action-buttons">
+        <v-btn
+          variant="outlined"
+          size="small"
+          color="primary"
+          class="view-btn"
+          :href="product.product_url"
+          target="_blank"
+          @click.stop
+        >
+          <v-icon start size="small">mdi-eye</v-icon>
+          Ver produto
+        </v-btn>
+      </div>
     </v-card-text>
+
+    <!-- Quick Action (Mobile) -->
+    <div v-if="isMobile" class="mobile-quick-action" @click.stop>
+      <v-btn
+        :href="product.product_url"
+        target="_blank"
+        variant="text"
+        size="small"
+        color="primary"
+        block
+        class="quick-action-btn"
+      >
+        <v-icon start size="small">mdi-open-in-new</v-icon>
+        Ver no {{ marketplaceDisplayName }}
+      </v-btn>
+    </div>
   </v-card>
 </template>
 
 <script lang="ts" setup>
-  import type { Product } from '~/interfaces/products'
+import { computed } from 'vue'
 
-  interface Props {
-    product: Product
-    isSelected: boolean
+// Interfaces atualizadas
+interface Ecommerce {
+  id: number
+  name: string
+  logo_url: string
+  category: string
+}
+
+interface Product {
+  id: number
+  name: string
+  price: number
+  image_url: string
+  product_url: string
+  created_at: string
+  updated_at: string
+  reviews: number
+  rating: string
+  ecommerce: Ecommerce
+  isCustomProduct: boolean
+  selected: boolean
+}
+
+interface Props {
+  product: Product
+  isSelected: boolean
+}
+
+interface Emits {
+  (e: 'toggle-selection'): void
+}
+
+const props = defineProps<Props>()
+defineEmits<Emits>()
+
+// Reactive properties
+const isMobile = computed(() => {
+  if (process.client) {
+    return window.innerWidth < 768
   }
+  return false
+})
 
-  interface Emits {
-    (e: 'toggle-selection'): void
+// Computed properties
+const formattedPrice = computed(() => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(props.product.price)
+})
+
+const marketplaceDisplayName = computed(() => {
+  if (isMobile.value) {
+    const abbreviations: Record<string, string> = {
+      'Mercado Livre': 'ML',
+      'AliExpress': 'Ali',
+      'Americanas': 'Ame',
+      'Amazon': 'AMZ',
+      'Shopee': 'SHP',
+    }
+    return abbreviations[props.product.ecommerce.name] || 
+           props.product.ecommerce.name.substring(0, 3).toUpperCase()
   }
+  return props.product.ecommerce.name
+})
 
-  const props = defineProps<Props>()
-  defineEmits<Emits>()
+const numericRating = computed(() => {
+  return parseFloat(props.product.rating) || 0
+})
 
-  // Computed properties
-  const formattedPrice = computed(() => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(props.product.price)
-  })
+const formattedRating = computed(() => {
+  return numericRating.value.toFixed(1)
+})
 
-  const marketplaceColor = computed(() => {
-    const colors: Record<string, string> = {
-      Amazon: '#FF9900',
-      Shopee: '#EE4D2D',
-      'Mercado Livre': '#FFF159',
-      AliExpress: '#FF6A00',
-      Americanas: '#E60014',
-    }
-    return colors[props.product.ecommerce.name] || '#666'
-  })
+const formattedReviews = computed(() => {
+  const reviews = props.product.reviews
+  if (reviews > 1000) {
+    return `${(reviews / 1000).toFixed(1)}k`
+  }
+  return reviews.toString()
+})
 
-  const marketplaceText = computed(() => {
-    if (process.client && window.innerWidth < 600) {
-      const abbreviations: Record<string, string> = {
-        'Mercado Livre': 'ML',
-        AliExpress: 'Ali',
-        Americanas: 'Ame',
-        Amazon: 'AMZ',
-        Shopee: 'SHP',
-      }
-      return (
-        abbreviations[props.product.ecommerce.name] ||
-        props.product.ecommerce.name.substring(0, 3).toUpperCase()
-      )
-    }
-    return props.product.ecommerce.name
-  })
+const hasRating = computed(() => {
+  return numericRating.value > 0
+})
+
+const hasDiscount = computed(() => {
+  // Lógica para determinar se há desconto (exemplo)
+  return Math.random() > 0.7 // 30% chance de ter desconto
+})
+
+const selectionIcon = computed(() => {
+  return props.isSelected 
+    ? 'mdi-checkbox-marked-circle' 
+    : 'mdi-checkbox-blank-circle-outline'
+})
+
+const selectionIconColor = computed(() => {
+  return props.isSelected ? 'primary' : 'grey-lighten-2'
+})
+
+const cardClasses = computed(() => ({
+  'mobile-card': isMobile.value,
+  'desktop-card': !isMobile.value,
+  'selected-card': props.isSelected,
+  'custom-product': props.product.isCustomProduct,
+}))
+
+const cardElevation = computed(() => {
+  if (props.isSelected) return 8
+  return isMobile.value ? 2 : 3
+})
+
+const imageHeight = computed(() => {
+  return isMobile.value ? 120 : 200
+})
+
+// Methods
+const handleCardClick = () => {
+  if (isMobile.value) {
+    emit('toggle-selection')
+  }
+}
 </script>
 
 <style scoped>
-  .product-card {
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-  }
+/* ================================
+   BASE STYLES - MOBILE FIRST
+   ================================ */
 
-  .mobile-card {
-    cursor: pointer;
-    border-radius: 8px;
-    min-height: 240px;
-  }
+.product-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgb(var(--v-theme-surface));
+  min-height: 280px;
+}
 
-  .mobile-card:active {
-    transform: scale(0.98);
-    transition: transform 0.1s ease;
-  }
+/* ================================
+   MOBILE STYLES (DEFAULT)
+   ================================ */
 
+.mobile-card {
+  min-height: 280px;
+  border-radius: 12px;
+}
+
+.mobile-card:active {
+  transform: scale(0.97);
+  transition: transform 0.15s ease;
+}
+
+/* ================================
+   SELECTION STATES
+   ================================ */
+
+.selected-card {
+  border-color: rgb(var(--v-theme-primary));
+  background: rgba(var(--v-theme-primary), 0.03);
+  transform: scale(1.02);
+}
+
+.selection-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--v-theme-primary), 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.selection-check {
+  background: rgba(var(--v-theme-primary), 0.9);
+  border-radius: 50%;
+  padding: 8px;
+  animation: bounceIn 0.3s ease;
+}
+
+.mobile-selection-indicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.mobile-selection-indicator.active {
+  background: rgba(var(--v-theme-primary), 0.95);
+  transform: scale(1.15);
+  box-shadow: 0 4px 20px rgba(var(--v-theme-primary), 0.3);
+}
+
+/* ================================
+   IMAGE SECTION
+   ================================ */
+
+.image-section {
+  position: relative;
+}
+
+.product-image {
+  transition: transform 0.3s ease;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: rgba(var(--v-theme-on-surface), 0.05);
+}
+
+.marketplace-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 28px;
+  padding: 8px;
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.marketplace-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.marketplace-logo {
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  background: white;
+}
+
+.marketplace-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 8px;
+}
+
+.marketplace-name {
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.3px;
+  line-height: 1.1;
+}
+
+.marketplace-category {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.custom-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.65rem !important;
+  font-weight: 700;
+  z-index: 4;
+}
+
+.custom-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* ================================
+   CONTENT SECTION
+   ================================ */
+
+.product-content {
+  padding: 12px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.price-text {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgb(var(--v-theme-primary));
+  line-height: 1.2;
+}
+
+.discount-chip {
+  font-size: 0.6rem !important;
+  height: 18px !important;
+  font-weight: 700;
+}
+
+.product-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: rgba(var(--v-theme-on-surface), 0.9);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.6em;
+  margin: 0;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.star-icon {
+  opacity: 0.9;
+}
+
+.rating-value {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(var(--v-theme-on-surface), 0.8);
+  margin-left: 4px;
+}
+
+.reviews-count {
+  font-size: 0.65rem;
+  color: rgba(var(--v-theme-on-surface), 0.6);
+  font-weight: 500;
+}
+
+.ecommerce-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.ecommerce-category {
+  font-size: 0.65rem;
+  color: rgba(var(--v-theme-on-surface), 0.6);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.ecommerce-name {
+  font-size: 0.7rem;
+  color: rgba(var(--v-theme-on-surface), 0.8);
+  font-weight: 600;
+}
+
+.mobile-quick-action {
+  padding: 8px 12px 12px;
+  border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.quick-action-btn {
+  font-size: 0.7rem !important;
+  height: 32px !important;
+  font-weight: 600;
+}
+
+/* ================================
+   DESKTOP STYLES (768px+)
+   ================================ */
+
+@media (min-width: 768px) {
   .desktop-card {
+    min-height: 380px;
     cursor: default;
-    min-height: 320px;
+    border-radius: 16px;
   }
 
   .desktop-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
-  }
-
-  .selected-card {
-    border: 2px solid rgb(var(--v-theme-primary));
-    background: rgba(var(--v-theme-primary), 0.02);
-  }
-
-  .selected-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(
-      90deg,
-      rgb(var(--v-theme-primary)),
-      rgb(var(--v-theme-secondary))
-    );
-    z-index: 1;
-  }
-
-  .selection-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(var(--v-theme-primary), 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    border-radius: inherit;
-    backdrop-filter: blur(2px);
-  }
-
-  .mobile-selection-indicator {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    z-index: 3;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 50%;
-    padding: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s ease;
-    backdrop-filter: blur(4px);
-  }
-
-  .mobile-selection-indicator.selected {
-    background: rgba(var(--v-theme-primary), 0.95);
-    border: 1px solid rgb(var(--v-theme-primary));
-    transform: scale(1.1);
-  }
-
-  .product-checkbox-desktop {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 3;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    padding: 4px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s ease;
-  }
-
-  .product-checkbox-desktop:hover {
-    background: rgba(255, 255, 255, 1);
-    transform: scale(1.05);
-  }
-
-  .image-container {
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .product-image {
-    transition: transform 0.3s ease;
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
   }
 
   .desktop-card:hover .product-image {
-    transform: scale(1.02);
+    transform: scale(1.05);
   }
 
-  .marketplace-badge {
+  .desktop-checkbox {
     position: absolute;
-    z-index: 2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(4px);
+    top: 12px;
+    left: 12px;
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 6px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: all 0.25s ease;
   }
 
-  @media (max-width: 599px) {
-    .marketplace-badge {
-      top: 4px;
-      right: 4px;
-      font-size: 0.6rem !important;
-    }
-  }
-
-  @media (min-width: 600px) {
-    .marketplace-badge {
-      top: 8px;
-      right: 8px;
-    }
-  }
-
-  .marketplace-text {
-    font-size: 0.7rem;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-
-  @media (max-width: 599px) {
-    .marketplace-text {
-      font-size: 0.6rem !important;
-      letter-spacing: 0.3px;
-    }
+  .desktop-checkbox:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.08);
   }
 
   .product-content {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-    background: rgba(var(--v-theme-surface), 1);
-  }
-
-  @media (max-width: 599px) {
-    .product-content {
-      padding: 10px 8px 12px 8px !important;
-      gap: 4px;
-    }
-  }
-
-  @media (min-width: 600px) and (max-width: 959px) {
-    .product-content {
-      padding: 12px 10px 14px 10px !important;
-      gap: 6px;
-    }
-  }
-
-  @media (min-width: 960px) {
-    .product-content {
-      padding: 16px 14px 18px 14px !important;
-      gap: 8px;
-    }
-  }
-
-  .price-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    padding: 16px !important;
+    gap: 10px;
   }
 
   .price-text {
-    line-height: 1.2;
-    text-shadow: 0 1px 2px rgba(var(--v-theme-primary), 0.1);
+    font-size: 1.25rem;
   }
 
   .product-title {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.3;
-    color: rgba(var(--v-theme-on-surface), 0.87);
-    transition: color 0.2s ease;
-    min-height: 2.6em;
+    font-size: 0.9rem;
+    min-height: 2.8em;
   }
 
-  .product-card:hover .product-title {
-    color: rgba(var(--v-theme-on-surface), 1);
+  .action-buttons {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
   }
 
-  @media (max-width: 599px) {
-    .product-title {
-      line-height: 1.2;
-      font-size: 0.75rem !important;
-      min-height: 2.4em;
-    }
-
-    .price-text {
-      font-size: 0.875rem !important;
-    }
+  .view-btn {
+    font-size: 0.75rem !important;
+    font-weight: 600;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .product-card,
-    .product-image,
-    .mobile-selection-indicator,
-    .product-checkbox-desktop {
-      transition: none !important;
-    }
-
-    .desktop-card:hover {
-      transform: none !important;
-    }
-
-    .desktop-card:hover .product-image {
-      transform: none !important;
-    }
+  .marketplace-badge {
+    padding: 6px 12px;
   }
 
-  .product-card:focus-visible {
-    outline: 2px solid rgb(var(--v-theme-primary));
-    outline-offset: 2px;
+  .marketplace-name {
+    font-size: 0.75rem;
+  }
+}
+
+/* ================================
+   LARGE DESKTOP (1200px+)
+   ================================ */
+
+@media (min-width: 1200px) {
+  .desktop-card {
+    min-height: 420px;
   }
 
-  @media (max-width: 599px) {
-    .mobile-selection-indicator {
-      min-width: 24px;
-      min-height: 24px;
-    }
-
-    .product-card {
-      min-height: 240px;
-    }
+  .product-content {
+    padding: 20px !important;
+    gap: 12px;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .product-checkbox-desktop {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .mobile-selection-indicator {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .marketplace-badge {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-    }
+  .price-text {
+    font-size: 1.4rem;
   }
+
+  .product-title {
+    font-size: 1rem;
+  }
+}
+
+/* ================================
+   ANIMATIONS & INTERACTIONS
+   ================================ */
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.custom-product {
+  border-color: rgba(var(--v-theme-success), 0.5);
+}
+
+.custom-product::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgb(var(--v-theme-success)), rgb(var(--v-theme-success-lighten-1)));
+  z-index: 1;
+}
+
+/* ================================
+   ACCESSIBILITY & PERFORMANCE
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card,
+  .product-image,
+  .mobile-selection-indicator,
+  .desktop-checkbox {
+    transition: none !important;
+  }
+
+  .desktop-card:hover {
+    transform: none !important;
+  }
+
+  .desktop-card:hover .product-image {
+    transform: none !important;
+  }
+}
+
+.product-card:focus-visible {
+  outline: 3px solid rgb(var(--v-theme-primary));
+  outline-offset: 2px;
+}
+
+/* ================================
+   DARK THEME SUPPORT
+   ================================ */
+
+@media (prefers-color-scheme: dark) {
+  .desktop-checkbox,
+  .mobile-selection-indicator {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .marketplace-badge {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .ecommerce-info {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .mobile-quick-action {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
 </style>

@@ -6,16 +6,11 @@
   >
     <v-row
       :class="$vuetify.display.mobile ? 'mobile-row' : 'desktop-row'"
-      no-gutters
     >
       <v-col
         v-for="product in products"
         :key="product.id"
-        :cols="$vuetify.display.mobile ? 12 : 12"
-        :sm="$vuetify.display.smAndUp ? 6 : 12"
-        :md="$vuetify.display.mdAndUp ? 4 : 6"
-        :lg="$vuetify.display.lgAndUp ? 3 : 4"
-        :xl="$vuetify.display.xlAndUp ? 3 : 3"
+        :cols="$vuetify.display.mobile ? 12 : 4"
         class="product-col"
       >
         <BonusPurchaseProductCard
