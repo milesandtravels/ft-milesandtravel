@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="localDialog" max-width="800px" persistent scrollable>
     <v-card>
-      <v-card-title class="pa-4 pa-md-6">
+      <v-card-title class="pa-4 pa-md-6 d-flex align-center border-b-thin">
         <h2 class="text-h6 font-weight-bold">Filtros de Busca</h2>
         <v-spacer />
         <v-btn icon variant="text" @click="closeModal">
@@ -12,76 +12,78 @@
       <v-divider />
 
       <v-card-text class="pa-4 pa-md-6" style="max-height: 500px">
-        <v-form ref="filtersForm">
-          <div
-            v-for="filter in availableFilters"
-            :key="filter.type"
-            class="mb-4"
-          >
-            <!-- Checkbox para múltiplas seleções -->
-            <div v-if="filter.input_type === 'checkbox'">
-              <h4 class="text-subtitle-1 font-weight-bold mb-2">
-                {{ filter.type }}
-              </h4>
-              <div class="pl-2">
-                <v-checkbox
-                  v-for="option in filter.options"
-                  :key="option.text"
+        <v-form ref="filtersForm" class="pa-4">
+          <v-row :no-gutters="false" class="gx-2 gy-1">
+            <v-col
+              v-for="filter in availableFilters"
+              :key="filter.type"
+              cols="12"
+              md="12"
+            >
+              <!-- Checkbox para múltiplas seleções -->
+              <div v-if="filter.input_type === 'checkbox'">
+                <v-autocomplete
                   v-model="selectedFilters[filter.type]"
-                  :label="option.text"
-                  :value="option.text"
-                  density="compact"
-                  hide-details
-                  class="mb-1"
+                  :label="filter.type"
+                  :items="filter.options"
+                  item-title="text"
+                  item-value="text"
+                  density="comfortable"
+                  variant="outlined"
+                  multiple
+                  clearable
+                  single-line
+                  chips
+                  closable-chips
                 />
               </div>
-            </div>
 
-            <!-- Select para price_range -->
-            <div v-else-if="filter.input_type === 'price_range'">
-              <v-select
-                v-model="selectedFilters[filter.type]"
-                :label="filter.type"
-                :items="filter.options"
-                item-title="text"
-                item-value="text"
-                density="comfortable"
-                variant="outlined"
-                clearable
-                single-line
-              />
-            </div>
+              <!-- Select para price_range -->
+              <div v-else-if="filter.input_type === 'price_range'">
+                <v-select
+                  v-model="selectedFilters[filter.type]"
+                  :label="filter.type"
+                  :items="filter.options"
+                  item-title="text"
+                  item-value="text"
+                  density="comfortable"
+                  variant="outlined"
+                  clearable
+                  single-line
+                />
+              </div>
 
-            <!-- Select para link -->
-            <div v-else-if="filter.input_type === 'link'">
-              <v-select
-                v-model="selectedFilters[filter.type]"
-                :label="filter.type"
-                :items="filter.options"
-                item-title="text"
-                item-value="text"
-                density="comfortable"
-                variant="outlined"
-                clearable
-                single-line
-              />
-            </div>
+              <!-- Select para link -->
+              <div v-else-if="filter.input_type === 'link'">
+                <v-select
+                  v-model="selectedFilters[filter.type]"
+                  :label="filter.type"
+                  :items="filter.options"
+                  item-title="text"
+                  item-value="text"
+                  density="comfortable"
+                  variant="outlined"
+                  clearable
+                  single-line
+                />
+              </div>
 
-            <!-- Select padrão para outros tipos -->
-            <div v-else>
-              <v-select
-                v-model="selectedFilters[filter.type]"
-                :label="filter.type"
-                :items="filter.options"
-                item-title="text"
-                item-value="text"
-                density="comfortable"
-                variant="outlined"
-                clearable
-                single-line
-              />
-            </div>
-          </div>
+              <!-- Select padrão para outros tipos -->
+              <div v-else>
+                <v-select
+                  v-model="selectedFilters[filter.type]"
+                  :label="filter.type"
+                  :items="filter.options"
+                  item-title="text"
+                  item-value="text"
+                  density="comfortable"
+                  variant="outlined"
+                  clearable
+                  single-line
+                />
+              </div>
+            </v-col>
+          </v-row>
         </v-form>
       </v-card-text>
 
