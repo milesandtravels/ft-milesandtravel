@@ -63,10 +63,10 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import type { VForm } from 'vuetify/components'
-  import type { Product } from '~/interfaces/products'
-  import type { SearchRecord } from '~/interfaces/search'
-  import { useLoadingStore } from '~/store/loading'
+import type { VForm } from 'vuetify/components'
+import type { Product } from '~/interfaces/products'
+import type { SearchRecord } from '~/interfaces/search'
+import { useLoadingStore } from '~/store/loading'
 
   const loadingStore = useLoadingStore()
 
@@ -74,7 +74,6 @@
   const searchForm = ref<VForm | null>(null)
   const searchQuery = ref('')
   const results = ref<Product[]>([])
-  const isLoading = ref(false)
   const isSearching = ref(false)
   const hasSearched = ref(false)
 
@@ -86,27 +85,22 @@
   })
 
   const initializeSearch = async () => {
-    // Inicia loading universal
     loadingStore.startLoading('Inicializando busca...', true)
 
     try {
-      // Simula progresso
       loadingStore.updateProgress(20)
 
-      // Verifica se há um searchId na URL
       const urlSearchId = route.query.searchId as string
 
       loadingStore.updateProgress(40)
 
       if (urlSearchId && !isNaN(Number(urlSearchId))) {
-        // Se tem searchId na URL, usa ele e carrega o search_term
         searchId.value = Number(urlSearchId)
         loadingStore.updateText('Carregando dados da busca...')
         loadingStore.updateProgress(60)
 
         await loadSearchTerm()
       } else {
-        // Se não tem searchId na URL, gera um novo e adiciona na URL
         loadingStore.updateText('Gerando nova busca...')
         loadingStore.updateProgress(60)
 
@@ -115,7 +109,6 @@
 
       loadingStore.updateProgress(100)
 
-      // Pequeno delay para suavizar a transição
       await new Promise(resolve => setTimeout(resolve, 300))
     } catch (error) {
       console.error('Erro na inicialização:', error)
@@ -142,7 +135,6 @@
       if (data.value && data.value.data) {
         const searchData = data.value.data
 
-        // Carrega o search_term no campo de busca
         if (searchData.search_term) {
           searchQuery.value = searchData.search_term
           hasSearched.value = true
@@ -150,8 +142,7 @@
           loadingStore.updateText('Buscando produtos...')
           loadingStore.updateProgress(90)
 
-          // Executa a busca automaticamente com o termo carregado
-          await fetchProducts(false) // false = não mostrar loading adicional
+          await fetchProducts(false)
         }
       }
 
@@ -180,7 +171,6 @@
 
     loadingStore.updateProgress(80)
 
-    // Adiciona o searchId na URL
     if (searchId.value) {
       await router.push({
         query: {
@@ -200,12 +190,11 @@
       }
 
       isSearching.value = true
-      isLoading.value = true
 
       const { data, error } = await useSanctumFetch(
         `/api/searches/${searchId.value}/automatic-products`,
         {
-          method: 'GET',
+          method: 'POST',
           query: {
             search_term: searchQuery.value.trim().toLocaleLowerCase(),
           },
@@ -227,7 +216,6 @@
       hasSearched.value = true
     } finally {
       isSearching.value = false
-      isLoading.value = false
 
       if (showIndividualLoading) {
         loadingStore.stopLoading()
@@ -239,7 +227,7 @@
     const { valid } = await searchForm.value?.validate()
 
     if (!valid) {
-      return // Para a execução se inválido
+      return
     }
 
     await fetchProducts()
@@ -273,147 +261,8 @@
     }
   }
 
-  .product-card {
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-  }
-
-  .image-container {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .product-image {
-    transition: transform 0.3s ease;
-  }
-
-  .product-card:hover .product-image {
-    transform: scale(1.05);
-  }
-
-  .marketplace-badge {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    z-index: 2;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-
-  .price-text {
-    font-size: 0.9rem;
-    line-height: 1.2;
-  }
-
-  @media (min-width: 768px) {
-    .price-text {
-      font-size: 1rem;
-    }
-  }
-
-  .product-title {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.3;
-    min-height: 2.6em;
-    max-height: 2.6em;
-  }
-
-  /* Responsive Typography */
-  @media (max-width: 600px) {
-    .product-title {
-      font-size: 0.8rem;
-      line-height: 1.2;
-      min-height: 2.4em;
-      max-height: 2.4em;
-    }
-  }
-
-  /* Utilities */
-  .text-white {
-    color: white !important;
-  }
-
-  /* Grid responsive improvements */
-  @media (max-width: 400px) {
-    .v-col {
-      padding: 2px !important;
-    }
-
-    .product-card .v-card-text {
-      padding: 8px !important;
-    }
-
-    .marketplace-badge {
-      top: 4px;
-      left: 4px;
-    }
-  }
-
-  /* Empty and Initial States */
-  .empty-state,
-  .initial-state {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-
-  /* Dark theme enhancements */
   .v-theme--dark .search-card {
     background: rgba(30, 30, 30, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .v-theme--dark .product-card {
-    background: rgba(40, 40, 40, 0.95);
-  }
-
-  /* Smooth animations */
-  .v-col {
-    animation: fadeInUp 0.4s ease-out backwards;
-  }
-
-  .v-col:nth-child(1) {
-    animation-delay: 0.05s;
-  }
-  .v-col:nth-child(2) {
-    animation-delay: 0.1s;
-  }
-  .v-col:nth-child(3) {
-    animation-delay: 0.15s;
-  }
-  .v-col:nth-child(4) {
-    animation-delay: 0.2s;
-  }
-  .v-col:nth-child(n + 5) {
-    animation-delay: 0.25s;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Performance optimizations */
-  .v-img {
-    will-change: transform;
-  }
-
-  .product-card {
-    contain: layout style paint;
   }
 </style>
