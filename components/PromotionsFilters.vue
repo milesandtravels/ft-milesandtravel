@@ -7,21 +7,19 @@
     :transition="
       $vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'
     "
+    persistent
     scrollable
   >
     <v-card>
-      <v-toolbar color="primary" dark>
-        <v-btn icon @click="$emit('update:modelValue', false)">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>Filtrar Promoções</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-toolbar>
+      <!-- Header padronizado -->
+      <ModalHeader title="Filtrar Promoções" @close="$emit('update:modelValue', false)" />
 
-      <v-card-text class="pa-6">
+      <v-divider />
+
+      <v-card-text class="pa-4 pa-md-6" style="max-height: 70vh">
         <v-container class="pa-0">
           <!-- Campos de alta prioridade - sempre visíveis -->
-          <v-row dense class="mb-3">
+          <v-row class="gy-2">
             <v-col cols="12">
               <v-autocomplete
                 :model-value="filters.categories"
@@ -35,9 +33,8 @@
                 closable-chips
               ></v-autocomplete>
             </v-col>
-          </v-row>
 
-          <v-row dense class="mb-3">
+            <!-- E-commerces e Tipo de Promoção -->
             <v-col cols="12" md="6">
               <v-autocomplete
                 :model-value="filters.ecommerces"
@@ -77,10 +74,8 @@
                 closable-chips
               ></v-autocomplete>
             </v-col>
-          </v-row>
 
-          <!-- Programas de benefícios - prioridade média -->
-          <v-row dense class="mb-3">
+            <!-- Programas de benefícios -->
             <v-col cols="12" md="6">
               <v-autocomplete
                 :model-value="filters.pointsPrograms"
@@ -128,9 +123,7 @@
                 </template>
               </v-autocomplete>
             </v-col>
-          </v-row>
 
-          <v-row dense class="mb-3">
             <v-col cols="12" md="6">
               <v-autocomplete
                 :model-value="filters.cashbackPrograms"
@@ -154,12 +147,11 @@
                 </template>
               </v-autocomplete>
             </v-col>
-          </v-row>
 
-          <!-- Ordenação - menor prioridade -->
-          <v-divider class="my-3"></v-divider>
-
-          <v-row dense>
+            <!-- Ordenação -->
+            <v-col cols="12">
+              <v-divider class="my-2" />
+            </v-col>
             <v-col cols="12" md="6">
               <v-select
                 :model-value="filters.orderBy"
@@ -189,13 +181,35 @@
         </v-container>
       </v-card-text>
 
-      <!-- Botões de ação fixos na parte inferior -->
-      <v-card-actions class="px-6 py-3">
-        <v-spacer></v-spacer>
-        <v-btn variant="text" @click="$emit('clear')" class="mr-3">
+      <v-divider />
+
+      <!-- Footer padronizado -->
+      <v-card-actions class="pa-4 pa-md-6 bg-grey-lighten-5">
+        <v-btn 
+          variant="outlined" 
+          color="grey"
+          @click="$emit('clear')"
+          prepend-icon="mdi-refresh"
+        >
           Limpar
         </v-btn>
-        <v-btn color="primary" variant="flat" @click="$emit('apply')">
+        
+        <v-spacer />
+        
+        <v-btn 
+          variant="outlined" 
+          @click="$emit('update:modelValue', false)"
+          class="me-2"
+        >
+          Cancelar
+        </v-btn>
+        
+        <v-btn 
+          color="primary" 
+          variant="flat" 
+          @click="$emit('apply')"
+          prepend-icon="mdi-check"
+        >
           Aplicar
         </v-btn>
       </v-card-actions>

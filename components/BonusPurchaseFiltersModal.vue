@@ -1,24 +1,25 @@
 <template>
-  <v-dialog v-model="localDialog" max-width="800px" persistent scrollable>
+  <v-dialog 
+    v-model="localDialog" 
+    :max-width="$vuetify.display.mobile ? undefined : '800px'"
+    :fullscreen="$vuetify.display.mobile"
+    :transition="$vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'"
+    persistent 
+    scrollable
+  >
     <v-card>
-      <v-card-title class="pa-4 pa-md-6 d-flex align-center border-b-thin">
-        <h2 class="text-h6 font-weight-bold">Filtros de Busca</h2>
-        <v-spacer />
-        <v-btn icon variant="text" @click="closeModal">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
+      <!-- Header padronizado -->
+      <ModalHeader title="Filtros de Busca" @close="closeModal" />
 
       <v-divider />
 
-      <v-card-text class="pa-4 pa-md-6" style="max-height: 500px">
-        <v-form ref="filtersForm" class="pa-4">
-          <v-row :no-gutters="false" class="gx-2 gy-1">
+      <v-card-text class="pa-4 pa-md-6" style="max-height: 70vh">
+        <v-container class="pa-0">
+          <v-row class="gy-2">
             <v-col
               v-for="filter in availableFilters"
               :key="filter.type"
               cols="12"
-              md="12"
             >
               <!-- Checkbox para múltiplas seleções -->
               <div v-if="filter.input_type === 'checkbox'">
@@ -84,23 +85,39 @@
               </div>
             </v-col>
           </v-row>
-        </v-form>
+        </v-container>
       </v-card-text>
 
       <v-divider />
 
-      <v-card-actions class="pa-4 pa-md-6">
-        <v-btn variant="outlined" @click="clearAllFilters">
-          <v-icon left>mdi-refresh</v-icon>
+      <!-- Footer padronizado -->
+      <v-card-actions class="pa-4 pa-md-6 bg-grey-lighten-5">
+        <v-btn 
+          variant="outlined" 
+          color="grey"
+          @click="clearAllFilters"
+          prepend-icon="mdi-refresh"
+        >
           Limpar Todos
         </v-btn>
 
         <v-spacer />
 
-        <v-btn variant="outlined" @click="closeModal"> Cancelar </v-btn>
+        <v-btn 
+          variant="outlined" 
+          @click="closeModal"
+          class="me-2"
+        >
+          Cancelar
+        </v-btn>
 
-        <v-btn color="primary" :loading="isApplying" @click="applyFilters">
-          <v-icon left>mdi-filter</v-icon>
+        <v-btn 
+          color="primary" 
+          variant="flat"
+          :loading="isApplying" 
+          @click="applyFilters"
+          prepend-icon="mdi-check"
+        >
           Aplicar Filtros
         </v-btn>
       </v-card-actions>
@@ -110,7 +127,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-import type { VForm } from 'vuetify/components'
+  import type { VForm } from 'vuetify/components'
 
   interface FilterOption {
     text: string

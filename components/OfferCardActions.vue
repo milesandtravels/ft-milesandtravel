@@ -25,16 +25,21 @@
         <v-icon size="18" class="me-2">
           {{ getProgramTypeIcon(offer.program.type) }}
         </v-icon>
-        {{ formatters.toPascalCase(offer.program.name).replace(/([A-Z])/g, ' $1').trim() }}
+        {{
+          formatters
+            .toPascalCase(offer.program.name)
+            .replace(/([A-Z])/g, ' $1')
+            .trim()
+        }}
       </v-btn>
     </v-card-actions>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { OfferItem } from '~/interfaces/offers';
-  import type { ProgramType } from '~/interfaces/program';
-  import { formatters } from '~/utils/formatter';
+  import type { OfferItem } from '~/interfaces/offers'
+  import type { ProgramType } from '~/interfaces/program'
+  import { formatters } from '~/utils/formatter'
 
   interface Props {
     offer: OfferItem

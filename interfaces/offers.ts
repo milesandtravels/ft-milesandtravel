@@ -1,36 +1,30 @@
 import type { Ecommerce } from './ecommerces'
 import type { ProgramType } from './program'
 
-export interface Product {
-  id: number
-  name: string
-  price: number
-  image_url: string
-  product_url: string
-  created_at: string
-  updated_at: string
-  reviews: number
-  rating: string
-  isCustomProduct: boolean
-}
-
-export interface OfferItem {
-  ecommerce: Ecommerce
-  product: Product
-  program_type: ProgramType
-  program: Program
-  current_value_promotion: number
-  selected: boolean
-  final_price: string
-  discount_percentage: string
-  reward_value: string
-  created_at: string
-  updated_at: string
-  promotion_link: string
-}
-
-export interface OffersApiResponse {
+export interface OfferListResponse {
   data: OfferItem[]
+  links: {
+    first: string
+    last: string
+    prev: string | null
+    next: string | null
+  }
+  meta: {
+    current_page: number
+    from: number
+    last_page: number
+    links: PaginationLink[]
+    path: string
+    per_page: number
+    to: number
+    total: number
+  }
+}
+
+export interface PaginationLink {
+  url: string | null
+  label: string
+  active: boolean
 }
 
 export interface Product {
@@ -67,10 +61,33 @@ export interface OfferItem {
   reward_value: string
   created_at: string
   updated_at: string
+  promotion_link?: string
 }
 
 export interface OffersApiResponse {
   data: OfferItem[]
+}
+
+export interface PaginatedOffersApiResponse {
+  data: {
+    data: OfferItem[]
+    links: {
+      first: string
+      last: string
+      prev: string | null
+      next: string | null
+    }
+    meta: {
+      current_page: number
+      from: number
+      last_page: number
+      links: PaginationLink[]
+      path: string
+      per_page: number
+      to: number
+      total: number
+    }
+  }
 }
 
 export interface OfferFilters {

@@ -25,26 +25,6 @@
 
           <!-- Filtros rápidos (chips) -->
           <div class="d-flex align-center gap-2 flex-wrap">
-            <v-chip-group
-              v-model="selectedProgramType"
-              color="primary"
-              filter
-              multiple
-            >
-              <v-chip value="cashback" filter>
-                <v-icon icon="mdi-cash" size="16" class="me-1" />
-                Cashback
-              </v-chip>
-              <v-chip value="points" filter>
-                <v-icon icon="mdi-star" size="16" class="me-1" />
-                Pontos
-              </v-chip>
-              <v-chip value="miles" filter>
-                <v-icon icon="mdi-airplane" size="16" class="me-1" />
-                Milhas
-              </v-chip>
-            </v-chip-group>
-
             <v-btn
               v-if="selectedOffers.length > 0"
               color="success"
@@ -60,12 +40,32 @@
 
     <!-- Componente de Filtros -->
     <OffersFilters
-      ref="filtersComponent"
-      :available-offers="offers"
-      :loading="loading"
-      @filter:apply="handleFilterApply"
-      @filter:clear="handleFilterClear"
+      v-model="showFilters"
+      :search-id="route.query.searchId"
+      :filters="activeFilters"
+      @filters-applied="handleFiltersApplied"
+      @clear="handleFilterClear"
     />
+
+    <!-- Botão para abrir filtros -->
+    <v-row class="mb-4">
+      <v-col cols="12" class="d-flex justify-end">
+        <v-btn
+          color="primary"
+          variant="outlined"
+          prepend-icon="mdi-filter-variant"
+          @click="showFilters = true"
+        >
+          Filtros Avançados
+          <v-badge
+            v-if="activeFiltersCount > 0"
+            :content="activeFiltersCount"
+            color="error"
+            class="ms-2"
+          />
+        </v-btn>
+      </v-col>
+    </v-row>
 
     <!-- Loading state -->
     <div v-if="loading" class="text-center py-8">
@@ -86,7 +86,11 @@
     <OffersList
       v-else
       :offers="filteredOffers"
+      :loading="loading"
+      :loading-more="loadingMore"
+      :has-more-data="hasMoreData"
       @update:selection="handleOfferSelection"
+      @load-more="loadMoreOffers"
     />
 
     <!-- Snackbar de feedback -->
@@ -102,8 +106,11 @@
 <script setup lang="ts">
   import OffersFilters from '~/components/OffersFilters.vue'
 import OffersList from '~/components/OffersList.vue'
-import type { OfferFilters, OfferItem } from '~/interfaces/offers'
-import type { ProgramType } from '~/interfaces/program'
+import type {
+  OfferFilters,
+  OfferItem,
+  PaginatedOffersApiResponse,
+} from '~/interfaces/offers'
 
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -111,10 +118,14 @@ import type { ProgramType } from '~/interfaces/program'
 
   // Estados reativos
   const loading = ref<boolean>(false)
+  const loadingMore = ref<boolean>(false)
   const route = useRoute()
   const router = useRouter()
   const offers = ref<OfferItem[]>([])
-  const selectedProgramType = ref<ProgramType[]>([])
+  const showFilters = ref<boolean>(false)
+  const currentPage = ref<number>(1)
+  const hasMoreData = ref<boolean>(true)
+  const perPage = 10
   const activeFilters = ref<OfferFilters>({
     ecommerces: [],
     products: [],
@@ -130,23 +141,24 @@ import type { ProgramType } from '~/interfaces/program'
     color: 'success',
   })
 
-  // Referência para o componente de filtros
-  const filtersComponent = ref()
-
   // Computed
   const selectedOffers = computed<OfferItem[]>(() =>
     offers.value.filter(offer => offer.selected)
   )
 
+  const activeFiltersCount = computed(() => {
+    let count = 0
+    if (activeFilters.value.ecommerces.length > 0) count++
+    if (activeFilters.value.products.length > 0) count++
+    if (activeFilters.value.miles_programs.length > 0) count++
+    if (activeFilters.value.points_programs.length > 0) count++
+    if (activeFilters.value.cashback_programs.length > 0) count++
+    if (activeFilters.value.program_types.length > 0) count++
+    return count
+  })
+
   const filteredOffers = computed<OfferItem[]>(() => {
     let filtered = offers.value
-
-    // Aplicar filtros rápidos (chips)
-    if (selectedProgramType.value.length > 0) {
-      filtered = filtered.filter(offer =>
-        selectedProgramType.value.includes(offer.program.type)
-      )
-    }
 
     // Aplicar filtros avançados
     if (activeFilters.value.ecommerces.length > 0) {
@@ -189,57 +201,62 @@ import type { ProgramType } from '~/interfaces/program'
   })
 
   // Métodos
-  const buildQueryString = (filters: FilterOptions): string => {
-    const queryParts: string[] = []
 
-    // Adicionar filtros de array
-    const arrayFilters = [
-      { filter: filters.ecommerces, param: 'ecommerces[]' },
-      { filter: filters.products, param: 'products[]' },
-      { filter: filters.miles_programs, param: 'miles_programs[]' },
-      { filter: filters.points_programs, param: 'points_programs[]' },
-      { filter: filters.cashback_programs, param: 'cashback_programs[]' },
-      { filter: filters.program_types, param: 'program_types[]' },
-    ]
-
-    arrayFilters.forEach(({ filter, param }) => {
-      filter.forEach(value => {
-        queryParts.push(`${param}=${encodeURIComponent(value)}`)
-      })
-    })
-
-    return queryParts.join('&')
-  }
-
-  const fetchOffers = async (filters?: FilterOptions): Promise<void> => {
+  const fetchOffers = async (
+    filters?: OfferFilters,
+    resetPagination: boolean = true
+  ): Promise<void> => {
     try {
       loading.value = true
 
-      const hasFilters =
-        filters &&
-        Object.values(filters).some(val => Array.isArray(val) && val.length > 0)
-
-      let response
-
-      if (hasFilters) {
-        // Se há filtros, usar query string como no exemplo das promoções
-        const queryString = buildQueryString(filters)
-        response = await useSanctumFetch<any>(
-          `/api/searches/${route.query.searchId}/offers?${queryString}`
-        )
-      } else {
-        // Se não há filtros, fazer requisição simples
-        response = await useSanctumFetch<any>(
-          `/api/searches/${route.query.searchId}/offers`
-        )
+      if (resetPagination) {
+        currentPage.value = 1
+        hasMoreData.value = true
+        offers.value = []
       }
 
-      offers.value = response.data.value.data.map((offer: any) => ({
+      // Preparar payload para POST
+      const payload = {
+        ...(filters || {
+          ecommerces: [],
+          products: [],
+          miles_programs: [],
+          points_programs: [],
+          cashback_programs: [],
+          program_types: [],
+        }),
+      }
+
+      // Fazer requisição POST com filtros no corpo
+      const response = await useSanctumFetch<PaginatedOffersApiResponse>(
+        `/api/searches/${route.query.searchId}/offers`,
+        {
+          method: 'POST',
+          body: payload,
+          query: {
+            page: currentPage.value,
+            per_page: perPage,
+          },
+        }
+      )
+
+      const newOffers = response.data.value.data.map((offer: OfferItem) => ({
         ...offer,
         selected: false,
       }))
 
-      showSnackbar('Ofertas carregadas com sucesso!', 'success')
+      if (resetPagination) {
+        offers.value = newOffers
+      } else {
+        offers.value = [...offers.value, ...newOffers]
+      }
+
+      // Verificar se há mais dados
+      hasMoreData.value = newOffers.length === perPage
+
+      if (resetPagination) {
+        showSnackbar('Ofertas carregadas com sucesso!', 'success')
+      }
     } catch (error) {
       console.error('Erro ao buscar ofertas:', error)
       showSnackbar('Erro ao carregar ofertas. Tente novamente.', 'error')
@@ -248,12 +265,59 @@ import type { ProgramType } from '~/interfaces/program'
     }
   }
 
-  const handleFilterApply = async (filters: FilterOptions): Promise<void> => {
-    activeFilters.value = { ...filters }
-    await fetchOffers(filters)
+  const loadMoreOffers = async (): Promise<void> => {
+    if (loadingMore.value || !hasMoreData.value) return
+
+    try {
+      loadingMore.value = true
+      currentPage.value += 1
+
+      // Preparar payload para POST
+      const payload = {
+        ...activeFilters.value,
+        page: currentPage.value,
+        per_page: perPage,
+      }
+
+      // Fazer requisição POST com filtros no corpo
+      const response = await useSanctumFetch<PaginatedOffersApiResponse>(
+        `/api/searches/${route.query.searchId}/offers`,
+        {
+          method: 'POST',
+          body: payload,
+        }
+      )
+
+      const newOffers = response.data.value.data.map((offer: OfferItem) => ({
+        ...offer,
+        selected: false,
+      }))
+
+      offers.value = [...offers.value, ...newOffers]
+
+      // Verificar se há mais dados
+      hasMoreData.value = newOffers.length === perPage
+    } catch (error) {
+      console.error('Erro ao carregar mais ofertas:', error)
+      showSnackbar('Erro ao carregar mais ofertas. Tente novamente.', 'error')
+    } finally {
+      loadingMore.value = false
+    }
   }
 
-  const handleFilterClear = async (): Promise<void> => {
+  const handleFiltersApplied = (filteredOffers: OfferItem[]): void => {
+    // Resetar paginação quando novos filtros são aplicados
+    currentPage.value = 1
+    hasMoreData.value = true
+
+    offers.value = filteredOffers.map((offer: OfferItem) => ({
+      ...offer,
+      selected: false,
+    }))
+    showSnackbar('Filtros aplicados com sucesso!', 'success')
+  }
+
+  const handleFilterClear = (): void => {
     activeFilters.value = {
       ecommerces: [],
       products: [],
@@ -262,8 +326,9 @@ import type { ProgramType } from '~/interfaces/program'
       cashback_programs: [],
       program_types: [],
     }
-    selectedProgramType.value = []
-    await fetchOffers()
+    // Recarregar ofertas sem filtros e resetar paginação
+    fetchOffers(undefined, true)
+    showSnackbar('Filtros limpos!', 'info')
   }
 
   const handleOfferSelection = (updatedOffer: OfferItem): void => {
@@ -311,15 +376,7 @@ import type { ProgramType } from '~/interfaces/program'
   }
 
   // Watchers
-  watch(
-    selectedProgramType,
-    async () => {
-      // Os filtros rápidos são aplicados automaticamente via computed
-      // Mas se quiser fazer nova requisição para a API quando mudar:
-      // await fetchOffers({ ...activeFilters.value, program_types: selectedProgramType.value })
-    },
-    { deep: true }
-  )
+  // Removido watcher do selectedProgramType pois os chips foram removidos
 
   // Lifecycle
   onMounted(async () => {

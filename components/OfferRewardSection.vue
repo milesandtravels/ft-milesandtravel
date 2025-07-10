@@ -86,8 +86,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { OfferItem } from '~/interfaces/offers';
-import { formatters } from '~/utils/formatter';
+  import type { OfferItem } from '~/interfaces/offers'
+  import { formatters } from '~/utils/formatter'
 
   interface Props {
     offer: OfferItem
@@ -232,48 +232,48 @@ import { formatters } from '~/utils/formatter';
   }
 
   /* Mobile optimizations */
-   @media (max-width: 600px) {
-     .reward-value-text {
-       font-size: 1.125rem;
-     }
-     
-     .reward-value-card {
-       padding: 12px !important;
-     }
+  @media (max-width: 600px) {
+    .reward-value-text {
+      font-size: 1.125rem;
+    }
 
-     .program-header-card {
-       padding: 12px !important;
-       margin-bottom: 12px !important;
-     }
+    .reward-value-card {
+      padding: 12px !important;
+    }
 
-     .program-name {
-       font-size: 0.875rem;
-     }
+    .program-header-card {
+      padding: 12px !important;
+      margin-bottom: 12px !important;
+    }
 
-     .program-badge {
-       font-size: 0.65rem;
-       height: 16px;
-     }
+    .program-name {
+      font-size: 0.875rem;
+    }
 
-     .info-btn {
-       display: none;
-     }
-   }
+    .program-badge {
+      font-size: 0.65rem;
+      height: 16px;
+    }
 
-   /* Performance optimizations - reduce repaints */
-   .reward-value-card,
-   .program-header-card,
-   .program-avatar {
-     will-change: transform;
-   }
+    .info-btn {
+      display: none;
+    }
+  }
 
-   /* Reduce motion for accessibility */
-   @media (prefers-reduced-motion: reduce) {
-     .program-header-card,
-     .program-avatar,
-     .reward-value-card,
-     .info-btn {
-       transition: none;
-     }
-   }
+  /* Performance optimizations - reduce repaints */
+  .reward-value-card,
+  .program-header-card,
+  .program-avatar {
+    will-change: transform;
+  }
+
+  /* Reduce motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .program-header-card,
+    .program-avatar,
+    .reward-value-card,
+    .info-btn {
+      transition: none;
+    }
+  }
 </style>
