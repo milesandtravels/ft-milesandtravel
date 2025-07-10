@@ -24,28 +24,28 @@ Componente reutilizável para seleção de e-commerces/marketplaces com autocomp
 </template>
 
 <script setup>
-import EcommerceAutocomplete from './EcommerceAutocomplete.vue'
+  import EcommerceAutocomplete from './EcommerceAutocomplete.vue'
 
-const selectedEcommerce = ref(null)
+  const selectedEcommerce = ref(null)
 
-const handleEcommerceSelected = (ecommerce) => {
-  console.log('E-commerce selecionado:', ecommerce)
-}
+  const handleEcommerceSelected = ecommerce => {
+    console.log('E-commerce selecionado:', ecommerce)
+  }
 </script>
 ```
 
 ## Props
 
-| Prop | Tipo | Padrão | Descrição |
-|------|------|--------|-----------|
-| `modelValue` | `number \| null` | `null` | ID do e-commerce selecionado |
-| `autoFetch` | `boolean` | `true` | Carrega automaticamente os e-commerces ao montar |
+| Prop         | Tipo             | Padrão | Descrição                                        |
+| ------------ | ---------------- | ------ | ------------------------------------------------ |
+| `modelValue` | `number \| null` | `null` | ID do e-commerce selecionado                     |
+| `autoFetch`  | `boolean`        | `true` | Carrega automaticamente os e-commerces ao montar |
 
 ## Events
 
-| Event | Payload | Descrição |
-|-------|---------|----------|
-| `update:modelValue` | `number \| null` | Emitido quando a seleção muda |
+| Event                | Payload             | Descrição                                    |
+| -------------------- | ------------------- | -------------------------------------------- |
+| `update:modelValue`  | `number \| null`    | Emitido quando a seleção muda                |
 | `ecommerce-selected` | `Ecommerce \| null` | Emitido com os dados completos do e-commerce |
 
 ## Interface Ecommerce
@@ -61,11 +61,11 @@ interface Ecommerce {
 
 ## Métodos Expostos
 
-| Método | Descrição |
-|--------|----------|
-| `fetchEcommerces()` | Recarrega a lista de e-commerces |
-| `selectedEcommerce` | Ref reativo com o ID selecionado |
-| `ecommerceOptions` | Ref reativo com a lista de e-commerces |
+| Método              | Descrição                              |
+| ------------------- | -------------------------------------- |
+| `fetchEcommerces()` | Recarrega a lista de e-commerces       |
+| `selectedEcommerce` | Ref reativo com o ID selecionado       |
+| `ecommerceOptions`  | Ref reativo com a lista de e-commerces |
 
 ## Exemplos Avançados
 
@@ -76,7 +76,7 @@ interface Ecommerce {
   <div>
     <v-btn @click="setSpecificEcommerce">Selecionar Amazon</v-btn>
     <v-btn @click="clearSelection">Limpar</v-btn>
-    
+
     <EcommerceAutocomplete
       v-model="selectedEcommerce"
       @ecommerce-selected="handleSelection"
@@ -86,22 +86,22 @@ interface Ecommerce {
 </template>
 
 <script setup>
-const selectedEcommerce = ref(null)
-const autocompleteRef = ref()
+  const selectedEcommerce = ref(null)
+  const autocompleteRef = ref()
 
-const setSpecificEcommerce = () => {
-  selectedEcommerce.value = 1 // ID da Amazon
-}
-
-const clearSelection = () => {
-  selectedEcommerce.value = null
-}
-
-const handleSelection = (ecommerce) => {
-  if (ecommerce) {
-    console.log(`Selecionado: ${ecommerce.name}`)
+  const setSpecificEcommerce = () => {
+    selectedEcommerce.value = 1 // ID da Amazon
   }
-}
+
+  const clearSelection = () => {
+    selectedEcommerce.value = null
+  }
+
+  const handleSelection = ecommerce => {
+    if (ecommerce) {
+      console.log(`Selecionado: ${ecommerce.name}`)
+    }
+  }
 </script>
 ```
 
@@ -110,13 +110,10 @@ const handleSelection = (ecommerce) => {
 ```vue
 <template>
   <div>
-    <v-btn 
-      @click="loadEcommerces" 
-      :loading="isLoading"
-    >
+    <v-btn @click="loadEcommerces" :loading="isLoading">
       Carregar E-commerces
     </v-btn>
-    
+
     <EcommerceAutocomplete
       v-model="selectedEcommerce"
       :auto-fetch="false"
@@ -126,17 +123,17 @@ const handleSelection = (ecommerce) => {
 </template>
 
 <script setup>
-const isLoading = ref(false)
-const manualRef = ref()
+  const isLoading = ref(false)
+  const manualRef = ref()
 
-const loadEcommerces = async () => {
-  isLoading.value = true
-  try {
-    await manualRef.value?.fetchEcommerces()
-  } finally {
-    isLoading.value = false
+  const loadEcommerces = async () => {
+    isLoading.value = true
+    try {
+      await manualRef.value?.fetchEcommerces()
+    } finally {
+      isLoading.value = false
+    }
   }
-}
 </script>
 ```
 

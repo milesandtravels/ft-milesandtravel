@@ -1,10 +1,12 @@
 <template>
-  <v-dialog 
-    v-model="localDialog" 
+  <v-dialog
+    v-model="localDialog"
     :max-width="$vuetify.display.mobile ? undefined : '800px'"
     :fullscreen="$vuetify.display.mobile"
-    :transition="$vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'"
-    persistent 
+    :transition="
+      $vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'
+    "
+    persistent
     scrollable
   >
     <v-card>
@@ -93,8 +95,8 @@
 
       <!-- Footer padronizado -->
       <v-card-actions class="pa-4 pa-md-6 bg-grey-lighten-5">
-        <v-btn 
-          variant="outlined" 
+        <v-btn
+          variant="outlined"
           color="grey"
           @click="clearAllFilters"
           prepend-icon="mdi-refresh"
@@ -104,18 +106,14 @@
 
         <v-spacer />
 
-        <v-btn 
-          variant="outlined" 
-          @click="closeModal"
-          class="me-2"
-        >
+        <v-btn variant="outlined" @click="closeModal" class="me-2">
           Cancelar
         </v-btn>
 
-        <v-btn 
-          color="primary" 
+        <v-btn
+          color="primary"
           variant="flat"
-          :loading="isApplying" 
+          :loading="isApplying"
           @click="applyFilters"
           prepend-icon="mdi-check"
         >

@@ -12,7 +12,10 @@
   >
     <v-card>
       <!-- Header padronizado -->
-      <ModalHeader title="Filtrar Promoções" @close="$emit('update:modelValue', false)" />
+      <ModalHeader
+        title="Filtrar Promoções"
+        @close="$emit('update:modelValue', false)"
+      />
 
       <v-divider />
 
@@ -185,28 +188,28 @@
 
       <!-- Footer padronizado -->
       <v-card-actions class="pa-4 pa-md-6 bg-grey-lighten-5">
-        <v-btn 
-          variant="outlined" 
+        <v-btn
+          variant="outlined"
           color="grey"
           @click="$emit('clear')"
           prepend-icon="mdi-refresh"
         >
           Limpar
         </v-btn>
-        
+
         <v-spacer />
-        
-        <v-btn 
-          variant="outlined" 
+
+        <v-btn
+          variant="outlined"
           @click="$emit('update:modelValue', false)"
           class="me-2"
         >
           Cancelar
         </v-btn>
-        
-        <v-btn 
-          color="primary" 
-          variant="flat" 
+
+        <v-btn
+          color="primary"
+          variant="flat"
           @click="$emit('apply')"
           prepend-icon="mdi-check"
         >

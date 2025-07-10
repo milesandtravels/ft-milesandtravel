@@ -245,10 +245,12 @@
   // Watchers para programs prop
   watch(
     () => props.programs,
-    (newPrograms) => {
+    newPrograms => {
       if (newPrograms) {
         // Filtrar programas pelo tipo
-        const filteredPrograms = newPrograms.filter(p => p.type === props.programType)
+        const filteredPrograms = newPrograms.filter(
+          p => p.type === props.programType
+        )
         programOptions.value = filteredPrograms
       }
     },
@@ -258,7 +260,11 @@
   // Lifecycle
   onMounted(() => {
     // Só faz fetch se não tiver programs prop e autoFetch estiver habilitado
-    if (!props.programs && props.autoFetch && programOptions.value.length === 0) {
+    if (
+      !props.programs &&
+      props.autoFetch &&
+      programOptions.value.length === 0
+    ) {
       fetchPrograms()
     }
   })

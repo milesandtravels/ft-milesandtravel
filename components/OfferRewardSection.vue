@@ -86,8 +86,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { OfferItem } from '~/interfaces/offers';
-import { formatters } from '~/utils/formatter';
+  import type { OfferItem } from '~/interfaces/offers'
+  import { formatters } from '~/utils/formatter'
 
   interface Props {
     offer: OfferItem

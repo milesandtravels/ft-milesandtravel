@@ -1,10 +1,12 @@
 <template>
-  <v-dialog 
-    v-model="dialogModel" 
+  <v-dialog
+    v-model="dialogModel"
     :max-width="$vuetify.display.mobile ? undefined : '900px'"
     :fullscreen="$vuetify.display.mobile"
-    :transition="$vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'"
-    persistent 
+    :transition="
+      $vuetify.display.mobile ? 'dialog-bottom-transition' : 'dialog-transition'
+    "
+    persistent
     scrollable
   >
     <v-card>
@@ -13,11 +15,11 @@
 
       <v-divider />
 
-      <v-card-text class="pa-4" >
-        <v-container >
+      <v-card-text class="pa-4">
+        <v-container>
           <v-row class="gy-1">
             <!-- Primeira linha: Marketplace e Produtos -->
-            <v-col cols="12" md="6" >
+            <v-col cols="12" md="6">
               <EcommerceAutocomplete
                 v-model="selectedEcommerces"
                 :search-id="searchId"
@@ -25,8 +27,8 @@
                 multiple
               />
             </v-col>
-            
-            <v-col cols="12" md="6" >
+
+            <v-col cols="12" md="6">
               <OfferProductsSelected
                 v-model="selectedProducts"
                 :search-id="searchId"
@@ -35,7 +37,7 @@
             </v-col>
 
             <!-- Segunda linha: Programas de Milhas e Pontos -->
-            <v-col cols="12" md="6" >
+            <v-col cols="12" md="6">
               <OfferProgramsAutocomplete
                 v-model="selectedMilesPrograms"
                 program-type="miles"
@@ -44,8 +46,8 @@
                 @programs-selected="handleMilesProgramsSelection"
               />
             </v-col>
-            
-            <v-col cols="12" md="6" >
+
+            <v-col cols="12" md="6">
               <OfferProgramsAutocomplete
                 v-model="selectedPointsPrograms"
                 program-type="points"
@@ -56,7 +58,7 @@
             </v-col>
 
             <!-- Terceira linha: Cashback (centralizado) -->
-            <v-col cols="12" md="6"  >
+            <v-col cols="12" md="6">
               <OfferProgramsAutocomplete
                 v-model="selectedCashbackPrograms"
                 program-type="cashback"
@@ -68,7 +70,7 @@
           </v-row>
 
           <div v-if="hasActiveFilters" class="mt-6">
-            <v-divider  />
+            <v-divider />
           </div>
         </v-container>
       </v-card-text>
@@ -86,17 +88,13 @@
         >
           Limpar Tudo
         </v-btn>
-        
+
         <v-spacer />
-        
-        <v-btn
-          variant="outlined"
-          @click="closeDialog"
-          class="me-2"
-        >
+
+        <v-btn variant="outlined" @click="closeDialog" class="me-2">
           Cancelar
         </v-btn>
-        
+
         <v-btn
           color="primary"
           variant="flat"
@@ -210,8 +208,12 @@
   // Métodos para lidar com as seleções dos componentes
   function handleEcommerceSelection(ecommerces: any[] | any | null) {
     // Garantir que sempre trabalhamos com um array
-    const ecommercesArray = Array.isArray(ecommerces) ? ecommerces : (ecommerces ? [ecommerces] : [])
-    
+    const ecommercesArray = Array.isArray(ecommerces)
+      ? ecommerces
+      : ecommerces
+        ? [ecommerces]
+        : []
+
     selectedEcommerces.value = ecommercesArray
     localFilters.value.ecommerces = ecommercesArray.map(e => e.id)
   }
@@ -316,9 +318,9 @@
   // Função para buscar todos os programas uma única vez
   const fetchPrograms = async () => {
     if (allPrograms.value.length > 0) return // Já carregou
-    
+
     isLoadingPrograms.value = true
-    
+
     try {
       const { data, error } = await useSanctumFetch('/api/programs', {
         method: 'GET',
@@ -330,13 +332,22 @@
 
         // Combinar todos os tipos de programas em um array único
         if (programsData.cashback) {
-          programs.push(...programsData.cashback.map((p: any) => ({ ...p, type: 'cashback' })))
+          programs.push(
+            ...programsData.cashback.map((p: any) => ({
+              ...p,
+              type: 'cashback',
+            }))
+          )
         }
         if (programsData.points) {
-          programs.push(...programsData.points.map((p: any) => ({ ...p, type: 'points' })))
+          programs.push(
+            ...programsData.points.map((p: any) => ({ ...p, type: 'points' }))
+          )
         }
         if (programsData.miles) {
-          programs.push(...programsData.miles.map((p: any) => ({ ...p, type: 'miles' })))
+          programs.push(
+            ...programsData.miles.map((p: any) => ({ ...p, type: 'miles' }))
+          )
         }
 
         allPrograms.value = programs
@@ -353,16 +364,16 @@
   }
 
   // Watchers
-   watch(
-     () => props.modelValue,
-     (isOpen) => {
-       if (isOpen) {
-         fetchPrograms() // Carrega programas quando o modal abre
-       }
-     }
-   )
+  watch(
+    () => props.modelValue,
+    isOpen => {
+      if (isOpen) {
+        fetchPrograms() // Carrega programas quando o modal abre
+      }
+    }
+  )
 
-   watch(
+  watch(
     () => props.filters,
     newFilters => {
       if (newFilters) {

@@ -14,13 +14,13 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  title: string
-}
+  interface Props {
+    title: string
+  }
 
-defineProps<Props>()
+  defineProps<Props>()
 
-defineEmits<{
-  close: []
-}>()
+  defineEmits<{
+    close: []
+  }>()
 </script>

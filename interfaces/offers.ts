@@ -1,5 +1,5 @@
 import type { Ecommerce } from './ecommerces'
-import type { ProgramType } from './program'
+import type { Program, ProgramType } from './program'
 
 export interface OfferListResponse {
   data: OfferItem[]
@@ -38,16 +38,6 @@ export interface Product {
   reviews: number
   rating: string
   isCustomProduct: boolean
-}
-
-export interface Program {
-  id: number
-  name: string
-  logo_url: string | null
-  created_at: string
-  updated_at: string | null
-  value_per_mile?: number
-  type: ProgramType
 }
 
 export interface OfferItem {

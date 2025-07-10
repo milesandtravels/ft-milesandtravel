@@ -139,9 +139,9 @@
       if (props.searchId) {
         queryParams.append('search_id', props.searchId)
       }
-      
+
       const url = `/api/ecommerces${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
-      
+
       const { data, error } = await useSanctumFetch(url, {
         method: 'GET',
       })
@@ -170,12 +170,14 @@
 
     if (props.multiple && Array.isArray(value)) {
       // Seleção múltipla
-      selectedEcommerceData = value.length > 0
-        ? ecommerceOptions.value.filter(e => value.includes(e.id))
-        : []
+      selectedEcommerceData =
+        value.length > 0
+          ? ecommerceOptions.value.filter(e => value.includes(e.id))
+          : []
     } else if (!props.multiple && typeof value === 'number') {
       // Seleção única
-      selectedEcommerceData = ecommerceOptions.value.find(e => e.id === value) || null
+      selectedEcommerceData =
+        ecommerceOptions.value.find(e => e.id === value) || null
     } else {
       // Valor nulo ou vazio
       selectedEcommerceData = props.multiple ? [] : null

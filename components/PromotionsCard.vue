@@ -22,7 +22,7 @@
         @click="handleViewDetails"
       >
         <v-icon start>mdi-external-link</v-icon>
-        Ver Detalhes
+        Ver promoção
       </v-btn>
     </v-card-actions>
 
