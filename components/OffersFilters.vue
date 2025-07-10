@@ -20,6 +20,7 @@
             <v-col cols="12" md="6" >
               <EcommerceAutocomplete
                 v-model="selectedEcommerces"
+                :search-id="searchId"
                 @ecommerces-selected="handleEcommerceSelection"
               />
             </v-col>
@@ -37,6 +38,8 @@
               <OfferProgramsAutocomplete
                 v-model="selectedMilesPrograms"
                 program-type="miles"
+                :programs="allPrograms"
+                :auto-fetch="false"
                 @programs-selected="handleMilesProgramsSelection"
               />
             </v-col>
@@ -45,6 +48,8 @@
               <OfferProgramsAutocomplete
                 v-model="selectedPointsPrograms"
                 program-type="points"
+                :programs="allPrograms"
+                :auto-fetch="false"
                 @programs-selected="handlePointsProgramsSelection"
               />
             </v-col>
@@ -54,6 +59,8 @@
               <OfferProgramsAutocomplete
                 v-model="selectedCashbackPrograms"
                 program-type="cashback"
+                :programs="allPrograms"
+                :auto-fetch="false"
                 @programs-selected="handleCashbackProgramsSelection"
               />
             </v-col>
@@ -192,6 +199,8 @@
 
   // Estados locais
   const applyingFilters = ref(false)
+  const allPrograms = ref<any[]>([])
+  const isLoadingPrograms = ref(false)
 
   // Filtros locais (cópia dos filtros para edição na modal)
   const localFilters = ref<LocalFilters>({
@@ -346,8 +355,56 @@
     dialogModel.value = false
   }
 
+  // Função para buscar todos os programas uma única vez
+  const fetchPrograms = async () => {
+    if (allPrograms.value.length > 0) return // Já carregou
+    
+    isLoadingPrograms.value = true
+    
+    try {
+      const { data, error } = await useSanctumFetch('/api/programs', {
+        method: 'GET',
+      })
+
+      if (data.value) {
+        const programsData = data.value
+        const programs: any[] = []
+
+        // Combinar todos os tipos de programas em um array único
+        if (programsData.cashback) {
+          programs.push(...programsData.cashback.map((p: any) => ({ ...p, type: 'cashback' })))
+        }
+        if (programsData.points) {
+          programs.push(...programsData.points.map((p: any) => ({ ...p, type: 'points' })))
+        }
+        if (programsData.miles) {
+          programs.push(...programsData.miles.map((p: any) => ({ ...p, type: 'miles' })))
+        }
+
+        allPrograms.value = programs
+      }
+
+      if (error.value) {
+        console.error('Erro ao carregar programas:', error.value)
+      }
+    } catch (err) {
+      console.error('Erro ao buscar programas:', err)
+    } finally {
+      isLoadingPrograms.value = false
+    }
+  }
+
   // Watchers
-  watch(
+   watch(
+     () => props.modelValue,
+     (isOpen) => {
+       if (isOpen) {
+         fetchPrograms() // Carrega programas quando o modal abre
+       }
+     }
+   )
+
+   watch(
     () => props.filters,
     newFilters => {
       if (newFilters) {

@@ -104,11 +104,13 @@
   interface Props {
     modelValue?: number | null
     autoFetch?: boolean
+    searchId?: string | null
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: null,
     autoFetch: true,
+    searchId: null,
   })
 
   const emit = defineEmits<{
@@ -128,7 +130,14 @@
     errorLoadingEcommerces.value = false
 
     try {
-      const { data, error } = await useSanctumFetch('/api/ecommerces', {
+      const queryParams = new URLSearchParams()
+      if (props.searchId) {
+        queryParams.append('search_id', props.searchId)
+      }
+      
+      const url = `/api/ecommerces${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+      
+      const { data, error } = await useSanctumFetch(url, {
         method: 'GET',
       })
 
@@ -164,6 +173,15 @@
     () => props.modelValue,
     newValue => {
       selectedEcommerce.value = newValue
+    }
+  )
+
+  watch(
+    () => props.searchId,
+    () => {
+      if (props.autoFetch) {
+        fetchEcommerces()
+      }
     }
   )
 
