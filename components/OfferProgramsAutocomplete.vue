@@ -1,10 +1,5 @@
 <template>
-  <div class="mb-6">
-    <v-label class="text-subtitle-1 font-weight-medium mb-3 d-block">
-      <v-icon :icon="getProgramTypeIcon(programType)" class="me-2" />
-      {{ getProgramTypeLabel(programType) }}
-    </v-label>
-
+  <div>
     <v-autocomplete
       v-model="selectedPrograms"
       :items="programOptions"

@@ -13,20 +13,18 @@
 
       <v-divider />
 
-      <v-card-text class="pa-4 pa-md-6" style="max-height: 70vh">
-        <v-container class="pa-0">
-        <v-row class="gy-2">
-
-            <!-- Filtro por E-commerces -->
-            <v-col cols="12" md="6">
+      <v-card-text class="pa-4" >
+        <v-container >
+          <v-row class="gy-1">
+            <!-- Primeira linha: Marketplace e Produtos -->
+            <v-col cols="12" md="6" >
               <EcommerceAutocomplete
                 v-model="selectedEcommerces"
                 @ecommerces-selected="handleEcommerceSelection"
               />
             </v-col>
-
-            <!-- Filtro por Produtos -->
-            <v-col cols="12" md="6">
+            
+            <v-col cols="12" md="6" >
               <OfferProductsSelected
                 v-model="selectedProducts"
                 :search-id="searchId"
@@ -34,17 +32,16 @@
               />
             </v-col>
 
-            <!-- Filtro por Programas de Milhas -->
-            <v-col cols="12" md="4">
+            <!-- Segunda linha: Programas de Milhas e Pontos -->
+            <v-col cols="12" md="6" >
               <OfferProgramsAutocomplete
                 v-model="selectedMilesPrograms"
                 program-type="miles"
                 @programs-selected="handleMilesProgramsSelection"
               />
             </v-col>
-
-            <!-- Filtro por Programas de Pontos -->
-            <v-col cols="12" md="4">
+            
+            <v-col cols="12" md="6" >
               <OfferProgramsAutocomplete
                 v-model="selectedPointsPrograms"
                 program-type="points"
@@ -52,8 +49,8 @@
               />
             </v-col>
 
-            <!-- Filtro por Programas de Cashback -->
-            <v-col cols="12" md="4">
+            <!-- Terceira linha: Cashback (centralizado) -->
+            <v-col cols="12" md="6"  >
               <OfferProgramsAutocomplete
                 v-model="selectedCashbackPrograms"
                 program-type="cashback"
@@ -62,12 +59,10 @@
             </v-col>
           </v-row>
 
-          <!-- Resumo dos filtros selecionados -->
           <div v-if="hasActiveFilters" class="mt-6">
-            <v-divider class="mb-4" />
+            <v-divider  />
             <h4 class="text-subtitle-1 mb-3">Resumo dos Filtros Selecionados:</h4>
             <div class="d-flex flex-wrap" style="gap: 8px">
-            <!-- Chips dos filtros ativos -->
             <v-chip
               v-for="type in localFilters.program_types"
               :key="`type-${type}`"
@@ -119,7 +114,7 @@
       <v-divider />
 
       <!-- Footer padronizado -->
-      <v-card-actions class="pa-4 pa-md-6 bg-grey-lighten-5">
+      <v-card-actions class="pa-3 bg-grey-lighten-5">
         <v-btn
           variant="outlined"
           color="grey"

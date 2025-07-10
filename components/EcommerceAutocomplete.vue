@@ -1,9 +1,5 @@
 <template>
-  <div class="mb-6">
-    <v-label class="text-subtitle-1 font-weight-medium mb-3 d-block"
-      >Buscar Marketplace</v-label
-    >
-
+  <div>
     <v-autocomplete
       v-model="selectedEcommerce"
       :items="ecommerceOptions"
