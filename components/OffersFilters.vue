@@ -21,7 +21,8 @@
               <EcommerceAutocomplete
                 v-model="selectedEcommerces"
                 :search-id="searchId"
-                @ecommerces-selected="handleEcommerceSelection"
+                @ecommerce-selected="handleEcommerceSelection"
+                multiple
               />
             </v-col>
             
@@ -68,52 +69,6 @@
 
           <div v-if="hasActiveFilters" class="mt-6">
             <v-divider  />
-            <h4 class="text-subtitle-1 mb-3">Resumo dos Filtros Selecionados:</h4>
-            <div class="d-flex flex-wrap" style="gap: 8px">
-            <v-chip
-              v-for="type in localFilters.program_types"
-              :key="`type-${type}`"
-              size="small"
-              variant="outlined"
-              :prepend-icon="getProgramTypeIcon(type)"
-              :color="getProgramTypeColor(type)"
-            >
-              {{ getProgramTypeLabel(type) }}
-            </v-chip>
-
-            <v-chip
-              v-for="ecommerce in selectedEcommerces"
-              :key="`ecommerce-${ecommerce.id}`"
-              size="small"
-              variant="outlined"
-              prepend-icon="mdi-store"
-              color="blue"
-            >
-              {{ ecommerce.name }}
-            </v-chip>
-
-            <v-chip
-              v-for="product in selectedProducts"
-              :key="`product-${product.id}`"
-              size="small"
-              variant="outlined"
-              prepend-icon="mdi-package-variant"
-              color="green"
-            >
-              {{ product.name }}
-            </v-chip>
-
-            <v-chip
-              v-for="program in selectedPrograms"
-              :key="`program-${program.type}-${program.id}`"
-              size="small"
-              variant="outlined"
-              :prepend-icon="getProgramTypeIcon(program.type as ProgramType)"
-              :color="getProgramTypeColor(program.type)"
-            >
-              {{ program.name }}
-            </v-chip>
-            </div>
           </div>
         </v-container>
       </v-card-text>
@@ -253,9 +208,12 @@
   })
 
   // Métodos para lidar com as seleções dos componentes
-  function handleEcommerceSelection(ecommerces: any[]) {
-    selectedEcommerces.value = ecommerces
-    localFilters.value.ecommerces = ecommerces.map(e => e.id)
+  function handleEcommerceSelection(ecommerces: any[] | any | null) {
+    // Garantir que sempre trabalhamos com um array
+    const ecommercesArray = Array.isArray(ecommerces) ? ecommerces : (ecommerces ? [ecommerces] : [])
+    
+    selectedEcommerces.value = ecommercesArray
+    localFilters.value.ecommerces = ecommercesArray.map(e => e.id)
   }
 
   function handleProductsSelection(products: any[]) {

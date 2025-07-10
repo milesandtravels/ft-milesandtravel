@@ -5,11 +5,14 @@
       :items="ecommerceOptions"
       item-title="name"
       item-value="id"
-      label="Selecionar Marketplace"
+      :label="multiple ? 'Selecionar Marketplaces' : 'Selecionar Marketplace'"
       variant="outlined"
       density="comfortable"
       prepend-inner-icon="mdi-store"
       clearable
+      :multiple="multiple"
+      :chips="multiple"
+      :closable-chips="multiple"
       no-data-text="Nenhum marketplace encontrado"
       :loading="isLoadingEcommerces"
       :error="errorLoadingEcommerces"
@@ -92,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, onMounted } from 'vue'
+  import { onMounted, ref, watch } from 'vue'
 
   interface Ecommerce {
     id: number
@@ -102,24 +105,26 @@
   }
 
   interface Props {
-    modelValue?: number | null
+    modelValue?: number | number[] | null
     autoFetch?: boolean
     searchId?: string | null
+    multiple?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: null,
     autoFetch: true,
     searchId: null,
+    multiple: false,
   })
 
   const emit = defineEmits<{
-    'update:modelValue': [value: number | null]
-    'ecommerce-selected': [ecommerce: Ecommerce | null]
+    'update:modelValue': [value: number | number[] | null]
+    'ecommerce-selected': [ecommerce: Ecommerce | Ecommerce[] | null]
   }>()
 
   // Reactive state
-  const selectedEcommerce = ref<number | null>(props.modelValue)
+  const selectedEcommerce = ref<number | number[] | null>(props.modelValue)
   const ecommerceOptions = ref<Ecommerce[]>([])
   const isLoadingEcommerces = ref(false)
   const errorLoadingEcommerces = ref(false)
@@ -157,13 +162,24 @@
     }
   }
 
-  const handleSelectionChange = (value: number | null) => {
+  const handleSelectionChange = (value: number | number[] | null) => {
     selectedEcommerce.value = value
     emit('update:modelValue', value)
 
-    const selectedEcommerceData = value
-      ? ecommerceOptions.value.find(e => e.id === value) || null
-      : null
+    let selectedEcommerceData: Ecommerce | Ecommerce[] | null = null
+
+    if (props.multiple && Array.isArray(value)) {
+      // Seleção múltipla
+      selectedEcommerceData = value.length > 0
+        ? ecommerceOptions.value.filter(e => value.includes(e.id))
+        : []
+    } else if (!props.multiple && typeof value === 'number') {
+      // Seleção única
+      selectedEcommerceData = ecommerceOptions.value.find(e => e.id === value) || null
+    } else {
+      // Valor nulo ou vazio
+      selectedEcommerceData = props.multiple ? [] : null
+    }
 
     emit('ecommerce-selected', selectedEcommerceData)
   }
