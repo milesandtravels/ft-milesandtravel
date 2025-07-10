@@ -47,6 +47,7 @@ export interface Program {
   created_at: string
   updated_at: string | null
   value_per_mile?: number
+  type: ProgramType
 }
 
 export interface OfferItem {
