@@ -101,9 +101,9 @@
 
 <script setup lang="ts">
   import OffersFilters from '~/components/OffersFilters.vue'
-  import OffersList from '~/components/OffersList.vue'
-  import type { FilterOptions, OfferItem } from '~/interfaces/offers'
-  import type { ProgramType } from '~/interfaces/program'
+import OffersList from '~/components/OffersList.vue'
+import type { OfferFilters, OfferItem } from '~/interfaces/offers'
+import type { ProgramType } from '~/interfaces/program'
 
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -115,7 +115,7 @@
   const router = useRouter()
   const offers = ref<OfferItem[]>([])
   const selectedProgramType = ref<ProgramType[]>([])
-  const activeFilters = ref<FilterOptions>({
+  const activeFilters = ref<OfferFilters>({
     ecommerces: [],
     products: [],
     miles_programs: [],

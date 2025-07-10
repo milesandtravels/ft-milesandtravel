@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { ProgramType } from '~/types/offer'
+  import type { ProgramType } from '~/interfaces/program'
 
   interface Props {
     type: ProgramType

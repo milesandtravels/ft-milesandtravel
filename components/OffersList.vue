@@ -1,21 +1,20 @@
 <template>
   <div class="offers-container">
-    <v-row justify="center">
-      <v-col
+    <div class="offers-grid">
+      <div
         v-for="offer in offers"
         :key="`${offer.ecommerce.id}-${offer.product.id}-${offer.program.id}`"
-        cols="12"
-        sm="6"
-        md="4"
+        class="grid-item"
       >
         <OfferCard :offer="offer" @view:product="handleViewProduct" />
-      </v-col>
-    </v-row>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import type { OfferItem } from '~/interfaces/offers'
+
   interface Props {
     offers: OfferItem[]
   }
@@ -43,16 +42,40 @@
     margin: 0 auto;
   }
 
+  .offers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .grid-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
   /* Responsividade */
-  @media (max-width: 768px) {
-    .offers-container {
-      padding: 16px;
+  @media (max-width: 960px) {
+    .offers-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
     }
   }
 
   @media (max-width: 600px) {
     .offers-container {
       padding: 12px;
+    }
+
+    .offers-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .offers-container {
+      padding: 16px;
     }
   }
 </style>

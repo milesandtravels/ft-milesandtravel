@@ -92,16 +92,18 @@
       :searchTerm="searchQuery"
       @filtersApplied="onFiltersApplied"
     />
+
+    <BonusPurchaseResultsPersonalizate />
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import type { VForm } from 'vuetify/components'
-  import type { Product } from '~/interfaces/products'
-  import type { SearchRecord } from '~/interfaces/search'
-  import { useLoadingStore } from '~/store/loading'
-  import BonusPurchaseFiltersModal from './BonusPurchaseFiltersModal.vue'
+import type { VForm } from 'vuetify/components'
+import type { Product } from '~/interfaces/products'
+import type { SearchRecord } from '~/interfaces/search'
+import { useLoadingStore } from '~/store/loading'
+import BonusPurchaseFiltersModal from './BonusPurchaseFiltersModal.vue'
 
   const loadingStore = useLoadingStore()
 

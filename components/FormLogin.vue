@@ -129,9 +129,6 @@
       </v-row>
     </v-container>
 
-    <!-- Floating Support Button - Removed to avoid mobile issues -->
-    <!-- The support section inside the card is sufficient -->
-
     <!-- Snackbar -->
     <v-snackbar
       v-model="showSnackbar"

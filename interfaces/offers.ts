@@ -74,11 +74,12 @@ export interface OffersApiResponse {
 }
 
 export interface OfferFilters {
-  programTypes: ProgramType[]
-  minPrice?: number
-  maxPrice?: number
-  ecommerceIds?: number[]
-  minRating?: number
+  ecommerces: number[]
+  products: number[]
+  miles_programs: number[]
+  points_programs: number[]
+  cashback_programs: number[]
+  program_types: ProgramType[]
 }
 
 export interface OfferSortOptions {

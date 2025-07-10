@@ -110,7 +110,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-  import type { VForm } from 'vuetify/components'
+import type { VForm } from 'vuetify/components'
 
   interface FilterOption {
     text: string
@@ -222,14 +222,6 @@
       const payload = {
         active_filters: activeFilters,
       }
-
-      // Log do payload antes de enviar
-      console.log('Payload dos filtros:', payload)
-      console.log(
-        'URL da API:',
-        `/api/searches/${props.searchId}/automatic-products?search_term=${props.searchTerm}`
-      )
-
       // Fazer chamada para API
       const { data, error } = await useSanctumFetch(
         `/api/searches/${props.searchId}/automatic-products`,

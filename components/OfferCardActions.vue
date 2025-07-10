@@ -9,7 +9,7 @@
         class="flex-grow-1 text-white font-weight-medium"
         @click="$emit('view:product', offer)"
       >
-        VISUALIZAR PRODUTO
+        Ver produto
       </v-btn>
     </v-card-actions>
 
@@ -25,15 +25,16 @@
         <v-icon size="18" class="me-2">
           {{ getProgramTypeIcon(offer.program.type) }}
         </v-icon>
-        {{ formatters.toTitleCase(offer.program.name) }}
+        {{ formatters.toPascalCase(offer.program.name).replace(/([A-Z])/g, ' $1').trim() }}
       </v-btn>
     </v-card-actions>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { OfferItem } from '~/interfaces/offers'
-  import type { ProgramType } from '~/interfaces/program'
+  import type { OfferItem } from '~/interfaces/offers';
+  import type { ProgramType } from '~/interfaces/program';
+  import { formatters } from '~/utils/formatter';
 
   interface Props {
     offer: OfferItem
@@ -64,3 +65,9 @@
     return icons[type] || 'mdi-gift'
   }
 </script>
+
+<style scoped>
+  .v-btn {
+    text-transform: none !important;
+  }
+</style>
