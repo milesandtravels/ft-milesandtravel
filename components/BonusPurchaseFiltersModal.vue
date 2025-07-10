@@ -20,6 +20,7 @@
               v-for="filter in availableFilters"
               :key="filter.type"
               cols="12"
+              md="6"
             >
               <!-- Checkbox para múltiplas seleções -->
               <div v-if="filter.input_type === 'checkbox'">
