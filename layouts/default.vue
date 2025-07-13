@@ -54,6 +54,9 @@
     appId: onesignalAppId,
     safari_web_id: onesignalSafariWebId,
     allowLocalhostAsSecureOrigin: process.env.NODE_ENV === 'development',
+    welcomeNotification: {
+      message: 'Bem-vindo(a) ao Miles & Travels!',
+    },
     promptOptions: {
       slidedown: {
         prompts: [
