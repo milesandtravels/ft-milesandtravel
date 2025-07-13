@@ -41,7 +41,9 @@
 
 <script setup lang="ts">
   import { useOneSignal } from '@onesignal/onesignal-vue3'
-import { useLocalStorage } from '@vueuse/core'
+  import { useLocalStorage } from '@vueuse/core'
+
+  const { user } = useSanctumAuth()
 
   const config = useRuntimeConfig()
   const {
@@ -51,10 +53,44 @@ import { useLocalStorage } from '@vueuse/core'
   oneSignal.init({
     appId: onesignalAppId,
     safari_web_id: onesignalSafariWebId,
-    notifyButton: {
-      enable: true,
+    allowLocalhostAsSecureOrigin: process.env.NODE_ENV === 'development',
+    promptOptions: {
+      slidedown: {
+        prompts: [
+          {
+            autoPrompt: true,
+            delay: {
+              pageViews: 3,
+              timeDelay: 20,
+            },
+            text: {
+              actionMessage:
+                'Permita notificações para receber alertas de promoções, passagens e produtos',
+              acceptButton: 'Permitir',
+              cancelMessage: 'Cancelar',
+            },
+            type: 'push',
+          },
+        ],
+      },
     },
   })
+
+  //Example combining with push subscription change event
+  function pushSubscriptionChangeListener(event: any) {
+    if (event.current.token) {
+      //this is a good place to call OneSignal.login and pass in your user ID
+      oneSignal.login(user.value?.id?.toString() || '')
+      oneSignal.User.addEmail(user.value?.email)
+      oneSignal.User.setLanguage('pt')
+    }
+  }
+  oneSignal.User.PushSubscription.addEventListener(
+    'change',
+    pushSubscriptionChangeListener
+  )
+
+  oneSignal.Slidedown.promptPush()
 
   const route = useRoute()
   const { value }: any = useSanctumUser()
