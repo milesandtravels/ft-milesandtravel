@@ -14,6 +14,8 @@ export default defineNuxtConfig({
       appCallbackRedirectUrl: process.env.APP_CALLBACK_REDIRECT_URL,
       appEnv: process.env.APP_ENV || 'local',
       googleTagCode: process.env.GOOGLE_TAG_CODE || '',
+      onesignalAppId: process.env.ONESIGNAL_APP_ID,
+      onesignalSafariWebId: process.env.ONESIGNAL_SAFARI_WEB_ID,
     },
   },
   vuetify: {

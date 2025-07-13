@@ -40,7 +40,18 @@
 </template>
 
 <script setup lang="ts">
+  import { useOneSignal } from '@onesignal/onesignal-vue3'
   import { useLocalStorage } from '@vueuse/core'
+
+  const config = useRuntimeConfig()
+  const {
+    public: { onesignalAppId, onesignalSafariWebId },
+  } = config
+  const oneSignal = useOneSignal()
+  oneSignal.init({
+    appId: onesignalAppId,
+    safari_web_id: onesignalSafariWebId,
+  })
 
   const route = useRoute()
   const { value }: any = useSanctumUser()
