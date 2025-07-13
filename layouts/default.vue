@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
   import { useOneSignal } from '@onesignal/onesignal-vue3'
-  import { useLocalStorage } from '@vueuse/core'
+import { useLocalStorage } from '@vueuse/core'
 
   const config = useRuntimeConfig()
   const {
@@ -51,6 +51,9 @@
   oneSignal.init({
     appId: onesignalAppId,
     safari_web_id: onesignalSafariWebId,
+    notifyButton: {
+      enable: true,
+    },
   })
 
   const route = useRoute()
