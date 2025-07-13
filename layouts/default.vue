@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
   import { useOneSignal } from '@onesignal/onesignal-vue3'
-  import { useLocalStorage } from '@vueuse/core'
+import { useLocalStorage } from '@vueuse/core'
 
   const { user } = useSanctumAuth()
 
@@ -55,6 +55,7 @@
     safari_web_id: onesignalSafariWebId,
     allowLocalhostAsSecureOrigin: process.env.NODE_ENV === 'development',
     welcomeNotification: {
+      disable: false,
       message: 'Bem-vindo(a) ao Miles & Travels!',
     },
     promptOptions: {
