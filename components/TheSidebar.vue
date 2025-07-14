@@ -50,6 +50,24 @@
 
       <v-divider class="my-4" />
 
+      <!-- Alertas -->
+      <v-list-subheader class="text-uppercase font-weight-bold">
+        Sistema de Alertas
+      </v-list-subheader>
+
+      <v-list-item
+        v-for="item in alertsMenuItems"
+        :key="item.title"
+        :active="isActiveRoute(item.route)"
+        class="menu-item"
+        :prepend-icon="item.icon"
+        :subtitle="item.subtitle"
+        :title="item.title"
+        @click="handleNavigation(item.route)"
+      />
+
+      <v-divider class="my-4" />
+
       <!-- Settings & Tools -->
       <v-list-subheader class="text-uppercase font-weight-bold">
         Configurações & Ferramentas
@@ -95,7 +113,8 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
+import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -141,7 +160,6 @@
     return props.theme === 'dark' ? 'surface' : 'background'
   })
 
-  // Menu Data
   const mainMenuItems = ref<MenuItem[]>([
     {
       title: 'Tela Inicial',
@@ -169,13 +187,22 @@
     },
   ])
 
+  const alertsMenuItems = ref<MenuItem[]>([
+    {
+      title: 'Configurar Alertas',
+      subtitle: 'Definir preferências de notificação',
+      icon: 'mdi-bell-cog',
+      route: '/alerts/configure',
+    },
+    {
+      title: 'Visualizar Alertas',
+      subtitle: 'Ver histórico de notificações',
+      icon: 'mdi-bell-outline',
+      route: '/alerts/view',
+    },
+  ])
+
   const settingsMenuItems = ref<MenuItem[]>([
-    // {
-    //   title: 'Configurações',
-    //   subtitle: 'Preferências do sistema',
-    //   icon: 'mdi-cog',
-    //   route: '/settings',
-    // },
     {
       title: 'Perfil',
       subtitle: 'Dados pessoais',
@@ -195,10 +222,11 @@
       route: '/faq',
     },
   ])
-
+  const router = useRouter()
   const handleNavigation = (route: string) => {
+    console.log('route', route)
     emit('navigate', route)
-    navigateTo(route)
+    router.push(route)
     isOpen.value = false
   }
 
@@ -218,7 +246,7 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    background: inherit;
+    background: #fff;
   }
 
   .sidebar-title {

@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
   import { useOneSignal } from '@onesignal/onesignal-vue3'
-import { useLocalStorage } from '@vueuse/core'
+  import { useLocalStorage } from '@vueuse/core'
 
   const { user } = useSanctumAuth()
 
