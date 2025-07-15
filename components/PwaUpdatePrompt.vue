@@ -37,24 +37,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-
-const { updateAvailable, updateApp: performUpdate } = usePwa()
+import { ref } from 'vue'
 
 const showUpdatePrompt = ref(false)
 const updating = ref(false)
 
-// Observar quando uma atualização estiver disponível
-watch(updateAvailable, (available) => {
-  if (available) {
+// Usar a API nativa do @vite-pwa/nuxt
+if (process.client) {
+  const { $pwa } = useNuxtApp()
+  
+  if ($pwa?.needRefresh) {
     showUpdatePrompt.value = true
   }
-})
+}
 
 const updateApp = async () => {
   updating.value = true
   try {
-    await performUpdate()
+    if (process.client) {
+      const { $pwa } = useNuxtApp()
+      await $pwa?.updateServiceWorker()
+    }
   } catch (error) {
     console.error('Erro ao atualizar:', error)
   } finally {

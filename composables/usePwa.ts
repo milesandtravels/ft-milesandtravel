@@ -29,29 +29,18 @@ export const usePwa = () => {
     }
   }
 
-  // Registrar service worker
-  const registerServiceWorker = async () => {
+  // Verificar service worker existente (gerenciado pelo @vite-pwa/nuxt)
+  const checkServiceWorker = async () => {
     if (process.client && 'serviceWorker' in navigator) {
       try {
-        const reg = await navigator.serviceWorker.register('/sw.js')
-        registration.value = reg
-        
-        // Verificar atualizações
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                updateAvailable.value = true
-              }
-            })
-          }
-        })
-        
-        console.log('Service Worker registrado com sucesso')
+        const reg = await navigator.serviceWorker.getRegistration()
+        if (reg) {
+          registration.value = reg
+          console.log('Service Worker encontrado')
+        }
         return reg
       } catch (error) {
-        console.error('Erro ao registrar Service Worker:', error)
+        console.error('Erro ao verificar Service Worker:', error)
         return null
       }
     }
@@ -131,7 +120,7 @@ export const usePwa = () => {
     if (process.client) {
       checkInstallStatus()
       checkOnlineStatus()
-      registerServiceWorker()
+      // Service worker é gerenciado pelo @vite-pwa/nuxt
     }
   }
 
@@ -150,6 +139,6 @@ export const usePwa = () => {
     requestNotificationPermission,
     showNotification,
     checkInstallStatus,
-    registerServiceWorker
+    checkServiceWorker
   }
 }

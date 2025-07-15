@@ -3,6 +3,16 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   ssr: false,
   devtools: { enabled: true },
+  vite: {
+    server: {
+      hmr: {
+        port: 24678,
+      },
+    },
+    define: {
+      __VUE_PROD_DEVTOOLS__: false,
+    },
+  },
   modules: [
     'vuetify-nuxt-module',
     'nuxt-auth-sanctum',
@@ -44,19 +54,32 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    registerType: 'autoUpdate',
+    registerType: 'prompt',
     workbox: {
-      navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'google-fonts-cache',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
+            },
+            cacheKeyWillBeUsed: async ({ request }) => {
+              return `${request.url}?${Math.round(Date.now() / (1000 * 60 * 60 * 24))}`
+            }
+          }
+        }
+      ]
     },
     client: {
       installPrompt: true,
-      periodicSyncForUpdates: 20,
     },
     devOptions: {
-      enabled: true,
+      enabled: false,
       suppressWarnings: true,
-      navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
     },
     manifest: {

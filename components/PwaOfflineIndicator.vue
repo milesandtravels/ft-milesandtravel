@@ -27,32 +27,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-
-const { isOnline } = usePwa()
+import { ref, onMounted } from 'vue'
 
 const showOfflineMessage = ref(false)
 const showOnlineMessage = ref(false)
 const wasOffline = ref(false)
 
-// Observar mudanças no status de conectividade
-watch(isOnline, (online, wasOnlineBefore) => {
-  if (!online) {
-    // Ficou offline
-    showOfflineMessage.value = true
-    showOnlineMessage.value = false
-    wasOffline.value = true
-  } else {
-    // Ficou online
-    showOfflineMessage.value = false
+onMounted(() => {
+  if (process.client) {
+    // Status inicial
+    showOfflineMessage.value = !navigator.onLine
     
-    // Mostrar mensagem de reconexão apenas se estava offline antes
-    if (wasOffline.value && wasOnlineBefore === false) {
-      showOnlineMessage.value = true
-      wasOffline.value = false
-    }
+    // Eventos de conectividade
+    window.addEventListener('online', () => {
+      showOfflineMessage.value = false
+      if (wasOffline.value) {
+        showOnlineMessage.value = true
+        wasOffline.value = false
+      }
+    })
+    
+    window.addEventListener('offline', () => {
+      showOfflineMessage.value = true
+      showOnlineMessage.value = false
+      wasOffline.value = true
+    })
   }
-}, { immediate: true })
+})
 </script>
 
 <style scoped>
