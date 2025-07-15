@@ -47,7 +47,7 @@
 
   const checkInstallPrompt = () => {
     console.log('Verificando condições para mostrar prompt de instalação...')
-    
+
     // Verificar se já foi dispensado recentemente (7 dias)
     const dismissed = localStorage.getItem('pwa-install-dismissed')
     if (dismissed) {
@@ -63,14 +63,15 @@
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     const isInWebAppiOS = (window.navigator as any).standalone === true
     const isInstalled = isStandalone || isInWebAppiOS
-    
+
     if (isInstalled) {
       console.log('PWA já está instalado')
       return
     }
 
     // Verificar se é HTTPS ou localhost
-    const isSecure = location.protocol === 'https:' || location.hostname === 'localhost'
+    const isSecure =
+      location.protocol === 'https:' || location.hostname === 'localhost'
     if (!isSecure) {
       console.log('PWA requer HTTPS ou localhost')
       return
@@ -87,7 +88,7 @@
 
   onMounted(() => {
     console.log('PwaInstallPrompt montado')
-    
+
     // Escutar evento beforeinstallprompt
     window.addEventListener('beforeinstallprompt', e => {
       console.log('Evento beforeinstallprompt disparado')
@@ -98,7 +99,7 @@
 
     // Verificar condições iniciais
     checkInstallPrompt()
-    
+
     // Verificar novamente após um tempo para dar chance ao evento ser disparado
     setTimeout(() => {
       console.log('Verificação após timeout')

@@ -21,11 +21,12 @@
           color="primary"
           size="large"
           variant="flat"
-          
           class="search-products-btn"
           @click="navigateTo('/search-products')"
         >
-          <v-icon start size="20" color="white" class="mr-2">mdi-gift-outline</v-icon>
+          <v-icon start size="20" color="white" class="mr-2"
+            >mdi-gift-outline</v-icon
+          >
           <span class="btn-text">
             <span class="btn-main-text">Compras Bonificadas</span>
             <span class="btn-sub-text">Encontre ofertas exclusivas</span>

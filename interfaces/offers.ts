@@ -41,6 +41,7 @@ export interface Product {
 }
 
 export interface OfferItem {
+  id: string
   ecommerce: Ecommerce
   product: Product
   program_type: ProgramType

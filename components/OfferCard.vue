@@ -1,7 +1,7 @@
 <template>
   <v-card :class="['offer-card']" elevation="2">
     <!-- Header com logo do e-commerce -->
-    <OfferCardHeader :ecommerce="offer.ecommerce" :program="offer.program" />
+    <OfferCardHeader :offer="offer" />
 
     <!-- Imagem do produto -->
     <OfferProductImage
