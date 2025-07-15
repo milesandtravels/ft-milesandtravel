@@ -205,7 +205,7 @@
   }
 
   const props = defineProps<Props>()
-  defineEmits<Emits>()
+  const emit = defineEmits<Emits>()
 
   // Reactive properties
   const isMobile = computed(() => {
