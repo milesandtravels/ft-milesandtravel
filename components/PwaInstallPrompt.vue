@@ -12,19 +12,10 @@
         <span>Instalar Miles and Travel</span>
       </div>
       <div>
-        <v-btn
-          variant="text"
-          size="small"
-          @click="installPwa"
-          class="me-2"
-        >
+        <v-btn variant="text" size="small" @click="installPwa" class="me-2">
           Instalar
         </v-btn>
-        <v-btn
-          variant="text"
-          size="small"
-          @click="dismissPrompt"
-        >
+        <v-btn variant="text" size="small" @click="dismissPrompt">
           Agora não
         </v-btn>
       </div>
@@ -33,64 +24,64 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+  import { ref, onMounted } from 'vue'
 
-const showInstallPrompt = ref(false)
-let deferredPrompt: any = null
+  const showInstallPrompt = ref(false)
+  let deferredPrompt: any = null
 
-const installPwa = async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt()
-    const { outcome } = await deferredPrompt.userChoice
-    console.log(`User response to the install prompt: ${outcome}`)
-    deferredPrompt = null
-    showInstallPrompt.value = false
-  }
-}
-
-const dismissPrompt = () => {
-  showInstallPrompt.value = false
-  // Salvar no localStorage para não mostrar novamente por um tempo
-  localStorage.setItem('pwa-install-dismissed', Date.now().toString())
-}
-
-const checkInstallPrompt = () => {
-  // Verificar se já foi dispensado recentemente (7 dias)
-  const dismissed = localStorage.getItem('pwa-install-dismissed')
-  if (dismissed) {
-    const dismissedTime = parseInt(dismissed)
-    const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000
-    if (Date.now() - dismissedTime < sevenDaysInMs) {
-      return
+  const installPwa = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
+      console.log(`User response to the install prompt: ${outcome}`)
+      deferredPrompt = null
+      showInstallPrompt.value = false
     }
   }
 
-  // Verificar se já está instalado
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    return
+  const dismissPrompt = () => {
+    showInstallPrompt.value = false
+    // Salvar no localStorage para não mostrar novamente por um tempo
+    localStorage.setItem('pwa-install-dismissed', Date.now().toString())
   }
 
-  // Mostrar prompt se disponível
-  if (deferredPrompt) {
-    showInstallPrompt.value = true
-  }
-}
+  const checkInstallPrompt = () => {
+    // Verificar se já foi dispensado recentemente (7 dias)
+    const dismissed = localStorage.getItem('pwa-install-dismissed')
+    if (dismissed) {
+      const dismissedTime = parseInt(dismissed)
+      const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000
+      if (Date.now() - dismissedTime < sevenDaysInMs) {
+        return
+      }
+    }
 
-onMounted(() => {
-  // Escutar evento beforeinstallprompt
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault()
-    deferredPrompt = e
-    checkInstallPrompt()
+    // Verificar se já está instalado
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      return
+    }
+
+    // Mostrar prompt se disponível
+    if (deferredPrompt) {
+      showInstallPrompt.value = true
+    }
+  }
+
+  onMounted(() => {
+    // Escutar evento beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault()
+      deferredPrompt = e
+      checkInstallPrompt()
+    })
+
+    // Verificar se já pode mostrar o prompt
+    setTimeout(checkInstallPrompt, 2000)
   })
-
-  // Verificar se já pode mostrar o prompt
-  setTimeout(checkInstallPrompt, 2000)
-})
 </script>
 
 <style scoped>
-.v-snackbar {
-  z-index: 9999;
-}
+  .v-snackbar {
+    z-index: 9999;
+  }
 </style>

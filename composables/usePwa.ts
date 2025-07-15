@@ -9,7 +9,8 @@ export const usePwa = () => {
   // Verificar se está instalado como PWA
   const checkInstallStatus = () => {
     if (process.client) {
-      isInstalled.value = window.matchMedia('(display-mode: standalone)').matches ||
+      isInstalled.value =
+        window.matchMedia('(display-mode: standalone)').matches ||
         (window.navigator as any).standalone === true
     }
   }
@@ -18,11 +19,11 @@ export const usePwa = () => {
   const checkOnlineStatus = () => {
     if (process.client) {
       isOnline.value = navigator.onLine
-      
+
       window.addEventListener('online', () => {
         isOnline.value = true
       })
-      
+
       window.addEventListener('offline', () => {
         isOnline.value = false
       })
@@ -89,11 +90,15 @@ export const usePwa = () => {
 
   // Enviar notificação local
   const showNotification = (title: string, options?: NotificationOptions) => {
-    if (process.client && 'Notification' in window && Notification.permission === 'granted') {
+    if (
+      process.client &&
+      'Notification' in window &&
+      Notification.permission === 'granted'
+    ) {
       return new Notification(title, {
         icon: '/pwa-192x192.png',
         badge: '/pwa-192x192.png',
-        ...options
+        ...options,
       })
     }
     return null
@@ -102,16 +107,17 @@ export const usePwa = () => {
   // Verificar capacidades do dispositivo
   const deviceCapabilities = computed(() => {
     if (!process.client) return {}
-    
+
     return {
-      hasCamera: 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices,
+      hasCamera:
+        'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices,
       hasGeolocation: 'geolocation' in navigator,
       hasVibration: 'vibrate' in navigator,
       hasShare: 'share' in navigator,
       hasNotifications: 'Notification' in window,
       hasServiceWorker: 'serviceWorker' in navigator,
       hasStorage: 'localStorage' in window,
-      hasIndexedDB: 'indexedDB' in window
+      hasIndexedDB: 'indexedDB' in window,
     }
   })
 
@@ -131,7 +137,7 @@ export const usePwa = () => {
     updateAvailable: readonly(updateAvailable),
     canShare,
     deviceCapabilities,
-    
+
     // Métodos
     initPwa,
     updateApp,
@@ -139,6 +145,6 @@ export const usePwa = () => {
     requestNotificationPermission,
     showNotification,
     checkInstallStatus,
-    checkServiceWorker
+    checkServiceWorker,
   }
 }

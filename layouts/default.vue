@@ -36,7 +36,7 @@
     />
 
     <UniversalLoading />
-    
+
     <PwaInstallPrompt />
     <PwaUpdatePrompt />
     <PwaOfflineIndicator />
@@ -45,9 +45,7 @@
 
 <script setup lang="ts">
   import { useOneSignal } from '@onesignal/onesignal-vue3'
-import { useLocalStorage } from '@vueuse/core'
-  
-  // PWA será gerenciado automaticamente pelo @vite-pwa/nuxt
+  import { useLocalStorage } from '@vueuse/core'
 
   const { user } = useSanctumAuth()
 
