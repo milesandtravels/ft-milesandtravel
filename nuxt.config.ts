@@ -57,6 +57,10 @@ export default defineNuxtConfig({
     registerType: 'prompt',
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      navigateFallback: null,
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
       runtimeCaching: [
         {
           urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -76,7 +80,7 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 20,
     },
     devOptions: {
-      enabled: false,
+      enabled: true,
       suppressWarnings: true,
       type: 'module',
     },
@@ -89,25 +93,32 @@ export default defineNuxtConfig({
       display: 'standalone',
       orientation: 'portrait',
       scope: '/',
-      start_url: '/',
-      id: '/',
+      start_url: '/?utm_source=pwa',
+      id: '/?utm_source=pwa',
       categories: ['travel', 'lifestyle'],
       lang: 'pt-BR',
+      prefer_related_applications: false,
       icons: [
         {
-          src: 'pwa-192x192.png',
+          src: '/pwa-192x192.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: 'pwa-512x512.png',
+          src: '/pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+        {
+          src: '/pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: 'pwa-512x512.png',
+          src: '/pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable',
@@ -131,8 +142,10 @@ export default defineNuxtConfig({
         { name: 'msapplication-tap-highlight', content: 'no' },
       ],
       link: [
-        { rel: 'apple-touch-icon', href: '/pwa-192x192.png' },
+        { rel: 'apple-touch-icon', href: '/pwa-192x192.png', sizes: '192x192' },
+        { rel: 'apple-touch-icon', href: '/pwa-512x512.png', sizes: '512x512' },
         { rel: 'mask-icon', href: '/pwa-192x192.png', color: '#0F2B46' },
+        { rel: 'icon', type: 'image/png', href: '/pwa-192x192.png' },
       ],
     },
   },
