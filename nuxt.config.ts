@@ -65,10 +65,7 @@ export default defineNuxtConfig({
             cacheName: 'google-fonts-cache',
             expiration: {
               maxEntries: 10,
-              maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
-            },
-            cacheKeyWillBeUsed: async ({ request }) => {
-              return `${request.url}?${Math.round(Date.now() / (1000 * 60 * 60 * 24))}`
+              maxAgeSeconds: 60 * 60 * 24 * 365
             }
           }
         }
