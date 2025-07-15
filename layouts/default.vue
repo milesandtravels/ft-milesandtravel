@@ -36,12 +36,23 @@
     />
 
     <UniversalLoading />
+    
+    <PwaInstallPrompt />
+    <PwaUpdatePrompt />
+    <PwaOfflineIndicator />
   </v-app>
 </template>
 
 <script setup lang="ts">
   import { useOneSignal } from '@onesignal/onesignal-vue3'
   import { useLocalStorage } from '@vueuse/core'
+  
+  // Inicializar PWA
+  const { initPwa, isOnline, updateAvailable } = usePwa()
+  
+  onMounted(() => {
+    initPwa()
+  })
 
   const { user } = useSanctumAuth()
 

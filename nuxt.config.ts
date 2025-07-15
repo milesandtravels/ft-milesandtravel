@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     'nuxt-auth-sanctum',
     '@pinia/nuxt',
     '@vueuse/nuxt',
+    '@vite-pwa/nuxt',
   ],
   runtimeConfig: {
     public: {
@@ -40,6 +41,52 @@ export default defineNuxtConfig({
     endpoints: {
       login: '/api/login',
       logout: '/api/logout',
+    },
+  },
+  pwa: {
+    registerType: 'autoUpdate',
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 20,
+    },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+    manifest: {
+      name: 'Miles and Travel',
+      short_name: 'M&T',
+      description: 'Aplicativo de milhas e viagens',
+      theme_color: '#0F2B46',
+      background_color: '#ffffff',
+      display: 'standalone',
+      orientation: 'portrait',
+      scope: '/',
+      start_url: '/',
+      icons: [
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
     },
   },
 })
