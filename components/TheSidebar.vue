@@ -164,25 +164,25 @@
     {
       title: 'Tela Inicial',
       subtitle: 'Página principal do sistema',
-      icon: 'mdi-home',
+      icon: 'mdi-view-dashboard',
       route: '/',
     },
     {
       title: 'Compras Bonificadas',
       subtitle: 'Encontrar produtos e ofertas',
-      icon: 'mdi-magnify',
+      icon: 'mdi-gift-outline',
       route: '/search-products',
     },
     {
       title: 'Promoções',
       subtitle: 'Vantagens em lojas online',
-      icon: 'mdi-store',
+      icon: 'mdi-tag-multiple',
       route: '/promotions',
     },
     {
       title: 'Pesquisas Realizadas',
       subtitle: 'Histórico de buscas e comparações',
-      icon: 'mdi-history',
+      icon: 'mdi-clock-time-four-outline',
       route: '/search-history',
     },
   ])
@@ -191,13 +191,13 @@
     {
       title: 'Configurar Alertas',
       subtitle: 'Definir preferências de notificação',
-      icon: 'mdi-bell-cog',
+      icon: 'mdi-bell-cog-outline',
       route: '/alerts/configure',
     },
     {
       title: 'Visualizar Alertas',
       subtitle: 'Ver histórico de notificações',
-      icon: 'mdi-bell-outline',
+      icon: 'mdi-bell-ring-outline',
       route: '/alerts/view',
     },
   ])
@@ -206,19 +206,19 @@
     {
       title: 'Perfil',
       subtitle: 'Dados pessoais',
-      icon: 'mdi-account',
+      icon: 'mdi-account-circle-outline',
       route: '/profile',
     },
     {
       title: 'Termos de Uso',
       subtitle: 'Condições de utilização',
-      icon: 'mdi-file-document-outline',
+      icon: 'mdi-file-document-check-outline',
       route: '/terms-of-use',
     },
     {
       title: 'Ajuda',
       subtitle: 'Suporte e FAQ',
-      icon: 'mdi-help-circle',
+      icon: 'mdi-help-circle-outline',
       route: '/faq',
     },
   ])
