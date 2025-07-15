@@ -267,11 +267,6 @@
       'Termos de uso da plataforma Miles&Travels. Conheça as condições para utilização dos nossos serviços.',
     keywords: 'termos de uso, miles and travels, condições de uso, política',
   })
-
-  definePageMeta({
-    middleware: ['sanctum:guest'],
-    layout: 'default',
-  })
 </script>
 
 <style scoped>
