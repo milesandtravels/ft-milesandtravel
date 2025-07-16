@@ -1,7 +1,27 @@
 <template>
   <div class="faq-page">
+    <!-- Back Button for logged out users -->
+    <div v-if="!user" class="back-button-container">
+      <v-container>
+        <div class="page-header">
+          <v-btn
+            icon
+            variant="text"
+            @click="$router.push('/login')"
+            class="back-btn"
+            size="large"
+          >
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <div class="header-content">
+            <h1 class="text-h5 font-weight-bold">Voltar para o Login</h1>
+          </div>
+        </div>
+      </v-container>
+    </div>
+
     <!-- Header Section -->
-    <section class="hero-section">
+    <section class="hero-section" :class="{ 'with-back-button': !user }">
       <v-container>
         <div class="text-center py-8 py-md-12">
           <h1 class="hero-title mb-4">Perguntas Frequentes</h1>
@@ -132,6 +152,9 @@
     icon: string
   }
 
+  // Get user authentication status
+  const { value: user } = useSanctumUser()
+
   // Meta tags
   useHead({
     title: 'FAQ - Miles&Travels | Perguntas Frequentes',
@@ -213,6 +236,28 @@
     background: #fafbfc;
   }
 
+  .back-button-container {
+    background: #fafbfc;
+    padding-top: 16px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    padding: 0 0 16px 0;
+  }
+
+  .back-btn {
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
   .hero-section {
     background: linear-gradient(
       135deg,
@@ -222,6 +267,10 @@
     color: white;
     position: relative;
     overflow: hidden;
+  }
+
+  .hero-section.with-back-button {
+    padding-top: 2rem;
   }
 
   .hero-section::before {
@@ -489,6 +538,26 @@
       margin: 0;
       padding: 16px;
     }
+
+    .back-button-container {
+      padding-top: 12px;
+    }
+
+    .page-header {
+      padding: 0 0 12px 0;
+    }
+
+    .back-btn {
+      margin-right: 8px;
+    }
+
+    .header-content h1 {
+      font-size: 1.25rem !important;
+    }
+
+    .hero-section.with-back-button {
+      padding-top: 1rem;
+    }
   }
 
   /* Dark theme support */
@@ -553,7 +622,8 @@
 
   /* Focus styles for keyboard navigation */
   .email-link:focus-visible,
-  .contact-btn:focus-visible {
+  .contact-btn:focus-visible,
+  .back-btn:focus-visible {
     outline: 2px solid rgb(var(--v-theme-primary));
     outline-offset: 2px;
   }
