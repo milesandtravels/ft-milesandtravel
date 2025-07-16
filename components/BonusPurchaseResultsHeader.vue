@@ -47,13 +47,6 @@
               >
                 Limpar
               </v-btn>
-              <v-btn
-                color="primary"
-                variant="outlined"
-                size="small"
-                icon="mdi-filter-variant"
-                @click="$emit('open-filter')"
-              />
             </div>
           </div>
         </div>
