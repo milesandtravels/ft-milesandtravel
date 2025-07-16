@@ -138,26 +138,11 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <!-- Action Snackbar -->
-    <v-snackbar
-      v-model="showSnackbar"
-      :color="snackbarColor"
-      location="top"
-      timeout="3000"
-    >
-      {{ snackbarMessage }}
-      <template #actions>
-        <v-btn variant="text" @click="showSnackbar = false"> Fechar </v-btn>
-      </template>
-    </v-snackbar>
   </v-app-bar>
 </template>
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-
-  // Use Sanctum Auth para dados reativos do usuário
   const { user } = useSanctumAuth()
 
   // Types
@@ -188,9 +173,6 @@
   // State
   const showUserMenu = ref(false)
   const showLogoutDialog = ref(false)
-  const showSnackbar = ref(false)
-  const snackbarMessage = ref('')
-  const snackbarColor = ref('success')
   const avatarKey = ref(0)
 
   // Watch for avatar changes to force image reload
@@ -221,25 +203,21 @@
 
   const handleEditProfile = () => {
     showUserMenu.value = false
-    showNotification('Redirecionando para perfil...', 'info')
     navigateTo('/profile')
   }
 
-  const handleNotifications = () => {
-    showUserMenu.value = false
-    showNotification('Abrindo configurações de notificações...', 'info')
-    navigateTo('/notifications')
-  }
+  // const handleNotifications = () => {
+  //   showUserMenu.value = false
+  //   navigateTo('/notifications')
+  // }
 
   const handleChangePassword = () => {
     showUserMenu.value = false
-    showNotification('Redirecionando para alterar senha...', 'info')
     navigateTo('/change-password')
   }
 
   const handleHelp = () => {
     showUserMenu.value = false
-    showNotification('Abrindo central de ajuda...', 'info')
     navigateTo('/faq')
   }
 
@@ -262,12 +240,6 @@
       // Force reload even if API fails
       window.location.reload()
     }
-  }
-
-  const showNotification = (message: string, color = 'success') => {
-    snackbarMessage.value = message
-    snackbarColor.value = color
-    showSnackbar.value = true
   }
 </script>
 
