@@ -105,12 +105,12 @@
 
 <script setup lang="ts">
   import OffersFilters from '~/components/OffersFilters.vue'
-  import OffersList from '~/components/OffersList.vue'
-  import type {
-    OfferFilters,
-    OfferItem,
-    PaginatedOffersApiResponse,
-  } from '~/interfaces/offers'
+import OffersList from '~/components/OffersList.vue'
+import type {
+  OfferFilters,
+  OfferItem,
+  PaginatedOffersApiResponse,
+} from '~/interfaces/offers'
 
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -240,9 +240,8 @@
         }
       )
 
-      const newOffers = response.data.value.data.map((offer: OfferItem) => ({
+      const newOffers = response.data.value?.data.map((offer: OfferItem) => ({
         ...offer,
-        selected: false,
       }))
 
       if (resetPagination) {
@@ -288,9 +287,8 @@
         }
       )
 
-      const newOffers = response.data.value.data.map((offer: OfferItem) => ({
+      const newOffers = response.data.value?.data.map((offer: OfferItem) => ({
         ...offer,
-        selected: false,
       }))
 
       offers.value = [...offers.value, ...newOffers]
