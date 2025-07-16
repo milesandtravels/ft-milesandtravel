@@ -73,13 +73,13 @@
             @click="handleEditProfile"
           />
 
-          <v-list-item
+          <!-- <v-list-item
             class="menu-item"
             prepend-icon="mdi-bell-outline"
             subtitle="Configurar alertas e avisos"
             title="Notificações"
             @click="handleNotifications"
-          />
+          /> -->
 
           <v-list-item
             class="menu-item"

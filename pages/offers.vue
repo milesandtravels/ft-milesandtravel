@@ -105,12 +105,12 @@
 
 <script setup lang="ts">
   import OffersFilters from '~/components/OffersFilters.vue'
-import OffersList from '~/components/OffersList.vue'
-import type {
-  OfferFilters,
-  OfferItem,
-  PaginatedOffersApiResponse,
-} from '~/interfaces/offers'
+  import OffersList from '~/components/OffersList.vue'
+  import type {
+    OfferFilters,
+    OfferItem,
+    PaginatedOffersApiResponse,
+  } from '~/interfaces/offers'
 
   definePageMeta({
     middleware: ['sanctum:auth'],

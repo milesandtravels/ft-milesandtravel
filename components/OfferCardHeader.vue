@@ -31,8 +31,8 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-import type { OfferItem } from '~/interfaces/offers'
-import { useSnackbarStore } from '~/store/snackbar'
+  import type { OfferItem } from '~/interfaces/offers'
+  import { useSnackbarStore } from '~/store/snackbar'
   const snackbarStore = useSnackbarStore()
   interface Props {
     offer: OfferItem
