@@ -112,7 +112,7 @@
                   prepend-icon="mdi-google"
                   size="large"
                   variant="outlined"
-                  @click="loginWithGoogle"
+                  @click="loginWithGoogle('google')"
                 >
                   {{
                     isGoogleLoading ? 'Conectando...' : 'Continuar com Google'
@@ -143,7 +143,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { useSnackbarStore } from '~/store/snackbar'
+import { useSnackbarStore } from '~/store/snackbar'
 
   const router = useRouter()
 
@@ -186,7 +186,7 @@
       confirm_password: passwordConfirmation.value,
     }
 
-    const { data, status, error } = await useSanctumFetch<RegisterResponse>(
+    const { data, error } = await useSanctumFetch<RegisterResponse>(
       '/api/register',
       {
         method: 'POST',
