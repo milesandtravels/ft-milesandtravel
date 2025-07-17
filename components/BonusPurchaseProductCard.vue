@@ -58,9 +58,13 @@
 
       <!-- Marketplace Logo Badge -->
       <div class="marketplace-badge">
-        <v-avatar :size="isMobile ? 32 : 36" class="marketplace-logo">
-          <v-icon size="small">mdi-store</v-icon>
-        </v-avatar>
+        <BaseLogoAvatar
+          :src="product.ecommerce.logo_url"
+          :alt="product.name"
+          size="md"
+          class="mr-2"
+          :type="'points'"
+        />
         <div v-if="!isMobile" class="marketplace-info">
           <span class="marketplace-name">{{ product.ecommerce.name }}</span>
           <span class="marketplace-category">{{
