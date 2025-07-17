@@ -7,24 +7,15 @@
     >
       <div class="d-flex align-center justify-space-between">
         <div class="d-flex align-center">
-          <v-avatar
+          <BaseLogoAvatar
             v-if="offer.program.logo_url"
-            size="32"
-            class="me-3 program-avatar"
-          >
-            <v-img
-              :src="offer.program.logo_url"
-              :alt="offer.program.name"
-              cover
-            />
-          </v-avatar>
-          <v-icon
-            v-else
-            icon="mdi-store"
-            size="32"
-            color="primary"
-            class="me-3"
+            :src="offer.program.logo_url"
+            :alt="offer.program.name"
+            size="lg"
+            class="mr-2"
+            :type="offer.program.type"
           />
+
           <div class="program-info">
             <div class="program-name">
               {{ formatters.toTitleCase(offer.program.name) }}
@@ -173,6 +164,7 @@
   .program-avatar {
     border: 2px solid rgba(var(--v-theme-primary), 0.1);
     transition: transform 0.2s ease-in-out;
+    object-fit: contain !important;
   }
 
   .program-avatar:hover {

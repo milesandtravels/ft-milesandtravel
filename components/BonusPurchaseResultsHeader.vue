@@ -5,7 +5,9 @@
   >
     <!-- Instruction Section -->
     <div v-if="showInstructions" class="instruction-section mb-6">
-      <div class="instruction-header d-flex align-center justify-space-between mb-3">
+      <div
+        class="instruction-header d-flex align-center justify-space-between mb-3"
+      >
         <div class="d-flex align-center">
           <v-icon color="primary" size="28" class="mr-2">mdi-shopping</v-icon>
           <h2 class="instruction-title mb-0">
@@ -21,15 +23,18 @@
           @click="closeInstructions"
         />
       </div>
-      
+
       <p class="instruction-text text-medium-emphasis mb-4">
-        Escolha todos os produtos que encaixam no seu perfil de compras para validarmos quais programas de pontos, cashbacks ou milhas trarão as melhores bonificações.
+        Escolha todos os produtos que encaixam no seu perfil de compras para
+        validarmos quais programas de pontos, cashbacks ou milhas trarão as
+        melhores bonificações.
       </p>
-      
+
       <div class="cta-section d-flex align-center">
         <v-icon color="success" size="18" class="mr-2">mdi-lightbulb-on</v-icon>
         <span class="cta-text">
-          Após a seleção, clique em <strong>"Explorar Vantagens"</strong> para ver o comparativo completo das melhores opções.
+          Após a seleção, clique em <strong>"Explorar Vantagens"</strong> para
+          ver o comparativo completo das melhores opções.
         </span>
       </div>
     </div>
@@ -41,7 +46,9 @@
           <div class="results-summary-mobile mb-3">
             <div class="d-flex justify-space-between align-center">
               <div class="results-info d-flex align-center">
-                <v-icon color="primary" size="20" class="mr-2">mdi-package-variant</v-icon>
+                <v-icon color="primary" size="20" class="mr-2"
+                  >mdi-package-variant</v-icon
+                >
                 <h3 class="text-h6 font-weight-bold text-truncate">
                   {{ resultsCount }} produto{{ resultsCount > 1 ? 's' : '' }}
                 </h3>
@@ -57,7 +64,7 @@
                 {{ selectedCount }}
               </v-chip>
             </div>
-            
+
             <v-progress-linear
               v-if="resultsCount > 0"
               :model-value="(selectedCount / resultsCount) * 100"
@@ -68,7 +75,9 @@
             />
           </div>
 
-          <div class="controls-mobile d-flex justify-space-between align-center">
+          <div
+            class="controls-mobile d-flex justify-space-between align-center"
+          >
             <v-checkbox
               :model-value="selectAll"
               :indeterminate="isIndeterminate"
@@ -79,7 +88,9 @@
               @update:model-value="$emit('select-all', $event)"
             >
               <template #label>
-                <span class="text-body-2 font-weight-medium">{{ selectAllLabel }}</span>
+                <span class="text-body-2 font-weight-medium">{{
+                  selectAllLabel
+                }}</span>
               </template>
             </v-checkbox>
 
@@ -111,7 +122,9 @@
           <div class="results-summary-desktop mb-4">
             <div class="d-flex justify-space-between align-center">
               <div class="results-info d-flex align-center">
-                <v-icon color="primary" size="24" class="mr-3">mdi-package-variant</v-icon>
+                <v-icon color="primary" size="24" class="mr-3"
+                  >mdi-package-variant</v-icon
+                >
                 <div>
                   <h3 class="text-h5 font-weight-bold mb-1">
                     {{ resultsCount }} produto{{
@@ -138,7 +151,7 @@
                     selectedCount > 1 ? 's' : ''
                   }}
                 </v-chip>
-                
+
                 <v-progress-circular
                   v-if="resultsCount > 0"
                   :model-value="(selectedCount / resultsCount) * 100"
@@ -155,7 +168,9 @@
             </div>
           </div>
 
-          <div class="controls-desktop d-flex justify-space-between align-center">
+          <div
+            class="controls-desktop d-flex justify-space-between align-center"
+          >
             <v-checkbox
               :model-value="selectAll"
               :indeterminate="isIndeterminate"
@@ -183,7 +198,7 @@
               >
                 Remover seleção
               </v-btn>
-              
+
               <v-btn
                 color="primary"
                 variant="outlined"
@@ -193,7 +208,7 @@
               >
                 Filtros
               </v-btn>
-              
+
               <slot name="btn-filter" />
             </div>
           </div>
@@ -242,15 +257,21 @@
 
   const getResultsDescription = computed(() => {
     if (props.resultsCount === 0) return 'Nenhum produto encontrado'
-    if (props.selectedCount === 0) return 'Selecione os produtos que encaixam no seu perfil'
-    if (props.selectedCount === props.resultsCount) return 'Todos os produtos foram selecionados'
+    if (props.selectedCount === 0)
+      return 'Selecione os produtos que encaixam no seu perfil'
+    if (props.selectedCount === props.resultsCount)
+      return 'Todos os produtos foram selecionados'
     return `${props.selectedCount} de ${props.resultsCount} produtos selecionados`
   })
 </script>
 
 <style scoped>
   .results-header-container {
-    background: linear-gradient(135deg, rgba(var(--v-theme-surface), 1) 0%, rgba(var(--v-theme-surface), 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-surface), 1) 0%,
+      rgba(var(--v-theme-surface), 0.98) 100%
+    );
     border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.06);
     margin-bottom: 0;
     padding-top: 20px;
@@ -265,7 +286,11 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-success)));
+    background: linear-gradient(
+      90deg,
+      rgb(var(--v-theme-primary)),
+      rgb(var(--v-theme-success))
+    );
   }
 
   /* Instruction Section - Mobile First */

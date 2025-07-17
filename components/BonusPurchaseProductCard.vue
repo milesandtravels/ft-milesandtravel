@@ -134,7 +134,6 @@
         <span class="ecommerce-name">{{ marketplaceDisplayName }}</span>
       </div>
     </v-card-text>
-    
   </v-card>
 </template>
 

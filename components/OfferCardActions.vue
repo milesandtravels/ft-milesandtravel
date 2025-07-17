@@ -19,18 +19,12 @@
         variant="outlined"
         size="large"
         class="flex-grow-1"
-        :color="getProgramTypeColor(offer.program.type)"
         @click="handleViewProgram"
       >
         <v-icon size="18" class="me-2">
           {{ getProgramTypeIcon(offer.program.type) }}
         </v-icon>
-        {{
-          formatters
-            .toPascalCase(offer.program.name)
-            .replace(/([A-Z])/g, ' $1')
-            .trim()
-        }}
+        Ver Programa
       </v-btn>
     </v-card-actions>
 
@@ -45,7 +39,6 @@
 <script setup lang="ts">
   import type { OfferItem } from '~/interfaces/offers'
   import type { ProgramType } from '~/interfaces/program'
-  import { formatters } from '~/utils/formatter'
   const showConfirmationModal = ref(false)
   interface Props {
     offer: OfferItem

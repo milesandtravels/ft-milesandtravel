@@ -3,8 +3,9 @@
     <v-img
       :src="product.image_url"
       :alt="product.name"
-      aspect-ratio="1"
-      cover
+      :style="{
+        backgroundPosition: 'contain',
+      }"
       class="product-image"
     >
       <template v-slot:placeholder>

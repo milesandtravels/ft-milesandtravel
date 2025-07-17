@@ -2,10 +2,13 @@
   <v-card-item class="pa-3">
     <div class="d-flex align-center justify-space-between">
       <div class="d-flex align-center">
-        <v-avatar v-if="offer.ecommerce.logo_url" size="32" class="me-2">
-          <v-img :src="offer.ecommerce.logo_url" :alt="offer.ecommerce.name" />
-        </v-avatar>
-        <span class="text-body-2 font-weight-medium">
+        <BaseLogoAvatar
+          :src="offer.ecommerce.logo_url || ''"
+          :alt="offer.ecommerce.name"
+          size="sm"
+          type="ecommerce"
+        />
+        <span class="text-body-2 font-weight-medium ml-2">
           {{ offer.ecommerce.name }}
         </span>
       </div>
