@@ -8,7 +8,7 @@
       :is-indeterminate="isIndeterminate"
       @select-all="handleSelectAll"
       @deselect-all="deselectAll"
-      @open-filter="openFilter"
+      @open-filter="emit('open-filter')"
     />
 
     <!-- Products Grid -->
@@ -26,7 +26,6 @@
       @deselect-all="deselectAll"
       @explore-advantages="exploreAdvantages"
     />
-
   </v-container>
 </template>
 
@@ -41,6 +40,7 @@ import type { Product } from '~/interfaces/products'
 
   interface Emits {
     (e: 'update:selectedProducts', value: number[]): void
+    (e: 'open-filter'): void
   }
 
   const props = defineProps<Props>()

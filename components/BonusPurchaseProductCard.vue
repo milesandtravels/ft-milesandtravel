@@ -133,39 +133,8 @@
         <span class="ecommerce-category">{{ product.ecommerce.category }}</span>
         <span class="ecommerce-name">{{ marketplaceDisplayName }}</span>
       </div>
-
-      <!-- Action Buttons (Desktop) -->
-      <div v-if="!isMobile" class="action-buttons">
-        <v-btn
-          variant="outlined"
-          size="small"
-          color="primary"
-          class="view-btn"
-          :href="product.product_url"
-          target="_blank"
-          @click.stop
-        >
-          <v-icon start size="small">mdi-eye</v-icon>
-          Ver produto
-        </v-btn>
-      </div>
     </v-card-text>
-
-    <!-- Quick Action (Mobile) -->
-    <div v-if="isMobile" class="mobile-quick-action" @click.stop>
-      <v-btn
-        :href="product.product_url"
-        target="_blank"
-        variant="text"
-        size="small"
-        color="primary"
-        block
-        class="quick-action-btn"
-      >
-        <v-icon start size="small">mdi-open-in-new</v-icon>
-        Ver no {{ marketplaceDisplayName }}
-      </v-btn>
-    </div>
+    
   </v-card>
 </template>
 
@@ -226,19 +195,6 @@
   })
 
   const marketplaceDisplayName = computed(() => {
-    if (isMobile.value) {
-      const abbreviations: Record<string, string> = {
-        'Mercado Livre': 'ML',
-        AliExpress: 'Ali',
-        Americanas: 'Ame',
-        Amazon: 'AMZ',
-        Shopee: 'SHP',
-      }
-      return (
-        abbreviations[props.product.ecommerce.name] ||
-        props.product.ecommerce.name.substring(0, 3).toUpperCase()
-      )
-    }
     return props.product.ecommerce.name
   })
 

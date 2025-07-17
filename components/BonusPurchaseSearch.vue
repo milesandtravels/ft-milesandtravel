@@ -52,7 +52,7 @@
 
     <!-- Botão de Filtros (aparece apenas quando há resultados) -->
     <template v-if="results.length > 0">
-      <div class="filters-section mb-4">
+      <div class="filters-section mb-4" v-if="!$vuetify.display.mobile">
         <v-btn
           @click="openFiltersModal"
           :disabled="!availableFilters.length"
@@ -62,24 +62,14 @@
           size="default"
         >
           Filtrar
-
-          <v-badge
-            v-if="activeFiltersCount > 0"
-            :content="activeFiltersCount"
-            color="error"
-            floating
-          />
         </v-btn>
-
-        <!-- Indicador de filtros ativos -->
-        <div v-if="activeFiltersCount > 0" class="mt-2">
-          <v-chip size="small" color="primary" variant="outlined">
-            {{ activeFiltersCount }} filtro(s) ativo(s)
-          </v-chip>
-        </div>
       </div>
 
-      <BonusPurchaseResults :results="results" :searchId="searchId" />
+      <BonusPurchaseResults
+        :results="results"
+        :searchId="searchId"
+        @open-filter="openFiltersModal"
+      />
     </template>
     <BonusPurchaseEmptyResults v-else-if="hasSearched" />
     <BonusPurchaseInitialState v-else />
