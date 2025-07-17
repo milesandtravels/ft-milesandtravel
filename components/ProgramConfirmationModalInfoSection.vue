@@ -1,15 +1,14 @@
 <template>
   <div class="program-info-section mb-5">
     <div class="d-flex align-center">
-      <v-avatar size="48" class="mr-4">
-        <v-img :src="program.logo_url" :alt="program.name" cover>
-          <template v-slot:error>
-            <div class="logo-error-small">
-              <v-icon icon="mdi-card-giftcard" size="20" color="grey"></v-icon>
-            </div>
-          </template>
-        </v-img>
-      </v-avatar>
+      <BaseLogoAvatar
+        :src="program.logo_url"
+        :alt="program.name"
+        size="lg"
+        class="mr-2"
+        :type="'points'"
+      />
+
       <div class="flex-grow-1">
         <h3 class="text-h6 font-weight-bold mb-1">
           {{ program.name }}
