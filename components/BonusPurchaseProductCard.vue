@@ -61,11 +61,11 @@
         <BaseLogoAvatar
           :src="product.ecommerce.logo_url"
           :alt="product.name"
-          size="md"
+          :size="isMobile ? 'xs' : 'md'"
           class="mr-2"
           :type="'points'"
         />
-        <div v-if="!isMobile" class="marketplace-info">
+        <div class="marketplace-info">
           <span class="marketplace-name">{{ product.ecommerce.name }}</span>
           <span class="marketplace-category">{{
             product.ecommerce.category
