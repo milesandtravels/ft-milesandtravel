@@ -10,3 +10,8 @@ export interface Program {
   value_per_mile?: number
   type: ProgramType
 }
+export interface ProgramsResponseDTO {
+  cashback: Program[];
+  miles: Program[];
+  points: Program[];
+}
