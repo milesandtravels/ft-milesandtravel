@@ -11,8 +11,8 @@
     <!-- WhatsApp Settings Card -->
     <v-card class="whatsapp-card mb-4" elevation="1">
       <v-card-text class="pa-4">
-        <div class="d-flex align-center justify-space-between">
-          <div class="whatsapp-info flex-grow-1 me-4">
+        <div class="whatsapp-content">
+          <div class="whatsapp-info">
             <div class="d-flex align-center mb-2">
               <v-icon color="success" size="24" class="me-2"
                 >mdi-whatsapp</v-icon
@@ -21,14 +21,11 @@
                 Alertas via WhatsApp
               </h3>
             </div>
-            <p class="text-body-2 text-medium-emphasis mb-0">
+            <p class="text-body-2 text-medium-emphasis mb-2">
               Receba notificações instantâneas sobre as melhores ofertas e
               cashbacks diretamente no seu WhatsApp
             </p>
-            <div
-              v-if="whatsappEnabled && verifiedPhone"
-              class="phone-display mt-2"
-            >
+            <div v-if="whatsappEnabled && verifiedPhone" class="phone-display">
               <v-chip size="small" color="success" variant="tonal">
                 <v-icon start size="16">mdi-check-circle</v-icon>
                 {{ formatPhone(verifiedPhone) }}
@@ -36,14 +33,16 @@
             </div>
           </div>
 
-          <v-switch
-            v-model="whatsappEnabled"
-            color="success"
-            density="compact"
-            hide-details
-            :disabled="isLoading"
-            @update:model-value="handleWhatsAppToggle"
-          />
+          <div class="switch-container">
+            <v-switch
+              v-model="whatsappEnabled"
+              color="success"
+              density="compact"
+              hide-details
+              :disabled="isLoading"
+              @update:model-value="handleWhatsAppToggle"
+            />
+          </div>
         </div>
       </v-card-text>
     </v-card>
@@ -62,10 +61,55 @@
         </v-card-title>
 
         <v-card-text class="pa-4">
+          <!-- Contact Step -->
+          <div v-if="currentStep === 'contact'" class="contact-step">
+            <div class="text-center mb-4">
+              <v-icon color="success" size="64" class="mb-3"
+                >mdi-whatsapp</v-icon
+              >
+              <h3 class="text-h6 mb-2">Entre em contato conosco</h3>
+              <p class="text-body-2 text-medium-emphasis mb-4">
+                Para começar a receber alertas, você precisa primeiro entrar em
+                contato conosco pelo WhatsApp. Clique no botão abaixo para
+                iniciar uma conversa.
+              </p>
+            </div>
+
+            <div class="contact-info mb-4">
+              <v-alert type="info" variant="tonal" class="mb-3" text>
+                <div class="d-flex align-start">
+                  <v-icon class="me-2 mt-1" size="20">mdi-information</v-icon>
+                  <div>
+                    <strong>Importante:</strong> Após entrar em contato, retorne
+                    aqui para configurar seus alertas.
+                  </div>
+                </div>
+              </v-alert>
+
+              <div class="whatsapp-number-display">
+                <v-card variant="outlined" class="pa-3">
+                  <div class="d-flex align-center justify-center">
+                    <v-icon color="success" size="20" class="me-2"
+                      >mdi-whatsapp</v-icon
+                    >
+                    <span class="text-h6">{{ whatsappBusinessNumber }}</span>
+                  </div>
+                </v-card>
+              </div>
+            </div>
+          </div>
+
           <!-- Phone Input Step -->
           <div v-if="currentStep === 'phone'" class="phone-step">
+            <div class="step-indicator mb-4">
+              <v-chip size="small" color="success" variant="tonal">
+                <v-icon start size="14">mdi-check</v-icon>
+                Contato realizado
+              </v-chip>
+            </div>
+
             <p class="text-body-2 text-medium-emphasis mb-4">
-              Digite seu número de WhatsApp para receber um código de
+              Agora digite seu número de WhatsApp para receber um código de
               confirmação
             </p>
 
@@ -88,13 +132,24 @@
                 >mdi-information</v-icon
               >
               <span class="text-caption text-medium-emphasis">
-                Digite apenas números. Exemplo: (11) 99999-9999
+                Use o mesmo número que utilizou para nos contatar
               </span>
             </div>
           </div>
 
           <!-- Verification Code Step -->
           <div v-if="currentStep === 'verification'" class="verification-step">
+            <div class="step-indicator mb-3">
+              <v-chip size="small" color="success" variant="tonal" class="me-2">
+                <v-icon start size="14">mdi-check</v-icon>
+                Contato realizado
+              </v-chip>
+              <v-chip size="small" color="success" variant="tonal">
+                <v-icon start size="14">mdi-check</v-icon>
+                Telefone adicionado
+              </v-chip>
+            </div>
+
             <div class="text-center mb-4">
               <v-icon color="success" size="48" class="mb-2"
                 >mdi-message-text</v-icon
@@ -146,37 +201,132 @@
           </div>
         </v-card-text>
 
-        <v-card-actions class="pa-4 pt-0">
-          <v-btn
-            variant="text"
-            :disabled="isLoading"
-            @click="cancelWhatsAppSetup"
-          >
-            Cancelar
-          </v-btn>
+        <v-card-actions class="pa-4 pt-0 flex-column">
+          <!-- Contact Step Actions -->
+          <template v-if="currentStep === 'contact'">
+            <v-btn
+              color="success"
+              variant="flat"
+              :disabled="isLoading"
+              :loading="isLoading"
+              block
+              class="mb-2"
+              @click="openWhatsAppContact"
+            >
+              <v-icon start>mdi-whatsapp</v-icon>
+              Entrar em contato
+            </v-btn>
 
-          <v-spacer />
+            <v-btn
+              color="primary"
+              variant="outlined"
+              block
+              class="mb-2"
+              @click="proceedToPhoneStep"
+            >
+              Já entrei em contato
+            </v-btn>
+          </template>
 
+          <!-- Phone Step Actions -->
           <v-btn
             v-if="currentStep === 'phone'"
             color="success"
             variant="flat"
             :disabled="!isPhoneValid || isLoading"
             :loading="isLoading"
+            block
+            class="mb-2"
             @click="sendVerificationCode"
           >
             Enviar código
           </v-btn>
 
+          <!-- Verification Step Actions -->
           <v-btn
             v-if="currentStep === 'verification'"
             color="success"
             variant="flat"
             :disabled="verificationCode.length !== 5 || isLoading"
             :loading="isLoading"
+            block
+            class="mb-2"
             @click="verifyCode"
           >
             Confirmar
+          </v-btn>
+
+          <!-- Cancel Button -->
+          <v-btn
+            variant="text"
+            :disabled="isLoading"
+            size="small"
+            @click="cancelWhatsAppSetup"
+          >
+            Cancelar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Contact Required Dialog -->
+    <v-dialog v-model="showContactRequiredDialog" max-width="400" persistent>
+      <v-card class="contact-required-modal">
+        <v-card-title class="d-flex align-center pa-4 pb-2">
+          <v-icon color="warning" size="28" class="me-2"
+            >mdi-alert-circle</v-icon
+          >
+          <span class="text-h6">Contato necessário</span>
+        </v-card-title>
+
+        <v-card-text class="pa-4">
+          <div class="text-center">
+            <v-icon color="warning" size="64" class="mb-3">mdi-whatsapp</v-icon>
+            <h3 class="text-h6 mb-3">Número não encontrado</h3>
+            <p class="text-body-2 text-medium-emphasis mb-4">
+              O número {{ formatPhone(phoneNumber) }} ainda não entrou em
+              contato conosco pelo WhatsApp.
+            </p>
+            <p class="text-body-2 mb-4">
+              <strong
+                >Para receber o código de verificação, você precisa primeiro
+                iniciar uma conversa conosco.</strong
+              >
+            </p>
+
+            <div class="whatsapp-contact-info">
+              <v-card variant="outlined" class="pa-3 mb-3">
+                <div class="d-flex align-center justify-center">
+                  <v-icon color="success" size="20" class="me-2"
+                    >mdi-whatsapp</v-icon
+                  >
+                  <span class="text-subtitle-1 font-weight-medium">{{
+                    whatsappBusinessNumber
+                  }}</span>
+                </div>
+              </v-card>
+            </div>
+          </div>
+        </v-card-text>
+
+        <v-card-actions class="pa-4 pt-0 flex-column">
+          <v-btn
+            color="success"
+            variant="flat"
+            block
+            class="mb-2"
+            @click="openWhatsAppFromDialog"
+          >
+            <v-icon start>mdi-whatsapp</v-icon>
+            Entrar em contato agora
+          </v-btn>
+
+          <v-btn
+            variant="text"
+            size="small"
+            @click="closeContactRequiredDialog"
+          >
+            Voltar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -185,7 +335,7 @@
 </template>
 
 <script lang="ts" setup>
-  type Step = 'phone' | 'verification'
+  type Step = 'contact' | 'phone' | 'verification'
 
   // Estados principais
   const whatsappEnabled = ref(false)
@@ -193,12 +343,18 @@
   const isLoading = ref(false)
 
   // Estados do modal
-  const currentStep = ref<Step>('phone')
+  const currentStep = ref<Step>('contact')
   const phoneNumber = ref('')
   const verificationCode = ref('')
   const phoneError = ref('')
   const codeError = ref('')
   const verifiedPhone = ref('')
+  const showContactRequiredDialog = ref(false)
+
+  // Configurações do WhatsApp Business
+  const whatsappBusinessNumber = '+55 (41) 3790-0172'
+  const whatsappBusinessLink =
+    'https://wa.me/554137900172?text=Olá,%20gostaria%20de%20receber%20alertas%20de%20ofertas%20e%20cashbacks'
 
   // Resend cooldown
   const resendCooldown = ref(0)
@@ -272,6 +428,38 @@
     }
   }
 
+  const openWhatsAppContact = () => {
+    // Abre o WhatsApp em uma nova aba/janela
+    window.open(whatsappBusinessLink, '_blank')
+
+    // Opcional: adicionar um pequeno delay e sugerir que o usuário já entrou em contato
+    setTimeout(() => {
+      // Você pode mostrar uma mensagem ou automaticamente avançar para o próximo passo
+      // currentStep.value = 'phone'
+    }, 3000)
+  }
+
+  const proceedToPhoneStep = () => {
+    currentStep.value = 'phone'
+  }
+
+  const openWhatsAppFromDialog = () => {
+    // Abre o WhatsApp com uma mensagem específica indicando que é para verificação
+    const message = `Olá, gostaria de receber alertas de ofertas e cashbacks. Meu número é ${formatPhone(phoneNumber.value)}`
+    const linkWithMessage = `https://wa.me/554137900172?text=${encodeURIComponent(message)}`
+    window.open(linkWithMessage, '_blank')
+  }
+
+  const retryAfterContact = () => {
+    showContactRequiredDialog.value = false
+    // Tenta enviar o código novamente
+    sendVerificationCode()
+  }
+
+  const closeContactRequiredDialog = () => {
+    showContactRequiredDialog.value = false
+  }
+
   const sendVerificationCode = async () => {
     if (!isPhoneValid.value) return
 
@@ -280,16 +468,28 @@
 
     try {
       const cleanPhone = phoneNumber.value.replace(/\D/g, '')
-      const { data, error } = await useSanctumFetch(`/api/otp/send`, {
+      const { data, error, status } = await useSanctumFetch(`/api/otp/send`, {
         method: 'POST',
         body: {
           phone: `55${cleanPhone}`,
         },
       })
-      currentStep.value = 'verification'
-      startResendCooldown()
-    } catch (error) {
-      phoneError.value = 'Erro ao enviar código. Tente novamente.'
+
+      // Verifica se a resposta indica sucesso
+      if (error.value?.statusCode === 404) {
+        showContactRequiredDialog.value = true
+      } else if (data && data.value) {
+        // Sucesso - avança para verificação
+        currentStep.value = 'verification'
+        startResendCooldown()
+      } else {
+        // Resposta inesperada
+        phoneError.value = 'Erro inesperado. Tente novamente.'
+      }
+    } catch (error: any) {
+      // Erros de rede ou outros erros HTTP
+      phoneError.value =
+        error.data?.message || 'Erro de conexão. Tente novamente.'
     } finally {
       isLoading.value = false
     }
@@ -302,7 +502,6 @@
     codeError.value = ''
 
     try {
-      // Simular chamada da API
       const cleanPhone = phoneNumber.value.replace(/\D/g, '')
       console.log(
         'API: Verificar código:',
@@ -362,11 +561,12 @@
 
   // Utilitários
   const resetModal = () => {
-    currentStep.value = 'phone'
+    currentStep.value = 'contact'
     phoneNumber.value = ''
     verificationCode.value = ''
     phoneError.value = ''
     codeError.value = ''
+    showContactRequiredDialog.value = false
     clearResendTimer()
   }
 
@@ -399,10 +599,11 @@
 </script>
 
 <style scoped>
+  /* Base styles - mobile first */
   .alert-settings {
     max-width: 600px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 12px;
   }
 
   .settings-header {
@@ -420,8 +621,21 @@
     transition: border-color 0.2s ease;
   }
 
+  /* WhatsApp content layout - mobile first */
+  .whatsapp-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .whatsapp-info {
-    min-height: 60px;
+    flex: 1;
+  }
+
+  .switch-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .phone-display {
@@ -433,15 +647,39 @@
     overflow: hidden;
   }
 
+  .contact-step,
   .phone-step,
   .verification-step {
     min-height: 120px;
   }
 
+  .contact-info {
+    text-align: center;
+  }
+
+  /* Contact required modal */
+  .contact-required-modal {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .whatsapp-contact-info {
+    margin: 16px 0;
+  }
+
+  .step-indicator {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
   .phone-help {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     margin-top: 8px;
+    gap: 4px;
   }
 
   .resend-section {
@@ -449,43 +687,82 @@
     padding-top: 16px;
   }
 
-  /* Mobile adjustments */
-  @media (max-width: 600px) {
-    .alert-settings {
-      padding: 12px;
-    }
+  /* Contact actions layout */
+  .contact-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-    .whatsapp-card .v-card-text {
-      padding: 16px !important;
-    }
+  /* Card actions layout fix */
+  .v-card-actions.flex-column {
+    flex-direction: column !important;
+    align-items: stretch;
+    gap: 0;
+  }
 
-    .whatsapp-modal .v-card-title,
-    .whatsapp-modal .v-card-text,
-    .whatsapp-modal .v-card-actions {
-      padding: 16px !important;
-    }
-
-    .whatsapp-info {
-      margin-bottom: 16px;
-    }
-
-    .d-flex.align-center.justify-space-between {
-      flex-direction: column;
-      align-items: stretch;
-    }
+  .v-card-actions.flex-column .v-btn {
+    width: 100%;
   }
 
   /* OTP Input customization */
   :deep(.v-otp-input) {
     justify-content: center;
+    gap: 8px;
   }
 
   :deep(.v-otp-input .v-field) {
-    margin: 0 4px;
+    min-width: 40px;
+    max-width: 50px;
   }
 
   /* Switch customization */
   :deep(.v-switch .v-selection-control__input) {
     border-radius: 12px;
+  }
+
+  /* Tablet and desktop adjustments */
+  @media (min-width: 768px) {
+    .alert-settings {
+      padding: 16px;
+    }
+
+    /* Desktop layout for WhatsApp card */
+    .whatsapp-content {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .switch-container {
+      justify-content: flex-end;
+      min-width: auto;
+    }
+
+    /* Desktop layout for contact actions */
+    .contact-actions {
+      flex-direction: row;
+      gap: 12px;
+    }
+
+    .contact-actions .v-btn {
+      flex: 1;
+    }
+
+    .whatsapp-modal .v-card-actions {
+      flex-direction: row;
+    }
+
+    :deep(.v-otp-input .v-field) {
+      min-width: 48px;
+      max-width: 56px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .step-indicator {
+      justify-content: flex-start;
+    }
   }
 </style>
