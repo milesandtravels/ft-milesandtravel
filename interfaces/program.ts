@@ -11,7 +11,7 @@ export interface Program {
   type: ProgramType
 }
 export interface ProgramsResponseDTO {
-  cashback: Program[];
-  miles: Program[];
-  points: Program[];
+  cashback: Program[]
+  miles: Program[]
+  points: Program[]
 }

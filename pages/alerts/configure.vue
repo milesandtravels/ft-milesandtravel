@@ -2,9 +2,7 @@
   <v-container class="alert-settings" fluid>
     <!-- Header -->
     <div class="settings-header mb-6">
-      <h1 class="text-h5 font-weight-bold mb-2">
-        Configurações de Alertas
-      </h1>
+      <h1 class="text-h5 font-weight-bold mb-2">Configurações de Alertas</h1>
       <p class="text-body-2 text-medium-emphasis">
         Configure como deseja receber notificações sobre ofertas e cashbacks
       </p>
@@ -16,22 +14,28 @@
         <div class="d-flex align-center justify-space-between">
           <div class="whatsapp-info flex-grow-1 me-4">
             <div class="d-flex align-center mb-2">
-              <v-icon color="success" size="24" class="me-2">mdi-whatsapp</v-icon>
+              <v-icon color="success" size="24" class="me-2"
+                >mdi-whatsapp</v-icon
+              >
               <h3 class="text-subtitle-1 font-weight-medium">
                 Alertas via WhatsApp
               </h3>
             </div>
             <p class="text-body-2 text-medium-emphasis mb-0">
-              Receba notificações instantâneas sobre as melhores ofertas e cashbacks diretamente no seu WhatsApp
+              Receba notificações instantâneas sobre as melhores ofertas e
+              cashbacks diretamente no seu WhatsApp
             </p>
-            <div v-if="whatsappEnabled && verifiedPhone" class="phone-display mt-2">
+            <div
+              v-if="whatsappEnabled && verifiedPhone"
+              class="phone-display mt-2"
+            >
               <v-chip size="small" color="success" variant="tonal">
                 <v-icon start size="16">mdi-check-circle</v-icon>
                 {{ formatPhone(verifiedPhone) }}
               </v-chip>
             </div>
           </div>
-          
+
           <v-switch
             v-model="whatsappEnabled"
             color="success"
@@ -45,9 +49,9 @@
     </v-card>
 
     <!-- WhatsApp Setup Modal -->
-    <v-dialog 
-      v-model="showWhatsAppModal" 
-      max-width="500" 
+    <v-dialog
+      v-model="showWhatsAppModal"
+      max-width="500"
       persistent
       :fullscreen="$vuetify.display.mobile"
     >
@@ -61,9 +65,10 @@
           <!-- Phone Input Step -->
           <div v-if="currentStep === 'phone'" class="phone-step">
             <p class="text-body-2 text-medium-emphasis mb-4">
-              Digite seu número de WhatsApp para receber um código de confirmação
+              Digite seu número de WhatsApp para receber um código de
+              confirmação
             </p>
-            
+
             <v-text-field
               v-model="phoneNumber"
               label="Número do WhatsApp"
@@ -79,7 +84,9 @@
             />
 
             <div class="phone-help mt-2">
-              <v-icon size="16" color="info" class="me-1">mdi-information</v-icon>
+              <v-icon size="16" color="info" class="me-1"
+                >mdi-information</v-icon
+              >
               <span class="text-caption text-medium-emphasis">
                 Digite apenas números. Exemplo: (11) 99999-9999
               </span>
@@ -89,26 +96,28 @@
           <!-- Verification Code Step -->
           <div v-if="currentStep === 'verification'" class="verification-step">
             <div class="text-center mb-4">
-              <v-icon color="success" size="48" class="mb-2">mdi-message-text</v-icon>
+              <v-icon color="success" size="48" class="mb-2"
+                >mdi-message-text</v-icon
+              >
               <p class="text-body-2 text-medium-emphasis">
-                Enviamos um código de verificação para<br>
+                Enviamos um código de verificação para<br />
                 <strong>{{ formatPhone(phoneNumber) }}</strong>
               </p>
             </div>
 
             <v-otp-input
               v-model="verificationCode"
-              :length="6"
+              :length="5"
               variant="outlined"
               :disabled="isLoading"
               :error="!!codeError"
               @finish="verifyCode"
             />
 
-            <v-alert 
-              v-if="codeError" 
-              type="error" 
-              variant="tonal" 
+            <v-alert
+              v-if="codeError"
+              type="error"
+              variant="tonal"
               class="mt-3"
               text
             >
@@ -127,7 +136,11 @@
                 @click="resendCode"
               >
                 <v-icon start size="16">mdi-refresh</v-icon>
-                {{ resendCooldown > 0 ? `Reenviar em ${resendCooldown}s` : 'Reenviar código' }}
+                {{
+                  resendCooldown > 0
+                    ? `Reenviar em ${resendCooldown}s`
+                    : 'Reenviar código'
+                }}
               </v-btn>
             </div>
           </div>
@@ -141,9 +154,9 @@
           >
             Cancelar
           </v-btn>
-          
+
           <v-spacer />
-          
+
           <v-btn
             v-if="currentStep === 'phone'"
             color="success"
@@ -154,12 +167,12 @@
           >
             Enviar código
           </v-btn>
-          
+
           <v-btn
             v-if="currentStep === 'verification'"
             color="success"
             variant="flat"
-            :disabled="verificationCode.length !== 6 || isLoading"
+            :disabled="verificationCode.length !== 5 || isLoading"
             :loading="isLoading"
             @click="verifyCode"
           >
@@ -178,7 +191,7 @@
   const whatsappEnabled = ref(false)
   const showWhatsAppModal = ref(false)
   const isLoading = ref(false)
-  
+
   // Estados do modal
   const currentStep = ref<Step>('phone')
   const phoneNumber = ref('')
@@ -186,7 +199,7 @@
   const phoneError = ref('')
   const codeError = ref('')
   const verifiedPhone = ref('')
-  
+
   // Resend cooldown
   const resendCooldown = ref(0)
   let resendTimer: NodeJS.Timeout | null = null
@@ -201,18 +214,20 @@
     (v: string) => {
       const cleanPhone = v.replace(/\D/g, '')
       return cleanPhone.length <= 11 || 'Número deve ter no máximo 11 dígitos'
-    }
+    },
   ]
 
   const isPhoneValid = computed(() => {
     const cleanPhone = phoneNumber.value.replace(/\D/g, '')
-    return cleanPhone.length >= 10 && cleanPhone.length <= 11 && !phoneError.value
+    return (
+      cleanPhone.length >= 10 && cleanPhone.length <= 11 && !phoneError.value
+    )
   })
 
   // Formatação do telefone para exibição
   const formatPhone = (phone: string) => {
     const cleaned = phone.replace(/\D/g, '')
-    
+
     if (cleaned.length <= 10) {
       // Telefone fixo: (11) 1234-5678
       return cleaned.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3')
@@ -226,12 +241,12 @@
   const formatPhoneInput = (event: Event) => {
     const target = event.target as HTMLInputElement
     let value = target.value.replace(/\D/g, '') // Remove tudo que não é dígito
-    
+
     // Limita a 11 dígitos
     if (value.length > 11) {
       value = value.slice(0, 11)
     }
-    
+
     // Aplica a máscara
     if (value.length <= 2) {
       phoneNumber.value = value
@@ -242,7 +257,7 @@
     } else {
       phoneNumber.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`
     }
-    
+
     clearPhoneError()
   }
 
@@ -259,16 +274,18 @@
 
   const sendVerificationCode = async () => {
     if (!isPhoneValid.value) return
-    
+
     isLoading.value = true
     phoneError.value = ''
-    
+
     try {
-      // Simular chamada da API
-      await new Promise(resolve => setTimeout(resolve, 1500))
       const cleanPhone = phoneNumber.value.replace(/\D/g, '')
-      console.log('API: Enviar código de verificação para:', `+55${cleanPhone}`)
-      
+      const { data, error } = await useSanctumFetch(`/api/otp/send`, {
+        method: 'POST',
+        body: {
+          phone: `55${cleanPhone}`,
+        },
+      })
       currentStep.value = 'verification'
       startResendCooldown()
     } catch (error) {
@@ -279,22 +296,34 @@
   }
 
   const verifyCode = async () => {
-    if (verificationCode.value.length !== 6) return
-    
+    if (verificationCode.value.length !== 5) return
+
     isLoading.value = true
     codeError.value = ''
-    
+
     try {
       // Simular chamada da API
-      await new Promise(resolve => setTimeout(resolve, 1500))
       const cleanPhone = phoneNumber.value.replace(/\D/g, '')
-      console.log('API: Verificar código:', verificationCode.value, 'para telefone:', `+55${cleanPhone}`)
-      
+      console.log(
+        'API: Verificar código:',
+        verificationCode.value,
+        'para telefone:',
+        `+55${cleanPhone}`
+      )
+
+      const { data, error } = await useSanctumFetch(`/api/otp/validate`, {
+        method: 'POST',
+        body: {
+          phone: `55${cleanPhone}`,
+          token: verificationCode.value,
+        },
+      })
+
       // Sucesso
       verifiedPhone.value = phoneNumber.value
       whatsappEnabled.value = true
       showWhatsAppModal.value = false
-      
+
       console.log('API: Habilitar alertas WhatsApp para:', `+55${cleanPhone}`)
     } catch (error) {
       codeError.value = 'Código inválido. Tente novamente.'
@@ -305,15 +334,18 @@
 
   const resendCode = async () => {
     if (resendCooldown.value > 0) return
-    
+
     isLoading.value = true
     codeError.value = ''
-    
+
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       const cleanPhone = phoneNumber.value.replace(/\D/g, '')
-      console.log('API: Reenviar código de verificação para:', `+55${cleanPhone}`)
-      
+      console.log(
+        'API: Reenviar código de verificação para:',
+        `+55${cleanPhone}`
+      )
+
       startResendCooldown()
     } catch (error) {
       codeError.value = 'Erro ao reenviar código. Tente novamente.'
