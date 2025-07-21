@@ -283,6 +283,9 @@
     fetchCategories()
   })
 
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
   // Computeds para threshold baseado no tipo de programa
   const selectedProgramTypeData = computed(() => {
     if (

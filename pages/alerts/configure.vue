@@ -7,6 +7,7 @@
         Configure como deseja receber notificações sobre ofertas e cashbacks
       </p>
     </div>
+    {{ user }}
 
     <!-- WhatsApp Settings Card -->
     <v-card class="whatsapp-card mb-4" elevation="1">
@@ -25,10 +26,10 @@
               Receba notificações instantâneas sobre as melhores ofertas e
               cashbacks diretamente no seu WhatsApp
             </p>
-            <div v-if="whatsappEnabled && verifiedPhone" class="phone-display">
+            <div v-if="whatsappEnabled && user?.phone" class="phone-display">
               <v-chip size="small" color="success" variant="tonal">
                 <v-icon start size="16">mdi-check-circle</v-icon>
-                {{ formatPhone(verifiedPhone) }}
+                {{ formatPhone(user.phone) }}
               </v-chip>
             </div>
           </div>
@@ -330,15 +331,94 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Modal de confirmação para desabilitar WhatsApp -->
+    <v-dialog v-model="showDisableConfirmModal" max-width="400" persistent>
+      <v-card class="disable-confirm-modal">
+        <v-card-title class="d-flex align-center pa-4 pb-2">
+          <v-icon color="warning" size="28" class="me-2"
+            >mdi-alert-circle</v-icon
+          >
+          <span class="text-h6">Desabilitar WhatsApp</span>
+        </v-card-title>
+
+        <v-card-text class="pa-4">
+          <div class="text-center">
+            <v-icon color="warning" size="64" class="mb-3"
+              >mdi-whatsapp-off</v-icon
+            >
+            <h3 class="text-h6 mb-3">Tem certeza?</h3>
+            <p class="text-body-2 text-medium-emphasis mb-4">
+              Ao desabilitar as notificações do WhatsApp:
+            </p>
+            <v-list class="text-start mb-4" density="compact">
+              <v-list-item>
+                <template #prepend>
+                  <v-icon color="error" size="16">mdi-close-circle</v-icon>
+                </template>
+                <v-list-item-title class="text-body-2">
+                  Todos os alertas configurados vão parar de funcionar
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <template #prepend>
+                  <v-icon color="error" size="16">mdi-close-circle</v-icon>
+                </template>
+                <v-list-item-title class="text-body-2">
+                  Você precisará refazer todo o processo de configuração
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+            <p class="text-body-2 font-weight-medium">
+              Deseja realmente continuar?
+            </p>
+          </div>
+        </v-card-text>
+
+        <v-card-actions class="pa-4 pt-0 flex-column">
+          <v-btn
+            color="error"
+            variant="flat"
+            :loading="isLoading"
+            :disabled="isLoading"
+            block
+            class="mb-2"
+            @click="confirmDisableWhatsApp"
+          >
+            <v-icon start>mdi-whatsapp-off</v-icon>
+            Sim, desabilitar
+          </v-btn>
+
+          <v-btn
+            variant="text"
+            :disabled="isLoading"
+            size="small"
+            @click="cancelDisableWhatsApp"
+          >
+            Cancelar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script lang="ts" setup>
+  import type { User } from '~/types/user'
+
   type Step = 'contact' | 'phone' | 'verification'
+  const { user } = useSanctumAuth<User>()
+
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
 
   // Estados principais
-  const whatsappEnabled = ref(false)
+  const whatsappEnabled = ref<boolean>(
+    user.value?.whatsapp_notification_enabled || false
+  )
   const showWhatsAppModal = ref(false)
+  const showDisableConfirmModal = ref(false)
   const isLoading = ref(false)
 
   // Estados do modal
@@ -418,12 +498,14 @@
 
   // Handlers principais
   const handleWhatsAppToggle = (enabled: boolean) => {
-    if (enabled && !verifiedPhone.value) {
+    if (enabled && !user.value?.whatsapp_notification_enabled) {
       showWhatsAppModal.value = true
       resetModal()
-    } else if (!enabled) {
-      console.log('API: Desabilitar alertas WhatsApp')
-      verifiedPhone.value = ''
+    } else if (!enabled && user.value?.whatsapp_notification_enabled) {
+      // Mostrar modal de confirmação antes de desabilitar
+      showDisableConfirmModal.value = true
+      // Reverter o toggle temporariamente
+      whatsappEnabled.value = true
     }
   }
 
@@ -517,12 +599,11 @@
         },
       })
 
-      // Sucesso
+      // Sucesso - habilitar WhatsApp
+      await enableWhatsAppNotifications(true)
       verifiedPhone.value = phoneNumber.value
       whatsappEnabled.value = true
       showWhatsAppModal.value = false
-
-      console.log('API: Habilitar alertas WhatsApp para:', `+55${cleanPhone}`)
     } catch (error) {
       codeError.value = 'Código inválido. Tente novamente.'
     } finally {
@@ -553,9 +634,48 @@
   }
 
   const cancelWhatsAppSetup = () => {
-    whatsappEnabled.value = false
+    whatsappEnabled.value = user.value?.whatsapp_notification_enabled || false
     showWhatsAppModal.value = false
     resetModal()
+  }
+
+  // Confirmar desabilitação do WhatsApp
+  const confirmDisableWhatsApp = async () => {
+    isLoading.value = true
+    try {
+      await enableWhatsAppNotifications(false)
+      whatsappEnabled.value = false
+      showDisableConfirmModal.value = false
+      verifiedPhone.value = ''
+    } catch (error) {
+      console.error('Erro ao desabilitar WhatsApp:', error)
+      // Reverter o estado em caso de erro
+      whatsappEnabled.value = true
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  // Cancelar desabilitação
+  const cancelDisableWhatsApp = () => {
+    showDisableConfirmModal.value = false
+    whatsappEnabled.value = true
+  }
+
+  // API para habilitar/desabilitar WhatsApp
+  const enableWhatsAppNotifications = async (enable: boolean) => {
+    const { data, error } = await useSanctumFetch('/api/whatsapp/enable', {
+      method: 'PUT',
+      body: {
+        enable: enable,
+      },
+    })
+
+    if (error.value) {
+      throw new Error('Erro ao atualizar configurações do WhatsApp')
+    }
+
+    return data.value
   }
 
   // Utilitários

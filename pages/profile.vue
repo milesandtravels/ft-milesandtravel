@@ -132,17 +132,12 @@
 
 <script setup lang="ts">
   import { computed, onMounted, ref, watch } from 'vue'
+  import { useValidators } from '~/composables/useValidators'
   import { useSnackbarStore } from '~/store/snackbar'
+  import type { User } from '~/types/user'
 
   const router = useRouter()
-  const { user, refreshIdentity } = useSanctumAuth()
-
-  interface User {
-    id: string | number
-    name: string
-    email: string
-    avatar_url?: string
-  }
+  const { user, refreshIdentity } = useSanctumAuth<User>()
 
   interface ProfileResponse {
     message: string

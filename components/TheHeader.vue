@@ -143,22 +143,11 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-  const { user } = useSanctumAuth()
+  import type { User } from '~/types/user'
+
+  const { user } = useSanctumAuth<User>()
 
   // Types
-  interface User {
-    id: string | number
-    name: string
-    email: string
-    avatar_url?: string
-    email_verified_at?: string
-    created_at?: string
-    updated_at?: string
-    two_factor_secret?: any
-    two_factor_recovery_codes?: any
-    two_factor_confirmed_at?: any
-    terms_accepted_at?: any
-  }
 
   interface Emits {
     'toggle-drawer': []

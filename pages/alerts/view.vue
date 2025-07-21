@@ -32,6 +32,10 @@
     data: Alert[]
   }
 
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
+
   // Estados principais
   const alerts = ref<Alert[]>([])
   const isLoading = ref(false)
@@ -48,16 +52,19 @@
     isLoading.value = true
 
     try {
-      const { data, error } = await useSanctumFetch<ApiResponse | Alert[]>(`/api/promotional-alerts?page=${page}`, {
-        method: 'GET',
-      })
+      const { data, error } = await useSanctumFetch<ApiResponse | Alert[]>(
+        `/api/promotional-alerts?page=${page}`,
+        {
+          method: 'GET',
+        }
+      )
 
       if (data.value) {
         // Verificar se a resposta tem a propriedade 'data' (formato paginado) ou é um array direto
-        const newAlerts = Array.isArray(data.value) 
-          ? data.value 
+        const newAlerts = Array.isArray(data.value)
+          ? data.value
           : (data.value as ApiResponse).data || []
-        
+
         if (append) {
           alerts.value = [...alerts.value, ...newAlerts]
         } else {
@@ -93,13 +100,18 @@
     isDeleting.value = true
 
     try {
-      const { error } = await useSanctumFetch(`/api/promotional-alerts/${alertToDelete.value.id}`, {
-        method: 'DELETE',
-      })
+      const { error } = await useSanctumFetch(
+        `/api/promotional-alerts/${alertToDelete.value.id}`,
+        {
+          method: 'DELETE',
+        }
+      )
 
       if (!error.value) {
         // Remover da lista local
-        alerts.value = alerts.value.filter(alert => alert.id !== alertToDelete.value!.id)
+        alerts.value = alerts.value.filter(
+          alert => alert.id !== alertToDelete.value!.id
+        )
         showDeleteModal.value = false
         alertToDelete.value = null
       } else {
@@ -124,8 +136,6 @@
     alertToDelete.value = null
   }
 
-
-
   // Criar novo alerta
   const createAlert = () => {
     navigateTo('/alerts/create')
@@ -134,9 +144,9 @@
   // Formatação de tipos de programa
   const formatProgramType = (type: string) => {
     const types: Record<string, string> = {
-      'cashback': 'Cashback',
-      'points': 'Pontos',
-      'miles': 'Milhas'
+      cashback: 'Cashback',
+      points: 'Pontos',
+      miles: 'Milhas',
     }
     return types[type] || type
   }
@@ -144,7 +154,7 @@
   // Obter ícone baseado no tipo de programa
   const getThresholdIcon = (alert: Alert) => {
     const programType = alert.program?.type || alert.program_type
-    
+
     switch (programType) {
       case 'cashback':
         return 'mdi-percent'
@@ -160,7 +170,7 @@
   // Obter cor do ícone baseado no tipo de programa
   const getThresholdIconColor = (alert: Alert) => {
     const programType = alert.program?.type || alert.program_type
-    
+
     switch (programType) {
       case 'cashback':
         return 'warning'
@@ -178,7 +188,7 @@
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     })
   }
 
@@ -199,7 +209,7 @@
             Gerencie seus alertas de ofertas e cashbacks
           </p>
         </div>
-        
+
         <v-btn
           color="primary"
           variant="flat"
@@ -214,13 +224,7 @@
     <!-- Lista de Alertas -->
     <div v-if="alerts.length > 0" class="alerts-list">
       <v-row>
-        <v-col
-          v-for="alert in alerts"
-          :key="alert.id"
-          cols="12"
-          sm="6"
-          lg="4"
-        >
+        <v-col v-for="alert in alerts" :key="alert.id" cols="12" sm="6" lg="4">
           <v-card class="alert-card" elevation="2">
             <v-card-text class="pa-4">
               <!-- Status -->
@@ -235,7 +239,7 @@
                   </v-icon>
                   {{ alert.active ? 'Ativo' : 'Inativo' }}
                 </v-chip>
-                
+
                 <div class="alert-actions">
                   <v-btn
                     icon="mdi-delete"
@@ -274,9 +278,14 @@
                     </p>
                   </div>
                 </div>
-                
-                <div v-else-if="alert.ecommerce_category" class="category-display">
-                  <v-icon color="primary" size="20" class="me-2">mdi-tag</v-icon>
+
+                <div
+                  v-else-if="alert.ecommerce_category"
+                  class="category-display"
+                >
+                  <v-icon color="primary" size="20" class="me-2"
+                    >mdi-tag</v-icon
+                  >
                   <span class="text-subtitle-2 font-weight-medium">
                     {{ alert.ecommerce_category }}
                   </span>
@@ -310,9 +319,14 @@
                     </v-chip>
                   </div>
                 </div>
-                
-                <div v-else-if="alert.program_type" class="program-type-display">
-                  <v-icon color="secondary" size="20" class="me-2">mdi-gift</v-icon>
+
+                <div
+                  v-else-if="alert.program_type"
+                  class="program-type-display"
+                >
+                  <v-icon color="secondary" size="20" class="me-2"
+                    >mdi-gift</v-icon
+                  >
                   <span class="text-body-2 font-weight-medium">
                     {{ formatProgramType(alert.program_type) }}
                   </span>
@@ -322,16 +336,21 @@
               <!-- Threshold -->
               <div class="threshold-section mb-3">
                 <div class="d-flex align-center">
-                  <v-icon 
-                    :color="getThresholdIconColor(alert)" 
-                    size="20" 
+                  <v-icon
+                    :color="getThresholdIconColor(alert)"
+                    size="20"
                     class="me-2"
                   >
                     {{ getThresholdIcon(alert) }}
                   </v-icon>
                   <span class="text-body-2">
-                    <template v-if="(alert.program?.type || alert.program_type) === 'points'">
-                      Alerta a partir de <strong>{{ alert.threshold }}</strong> pontos
+                    <template
+                      v-if="
+                        (alert.program?.type || alert.program_type) === 'points'
+                      "
+                    >
+                      Alerta a partir de
+                      <strong>{{ alert.threshold }}</strong> pontos
                     </template>
                     <template v-else>
                       Alerta a partir de <strong>{{ alert.threshold }}%</strong>
@@ -353,11 +372,7 @@
 
       <!-- Loading mais alertas -->
       <div v-if="hasMore" class="text-center mt-6">
-        <v-btn
-          variant="outlined"
-          :loading="isLoading"
-          @click="loadMore"
-        >
+        <v-btn variant="outlined" :loading="isLoading" @click="loadMore">
           Carregar mais alertas
         </v-btn>
       </div>
@@ -383,7 +398,10 @@
     </div>
 
     <!-- Loading inicial -->
-    <div v-if="isLoading && alerts.length === 0" class="loading-state text-center py-12">
+    <div
+      v-if="isLoading && alerts.length === 0"
+      class="loading-state text-center py-12"
+    >
       <v-progress-circular indeterminate color="primary" size="48" />
       <p class="text-body-2 text-medium-emphasis mt-4">Carregando alertas...</p>
     </div>
@@ -395,24 +413,21 @@
           <v-icon color="error" size="24" class="me-2">mdi-delete</v-icon>
           <span>Excluir Alerta</span>
         </v-card-title>
-        
+
         <v-card-text class="pa-4">
           <p class="text-body-2 mb-0">
-            Tem certeza que deseja excluir este alerta? Esta ação não pode ser desfeita.
+            Tem certeza que deseja excluir este alerta? Esta ação não pode ser
+            desfeita.
           </p>
         </v-card-text>
-        
+
         <v-card-actions class="pa-4 pt-0">
-          <v-btn
-            variant="text"
-            :disabled="isDeleting"
-            @click="cancelDelete"
-          >
+          <v-btn variant="text" :disabled="isDeleting" @click="cancelDelete">
             Cancelar
           </v-btn>
-          
+
           <v-spacer />
-          
+
           <v-btn
             color="error"
             variant="flat"
@@ -440,7 +455,9 @@
 
   .alert-card {
     border-radius: 12px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
     height: 100%;
   }
 
