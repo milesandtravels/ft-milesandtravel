@@ -1,424 +1,540 @@
+<script lang="ts" setup>
+  interface Program {
+    id: number
+    name: string
+    logo_url: string
+    link_url: string
+    type: string
+    value_per_mile: string
+  }
+
+  interface Ecommerce {
+    id: number
+    name: string
+    logo_url: string
+    category: string
+  }
+
+  interface Alert {
+    id: number
+    user_id: number
+    program: Program | null
+    ecommerce: Ecommerce | null
+    ecommerce_category: string | null
+    program_type: string | null
+    active: boolean
+    threshold: string
+    created_at: string
+    updated_at: string
+  }
+
+  interface ApiResponse {
+    data: Alert[]
+  }
+
+  // Estados principais
+  const alerts = ref<Alert[]>([])
+  const isLoading = ref(false)
+  const hasMore = ref(true)
+  const currentPage = ref(1)
+  const showDeleteModal = ref(false)
+  const alertToDelete = ref<Alert | null>(null)
+  const isDeleting = ref(false)
+
+  // Buscar alertas com paginação
+  const fetchAlerts = async (page = 1, append = false) => {
+    if (isLoading.value) return
+
+    isLoading.value = true
+
+    try {
+      const { data, error } = await useSanctumFetch<ApiResponse | Alert[]>(`/api/promotional-alerts?page=${page}`, {
+        method: 'GET',
+      })
+
+      if (data.value) {
+        // Verificar se a resposta tem a propriedade 'data' (formato paginado) ou é um array direto
+        const newAlerts = Array.isArray(data.value) 
+          ? data.value 
+          : (data.value as ApiResponse).data || []
+        
+        if (append) {
+          alerts.value = [...alerts.value, ...newAlerts]
+        } else {
+          alerts.value = newAlerts
+        }
+
+        // Verificar se há mais páginas
+        hasMore.value = newAlerts.length > 0 && newAlerts.length >= 10
+        currentPage.value = page
+      }
+
+      if (error.value) {
+        console.error('Erro ao carregar alertas:', error.value)
+      }
+    } catch (err) {
+      console.error('Erro ao buscar alertas:', err)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  // Carregar mais alertas (scroll infinito)
+  const loadMore = async () => {
+    if (hasMore.value && !isLoading.value) {
+      await fetchAlerts(currentPage.value + 1, true)
+    }
+  }
+
+  // Deletar alerta
+  const deleteAlert = async () => {
+    if (!alertToDelete.value) return
+
+    isDeleting.value = true
+
+    try {
+      const { error } = await useSanctumFetch(`/api/promotional-alerts/${alertToDelete.value.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!error.value) {
+        // Remover da lista local
+        alerts.value = alerts.value.filter(alert => alert.id !== alertToDelete.value!.id)
+        showDeleteModal.value = false
+        alertToDelete.value = null
+      } else {
+        console.error('Erro ao deletar alerta:', error.value)
+      }
+    } catch (err) {
+      console.error('Erro ao deletar alerta:', err)
+    } finally {
+      isDeleting.value = false
+    }
+  }
+
+  // Confirmar exclusão
+  const confirmDelete = (alert: Alert) => {
+    alertToDelete.value = alert
+    showDeleteModal.value = true
+  }
+
+  // Cancelar exclusão
+  const cancelDelete = () => {
+    showDeleteModal.value = false
+    alertToDelete.value = null
+  }
+
+
+
+  // Criar novo alerta
+  const createAlert = () => {
+    navigateTo('/alerts/create')
+  }
+
+  // Formatação de tipos de programa
+  const formatProgramType = (type: string) => {
+    const types: Record<string, string> = {
+      'cashback': 'Cashback',
+      'points': 'Pontos',
+      'miles': 'Milhas'
+    }
+    return types[type] || type
+  }
+
+  // Obter ícone baseado no tipo de programa
+  const getThresholdIcon = (alert: Alert) => {
+    const programType = alert.program?.type || alert.program_type
+    
+    switch (programType) {
+      case 'cashback':
+        return 'mdi-percent'
+      case 'miles':
+        return 'mdi-airplane'
+      case 'points':
+        return 'mdi-star'
+      default:
+        return 'mdi-percent'
+    }
+  }
+
+  // Obter cor do ícone baseado no tipo de programa
+  const getThresholdIconColor = (alert: Alert) => {
+    const programType = alert.program?.type || alert.program_type
+    
+    switch (programType) {
+      case 'cashback':
+        return 'warning'
+      case 'miles':
+        return 'primary'
+      case 'points':
+        return 'secondary'
+      default:
+        return 'warning'
+    }
+  }
+
+  // Formatação de data
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+  }
+
+  // Lifecycle
+  onMounted(() => {
+    fetchAlerts()
+  })
+</script>
+
 <template>
-  <div class="alerts-view-page">
-    <!-- Page Header -->
-    <div class="page-header">
-      <div class="d-flex align-center justify-space-between mb-6">
-        <div class="d-flex align-center">
-          <v-icon class="mr-3" color="primary" size="32">
-            mdi-bell-outline
-          </v-icon>
-          <div>
-            <h1 class="text-h4 font-weight-bold mb-1">Visualizar Alertas</h1>
-            <p class="text-body-1 text-medium-emphasis mb-0">
-              Histórico de notificações e alertas recebidos
-            </p>
-          </div>
+  <v-container class="alerts-view" fluid>
+    <!-- Header -->
+    <div class="alerts-header mb-6">
+      <div class="d-flex align-center justify-space-between mb-4">
+        <div>
+          <h1 class="text-h5 font-weight-bold mb-2">Meus Alertas</h1>
+          <p class="text-body-2 text-medium-emphasis">
+            Gerencie seus alertas de ofertas e cashbacks
+          </p>
         </div>
-        <v-btn color="primary" variant="outlined" @click="markAllAsRead">
-          <v-icon start>mdi-check-all</v-icon>
-          Marcar Todas como Lidas
+        
+        <v-btn
+          color="primary"
+          variant="flat"
+          prepend-icon="mdi-plus"
+          @click="createAlert"
+        >
+          Novo Alerta
         </v-btn>
       </div>
     </div>
 
-    <!-- Filters and Stats -->
-    <v-row class="mb-6">
-      <v-col cols="12" md="8">
-        <v-card elevation="2">
-          <v-card-text>
-            <v-row align="center">
-              <v-col cols="12" sm="6" md="3">
-                <v-select
-                  v-model="filters.type"
-                  :items="alertTypes"
-                  label="Tipo de Alerta"
-                  variant="outlined"
-                  density="compact"
-                  clearable
-                />
-              </v-col>
-              <v-col cols="12" sm="6" md="3">
-                <v-select
-                  v-model="filters.status"
-                  :items="statusOptions"
-                  label="Status"
-                  variant="outlined"
-                  density="compact"
-                  clearable
-                />
-              </v-col>
-              <v-col cols="12" sm="6" md="3">
-                <v-text-field
-                  v-model="filters.dateFrom"
-                  label="Data Inicial"
-                  type="date"
-                  variant="outlined"
-                  density="compact"
-                />
-              </v-col>
-              <v-col cols="12" sm="6" md="3">
-                <v-text-field
-                  v-model="filters.dateTo"
-                  label="Data Final"
-                  type="date"
-                  variant="outlined"
-                  density="compact"
-                />
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-card elevation="2" color="primary" variant="tonal">
-          <v-card-text>
-            <div class="d-flex align-center">
-              <v-icon class="mr-3" size="32">mdi-bell-badge</v-icon>
-              <div>
-                <div class="text-h5 font-weight-bold">{{ unreadCount }}</div>
-                <div class="text-body-2">Alertas não lidos</div>
-              </div>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <!-- Alerts List -->
-    <v-card elevation="2">
-      <v-card-title class="d-flex align-center">
-        <v-icon class="mr-2" color="primary">mdi-format-list-bulleted</v-icon>
-        Lista de Alertas
-      </v-card-title>
-
-      <v-divider />
-
-      <div v-if="filteredAlerts.length === 0" class="text-center pa-8">
-        <v-icon size="64" color="grey-lighten-1" class="mb-4">
-          mdi-bell-off-outline
-        </v-icon>
-        <h3 class="text-h6 mb-2">Nenhum alerta encontrado</h3>
-        <p class="text-body-2 text-medium-emphasis">
-          Não há alertas que correspondam aos filtros selecionados.
-        </p>
-      </div>
-
-      <v-list v-else class="pa-0">
-        <template v-for="(alert, index) in filteredAlerts" :key="alert.id">
-          <v-list-item
-            class="alert-item"
-            :class="{ 'alert-unread': !alert.read }"
-            @click="markAsRead(alert.id)"
-          >
-            <template #prepend>
-              <v-avatar
-                :color="getAlertColor(alert.type)"
-                class="mr-3"
-                size="40"
-              >
-                <v-icon :icon="getAlertIcon(alert.type)" color="white" />
-              </v-avatar>
-            </template>
-
-            <v-list-item-title class="font-weight-medium">
-              {{ alert.title }}
-            </v-list-item-title>
-
-            <v-list-item-subtitle class="mt-1">
-              {{ alert.message }}
-            </v-list-item-subtitle>
-
-            <template #append>
-              <div class="text-right">
+    <!-- Lista de Alertas -->
+    <div v-if="alerts.length > 0" class="alerts-list">
+      <v-row>
+        <v-col
+          v-for="alert in alerts"
+          :key="alert.id"
+          cols="12"
+          sm="6"
+          lg="4"
+        >
+          <v-card class="alert-card" elevation="2">
+            <v-card-text class="pa-4">
+              <!-- Status -->
+              <div class="d-flex align-center justify-space-between mb-3">
                 <v-chip
-                  :color="getAlertColor(alert.type)"
+                  :color="alert.active ? 'success' : 'grey'"
                   size="small"
                   variant="tonal"
-                  class="mb-1"
                 >
-                  {{ getAlertTypeLabel(alert.type) }}
+                  <v-icon start size="12">
+                    {{ alert.active ? 'mdi-check-circle' : 'mdi-pause-circle' }}
+                  </v-icon>
+                  {{ alert.active ? 'Ativo' : 'Inativo' }}
                 </v-chip>
-                <div class="text-caption text-medium-emphasis">
-                  {{ formatDate(alert.createdAt) }}
-                </div>
-                <div v-if="!alert.read" class="unread-indicator mt-1">
-                  <v-chip color="primary" size="x-small" variant="flat">
-                    Novo
-                  </v-chip>
+                
+                <div class="alert-actions">
+                  <v-btn
+                    icon="mdi-delete"
+                    size="small"
+                    variant="text"
+                    color="error"
+                    @click="confirmDelete(alert)"
+                  />
                 </div>
               </div>
-            </template>
-          </v-list-item>
 
-          <v-divider v-if="index < filteredAlerts.length - 1" />
-        </template>
-      </v-list>
+              <!-- Ecommerce ou Categoria -->
+              <div class="ecommerce-section mb-3">
+                <div v-if="alert.ecommerce" class="d-flex align-center mb-2">
+                  <div class="ecommerce-logo me-3">
+                    <v-img
+                      :src="alert.ecommerce.logo_url"
+                      :alt="alert.ecommerce.name"
+                      height="32"
+                      max-width="48"
+                      contain
+                    >
+                      <template #error>
+                        <div class="logo-error">
+                          <v-icon icon="mdi-store" size="16" color="grey" />
+                        </div>
+                      </template>
+                    </v-img>
+                  </div>
+                  <div>
+                    <p class="text-subtitle-2 font-weight-medium mb-0">
+                      {{ alert.ecommerce.name }}
+                    </p>
+                    <p class="text-caption text-medium-emphasis">
+                      {{ alert.ecommerce.category }}
+                    </p>
+                  </div>
+                </div>
+                
+                <div v-else-if="alert.ecommerce_category" class="category-display">
+                  <v-icon color="primary" size="20" class="me-2">mdi-tag</v-icon>
+                  <span class="text-subtitle-2 font-weight-medium">
+                    {{ alert.ecommerce_category }}
+                  </span>
+                </div>
+              </div>
 
-      <!-- Pagination -->
-      <v-card-actions v-if="filteredAlerts.length > 0" class="justify-center">
-        <v-pagination
-          v-model="currentPage"
-          :length="totalPages"
-          :total-visible="5"
-          color="primary"
-        />
-      </v-card-actions>
-    </v-card>
-  </div>
+              <!-- Programa ou Tipo -->
+              <div class="program-section mb-3">
+                <div v-if="alert.program" class="d-flex align-center">
+                  <div class="program-logo me-3">
+                    <v-img
+                      :src="alert.program.logo_url"
+                      :alt="alert.program.name"
+                      height="24"
+                      max-width="32"
+                      contain
+                    >
+                      <template #error>
+                        <div class="logo-error-small">
+                          <v-icon icon="mdi-gift" size="12" color="grey" />
+                        </div>
+                      </template>
+                    </v-img>
+                  </div>
+                  <div>
+                    <p class="text-body-2 font-weight-medium mb-0">
+                      {{ alert.program.name }}
+                    </p>
+                    <v-chip size="x-small" variant="tonal" color="secondary">
+                      {{ formatProgramType(alert.program.type) }}
+                    </v-chip>
+                  </div>
+                </div>
+                
+                <div v-else-if="alert.program_type" class="program-type-display">
+                  <v-icon color="secondary" size="20" class="me-2">mdi-gift</v-icon>
+                  <span class="text-body-2 font-weight-medium">
+                    {{ formatProgramType(alert.program_type) }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Threshold -->
+              <div class="threshold-section mb-3">
+                <div class="d-flex align-center">
+                  <v-icon 
+                    :color="getThresholdIconColor(alert)" 
+                    size="20" 
+                    class="me-2"
+                  >
+                    {{ getThresholdIcon(alert) }}
+                  </v-icon>
+                  <span class="text-body-2">
+                    <template v-if="(alert.program?.type || alert.program_type) === 'points'">
+                      Alerta a partir de <strong>{{ alert.threshold }}</strong> pontos
+                    </template>
+                    <template v-else>
+                      Alerta a partir de <strong>{{ alert.threshold }}%</strong>
+                    </template>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Data de criação -->
+              <div class="date-section">
+                <p class="text-caption text-medium-emphasis mb-0">
+                  Criado em {{ formatDate(alert.created_at) }}
+                </p>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <!-- Loading mais alertas -->
+      <div v-if="hasMore" class="text-center mt-6">
+        <v-btn
+          variant="outlined"
+          :loading="isLoading"
+          @click="loadMore"
+        >
+          Carregar mais alertas
+        </v-btn>
+      </div>
+    </div>
+
+    <!-- Estado vazio -->
+    <div v-else-if="!isLoading" class="empty-state text-center py-12">
+      <v-icon size="64" color="grey-lighten-1" class="mb-4">
+        mdi-bell-off
+      </v-icon>
+      <h3 class="text-h6 font-weight-medium mb-2">Nenhum alerta configurado</h3>
+      <p class="text-body-2 text-medium-emphasis mb-4">
+        Crie seu primeiro alerta para receber notificações sobre ofertas
+      </p>
+      <v-btn
+        color="primary"
+        variant="flat"
+        prepend-icon="mdi-plus"
+        @click="createAlert"
+      >
+        Criar Primeiro Alerta
+      </v-btn>
+    </div>
+
+    <!-- Loading inicial -->
+    <div v-if="isLoading && alerts.length === 0" class="loading-state text-center py-12">
+      <v-progress-circular indeterminate color="primary" size="48" />
+      <p class="text-body-2 text-medium-emphasis mt-4">Carregando alertas...</p>
+    </div>
+
+    <!-- Modal de confirmação de exclusão -->
+    <v-dialog v-model="showDeleteModal" max-width="400" persistent>
+      <v-card>
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon color="error" size="24" class="me-2">mdi-delete</v-icon>
+          <span>Excluir Alerta</span>
+        </v-card-title>
+        
+        <v-card-text class="pa-4">
+          <p class="text-body-2 mb-0">
+            Tem certeza que deseja excluir este alerta? Esta ação não pode ser desfeita.
+          </p>
+        </v-card-text>
+        
+        <v-card-actions class="pa-4 pt-0">
+          <v-btn
+            variant="text"
+            :disabled="isDeleting"
+            @click="cancelDelete"
+          >
+            Cancelar
+          </v-btn>
+          
+          <v-spacer />
+          
+          <v-btn
+            color="error"
+            variant="flat"
+            :loading="isDeleting"
+            @click="deleteAlert"
+          >
+            Excluir
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
-<script setup lang="ts">
-  import { computed, reactive, ref } from 'vue'
-  import { useSnackbarStore } from '~/store/snackbar'
-
-  // Page Meta
-  definePageMeta({
-    title: 'Visualizar Alertas',
-    layout: 'default',
-  })
-
-  // Types
-  interface Alert {
-    id: number
-    type: 'price_drop' | 'new_promotion' | 'stock_alert' | 'weekly_digest'
-    title: string
-    message: string
-    read: boolean
-    createdAt: string
-  }
-
-  // Composables
-  const snackbar = useSnackbarStore()
-
-  // Reactive Data
-  const currentPage = ref(1)
-  const itemsPerPage = 10
-
-  const filters = reactive({
-    type: null as string | null,
-    status: null as string | null,
-    dateFrom: '',
-    dateTo: '',
-  })
-
-  // Mock Data
-  const alerts = ref<Alert[]>([
-    {
-      id: 1,
-      type: 'price_drop',
-      title: 'Queda de Preço - iPhone 15',
-      message:
-        'O iPhone 15 128GB baixou de R$ 4.999,00 para R$ 4.299,00 (14% de desconto)',
-      read: false,
-      createdAt: '2024-01-15T10:30:00Z',
-    },
-    {
-      id: 2,
-      type: 'new_promotion',
-      title: 'Nova Promoção - Amazon',
-      message:
-        'Amazon está com 20% de desconto em eletrônicos. Válido até 20/01/2024.',
-      read: false,
-      createdAt: '2024-01-14T15:45:00Z',
-    },
-    {
-      id: 3,
-      type: 'stock_alert',
-      title: 'Produto em Estoque - MacBook Air M2',
-      message: 'O MacBook Air M2 256GB voltou ao estoque na Apple Store.',
-      read: true,
-      createdAt: '2024-01-13T09:15:00Z',
-    },
-    {
-      id: 4,
-      type: 'weekly_digest',
-      title: 'Resumo Semanal de Ofertas',
-      message:
-        'Confira as 10 melhores ofertas da semana selecionadas para você.',
-      read: true,
-      createdAt: '2024-01-12T08:00:00Z',
-    },
-    {
-      id: 5,
-      type: 'price_drop',
-      title: 'Queda de Preço - Samsung Galaxy S24',
-      message:
-        'Samsung Galaxy S24 256GB com 18% de desconto na Magazine Luiza.',
-      read: false,
-      createdAt: '2024-01-11T14:20:00Z',
-    },
-  ])
-
-  const alertTypes = [
-    { title: 'Queda de Preço', value: 'price_drop' },
-    { title: 'Nova Promoção', value: 'new_promotion' },
-    { title: 'Alerta de Estoque', value: 'stock_alert' },
-    { title: 'Resumo Semanal', value: 'weekly_digest' },
-  ]
-
-  const statusOptions = [
-    { title: 'Lido', value: 'read' },
-    { title: 'Não Lido', value: 'unread' },
-  ]
-
-  // Computed Properties
-  const filteredAlerts = computed(() => {
-    let filtered = alerts.value
-
-    if (filters.type) {
-      filtered = filtered.filter(alert => alert.type === filters.type)
-    }
-
-    if (filters.status) {
-      const isRead = filters.status === 'read'
-      filtered = filtered.filter(alert => alert.read === isRead)
-    }
-
-    if (filters.dateFrom) {
-      filtered = filtered.filter(
-        alert => new Date(alert.createdAt) >= new Date(filters.dateFrom)
-      )
-    }
-
-    if (filters.dateTo) {
-      filtered = filtered.filter(
-        alert => new Date(alert.createdAt) <= new Date(filters.dateTo)
-      )
-    }
-
-    // Pagination
-    const start = (currentPage.value - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    return filtered.slice(start, end)
-  })
-
-  const unreadCount = computed(() => {
-    return alerts.value.filter(alert => !alert.read).length
-  })
-
-  const totalPages = computed(() => {
-    return Math.ceil(alerts.value.length / itemsPerPage)
-  })
-
-  // Methods
-  const getAlertColor = (type: string) => {
-    const colors = {
-      price_drop: 'success',
-      new_promotion: 'primary',
-      stock_alert: 'warning',
-      weekly_digest: 'info',
-    }
-    return colors[type as keyof typeof colors] || 'grey'
-  }
-
-  const getAlertIcon = (type: string) => {
-    const icons = {
-      price_drop: 'mdi-trending-down',
-      new_promotion: 'mdi-tag',
-      stock_alert: 'mdi-package-variant',
-      weekly_digest: 'mdi-email-newsletter',
-    }
-    return icons[type as keyof typeof icons] || 'mdi-bell'
-  }
-
-  const getAlertTypeLabel = (type: string) => {
-    const labels = {
-      price_drop: 'Preço',
-      new_promotion: 'Promoção',
-      stock_alert: 'Estoque',
-      weekly_digest: 'Resumo',
-    }
-    return labels[type as keyof typeof labels] || 'Alerta'
-  }
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date)
-  }
-
-  const markAsRead = (alertId: number) => {
-    const alert = alerts.value.find(a => a.id === alertId)
-    if (alert && !alert.read) {
-      alert.read = true
-      snackbar.show({
-        message: 'Alerta marcado como lido',
-        color: 'success',
-        timeout: 2000,
-      })
-    }
-  }
-
-  const markAllAsRead = () => {
-    const unreadAlerts = alerts.value.filter(alert => !alert.read)
-    unreadAlerts.forEach(alert => {
-      alert.read = true
-    })
-
-    if (unreadAlerts.length > 0) {
-      snackbar.show({
-        message: `${unreadAlerts.length} alertas marcados como lidos`,
-        color: 'success',
-        timeout: 3000,
-      })
-    }
-  }
-</script>
-
 <style scoped>
-  .alerts-view-page {
-    padding: 24px;
+  .alerts-view {
     max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .alerts-header {
+    padding: 16px 0;
+  }
+
+  .alert-card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+  }
+
+  .alert-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .alert-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .ecommerce-logo,
+  .program-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .ecommerce-logo {
+    width: 48px;
+    height: 32px;
+  }
+
+  .program-logo {
+    width: 32px;
+    height: 24px;
+  }
+
+  .logo-error,
+  .logo-error-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  .category-display,
+  .program-type-display {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(var(--v-theme-surface), 0.5);
+    border-radius: 8px;
+    border: 1px solid rgba(var(--v-theme-outline), 0.2);
+  }
+
+  .threshold-section {
+    padding: 8px 12px;
+    background: rgba(var(--v-theme-warning), 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(var(--v-theme-warning), 0.2);
+  }
+
+  .empty-state {
+    max-width: 400px;
     margin: 0 auto;
   }
 
-  .page-header {
-    margin-bottom: 24px;
-  }
-
-  .alert-item {
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-
-  .alert-item:hover {
-    background-color: rgba(0, 0, 0, 0.04);
-  }
-
-  .alert-unread {
-    background-color: rgba(25, 118, 210, 0.04);
-    border-left: 4px solid rgb(25, 118, 210);
-  }
-
-  .unread-indicator {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  @media (max-width: 960px) {
-    .alerts-view-page {
-      padding: 16px;
+  /* Mobile adjustments */
+  @media (max-width: 600px) {
+    .alerts-view {
+      padding: 12px;
     }
 
-    .page-header .d-flex {
+    .alerts-header .d-flex {
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       gap: 16px;
     }
+
+    .alert-actions {
+      margin-top: 8px;
+    }
   }
 
-  /* Dark theme support */
-  .v-theme--dark .alert-item:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+  /* Dark theme adjustments */
+  .v-theme--dark .ecommerce-logo,
+  .v-theme--dark .program-logo {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
   }
 
-  .v-theme--dark .alert-unread {
-    background-color: rgba(144, 202, 249, 0.08);
-    border-left-color: rgb(144, 202, 249);
+  .v-theme--dark .logo-error,
+  .v-theme--dark .logo-error-small {
+    background: rgba(255, 255, 255, 0.05);
   }
 </style>

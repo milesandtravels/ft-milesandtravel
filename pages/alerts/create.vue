@@ -7,15 +7,14 @@
         variant="text"
         color="primary"
         class="back-btn"
-        @click="goBack"
+        @click="navigateTo('/alerts/view')"
       />
-      
+
       <div class="header-content flex-grow-1 ml-3">
-        <h1 class="text-h5 font-weight-bold mb-2">
-          Criar Novo Alerta
-        </h1>
+        <h1 class="text-h5 font-weight-bold mb-2">Criar Novo Alerta</h1>
         <p class="text-body-2 text-medium-emphasis mb-0">
-          Configure um alerta personalizado para receber notificações sobre ofertas e cashbacks
+          Configure um alerta personalizado para receber notificações sobre
+          ofertas e cashbacks
         </p>
       </div>
     </div>
@@ -25,20 +24,23 @@
       <v-card class="selection-card mb-4" elevation="1">
         <v-card-text class="pa-4">
           <div class="section-header mb-4">
-            <v-icon color="primary" size="24" class="mr-2">mdi-storefront</v-icon>
+            <v-icon color="primary" size="24" class="mr-2"
+              >mdi-storefront</v-icon
+            >
             <h3 class="text-subtitle-1 font-weight-medium">
               Onde você quer receber alertas?
             </h3>
           </div>
 
           <p class="text-body-2 text-medium-emphasis mb-4">
-            Escolha se deseja receber alertas de uma loja específica ou de toda uma categoria de lojas
+            Escolha se deseja receber alertas de uma loja específica ou de toda
+            uma categoria de lojas
           </p>
 
           <!-- Store Type Selection -->
           <div class="option-group mb-4">
-            <v-radio-group 
-              v-model="storeSelectionType" 
+            <v-radio-group
+              v-model="storeSelectionType"
               density="comfortable"
               color="primary"
               hide-details
@@ -47,16 +49,20 @@
                 <template #label>
                   <div class="radio-content">
                     <div class="radio-title">Loja específica</div>
-                    <div class="radio-subtitle">Receber alertas apenas de uma loja escolhida</div>
+                    <div class="radio-subtitle">
+                      Receber alertas apenas de uma loja escolhida
+                    </div>
                   </div>
                 </template>
               </v-radio>
-              
+
               <v-radio value="category">
                 <template #label>
                   <div class="radio-content">
                     <div class="radio-title">Categoria de lojas</div>
-                    <div class="radio-subtitle">Receber alertas de todas as lojas de uma categoria</div>
+                    <div class="radio-subtitle">
+                      Receber alertas de todas as lojas de uma categoria
+                    </div>
                   </div>
                 </template>
               </v-radio>
@@ -92,20 +98,23 @@
       <v-card class="selection-card mb-4" elevation="1">
         <v-card-text class="pa-4">
           <div class="section-header mb-4">
-            <v-icon color="success" size="24" class="mr-2">mdi-star-circle</v-icon>
+            <v-icon color="success" size="24" class="mr-2"
+              >mdi-star-circle</v-icon
+            >
             <h3 class="text-subtitle-1 font-weight-medium">
               Que tipo de benefício você procura?
             </h3>
           </div>
 
           <p class="text-body-2 text-medium-emphasis mb-4">
-            Escolha se deseja alertas de um programa específico ou de todos os programas de um tipo
+            Escolha se deseja alertas de um programa específico ou de todos os
+            programas de um tipo
           </p>
 
           <!-- Program Type Selection -->
           <div class="option-group mb-4">
-            <v-radio-group 
-              v-model="programSelectionType" 
+            <v-radio-group
+              v-model="programSelectionType"
               density="comfortable"
               color="success"
               hide-details
@@ -114,16 +123,20 @@
                 <template #label>
                   <div class="radio-content">
                     <div class="radio-title">Programa específico</div>
-                    <div class="radio-subtitle">Ex: Nubank Rewards, Multiplus, etc.</div>
+                    <div class="radio-subtitle">
+                      Ex: Nubank Rewards, Multiplus, etc.
+                    </div>
                   </div>
                 </template>
               </v-radio>
-              
+
               <v-radio value="type">
                 <template #label>
                   <div class="radio-content">
                     <div class="radio-title">Tipo de programa</div>
-                    <div class="radio-subtitle">Ex: Cashback, Milhas, Pontos, etc.</div>
+                    <div class="radio-subtitle">
+                      Ex: Cashback, Milhas, Pontos, etc.
+                    </div>
                   </div>
                 </template>
               </v-radio>
@@ -181,7 +194,12 @@
       </v-card>
 
       <!-- Summary Card -->
-      <v-card v-if="showSummary" class="summary-card mb-6" elevation="2" color="primary">
+      <v-card
+        v-if="showSummary"
+        class="summary-card mb-6"
+        elevation="2"
+        color="primary"
+      >
         <v-card-text class="pa-4">
           <div class="section-header mb-3">
             <v-icon color="white" size="24" class="mr-2">mdi-eye</v-icon>
@@ -192,15 +210,24 @@
 
           <div class="summary-content text-white">
             <p class="mb-2">
-              <strong>{{ storeSelectionType === 'specific' ? 'Loja' : 'Categoria' }}:</strong>
+              <strong
+                >{{
+                  storeSelectionType === 'specific' ? 'Loja' : 'Categoria'
+                }}:</strong
+              >
               {{ getSummaryStore }}
             </p>
             <p class="mb-2">
-              <strong>{{ programSelectionType === 'specific' ? 'Programa' : 'Tipo' }}:</strong>
+              <strong
+                >{{
+                  programSelectionType === 'specific' ? 'Programa' : 'Tipo'
+                }}:</strong
+              >
               {{ getSummaryProgram }}
             </p>
             <p class="mb-0">
-              <strong>Valor mínimo:</strong> {{ threshold }}{{ getThresholdSuffix }}
+              <strong>Valor mínimo:</strong> {{ threshold
+              }}{{ getThresholdSuffix }}
             </p>
           </div>
         </v-card-text>
@@ -231,30 +258,42 @@
   // Estados do formulário
   const storeSelectionType = ref<'specific' | 'category'>('specific')
   const programSelectionType = ref<'specific' | 'type'>('specific')
-  
+
   const selectedStore = ref<number | null>(null)
   const selectedEcommerce = ref<any>(null)
   const selectedCategory = ref('')
   const selectedProgram = ref<number | string | null>(null)
   const selectedProgramData = ref<any>(null)
   const threshold = ref('')
-  
+
   const isCreating = ref(false)
   const alertForm = ref()
 
-  // Mock data apenas para categorias
-  const categories = ref([
-    { id: '1', name: 'E-commerce Geral' },
-    { id: '2', name: 'Supermercados' },
-    { id: '3', name: 'Eletrônicos' },
-    { id: '4', name: 'Moda e Beleza' }
-  ])
+  const categories = ref<any>([])
+
+  const fetchCategories = async () => {
+    const { data, error, status } = await useSanctumFetch(`/api/categories`, {
+      method: 'GET',
+    })
+
+    categories.value = data.value
+  }
+
+  onMounted(() => {
+    fetchCategories()
+  })
 
   // Computeds para threshold baseado no tipo de programa
   const selectedProgramTypeData = computed(() => {
-    if (programSelectionType.value === 'specific' && selectedProgramData.value?.type) {
+    if (
+      programSelectionType.value === 'specific' &&
+      selectedProgramData.value?.type
+    ) {
       return selectedProgramData.value.type.toLowerCase()
-    } else if (programSelectionType.value === 'type' && selectedProgramData.value) {
+    } else if (
+      programSelectionType.value === 'type' &&
+      selectedProgramData.value
+    ) {
       return selectedProgramData.value
     }
     return ''
@@ -327,32 +366,29 @@
   })
 
   // Validações
-  const categoryRules = [
-    (v: string) => !!v || 'Selecione uma categoria'
-  ]
+  const categoryRules = [(v: string) => !!v || 'Selecione uma categoria']
 
   const thresholdRules = computed(() => {
     const baseRules = [
       (v: string) => !!v || 'Informe o valor mínimo',
       (v: string) => {
         const num = parseFloat(v)
-        return !isNaN(num) && num >= 0 || 'Valor deve ser maior ou igual a 0'
-      }
+        return (!isNaN(num) && num >= 0) || 'Valor deve ser maior ou igual a 0'
+      },
     ]
 
     if (isCashbackType.value) {
-      baseRules.push(
-        (v: string) => {
-          const decimals = v.includes('.') ? v.split('.')[1]?.length || 0 : 0
-          return decimals <= 2 || 'Máximo 2 casas decimais para cashback'
-        }
-      )
+      baseRules.push((v: string) => {
+        const decimals = v.includes('.') ? v.split('.')[1]?.length || 0 : 0
+        return decimals <= 2 || 'Máximo 2 casas decimais para cashback'
+      })
     } else {
-      baseRules.push(
-        (v: string) => {
-          return Number.isInteger(parseFloat(v)) || 'Apenas números inteiros são permitidos'
-        }
-      )
+      baseRules.push((v: string) => {
+        return (
+          Number.isInteger(parseFloat(v)) ||
+          'Apenas números inteiros são permitidos'
+        )
+      })
     }
 
     return baseRules
@@ -360,9 +396,12 @@
 
   // Computeds
   const isFormValid = computed(() => {
-    const hasStore = storeSelectionType.value === 'specific' ? !!selectedStore.value : !!selectedCategory.value
+    const hasStore =
+      storeSelectionType.value === 'specific'
+        ? !!selectedStore.value
+        : !!selectedCategory.value
     const hasProgram = !!selectedProgram.value
-    
+
     let hasValidThreshold = false
     if (threshold.value) {
       const num = parseFloat(threshold.value)
@@ -372,7 +411,7 @@
         hasValidThreshold = !isNaN(num) && num >= 0 && Number.isInteger(num)
       }
     }
-    
+
     return hasStore && hasProgram && hasValidThreshold
   })
 
@@ -384,7 +423,9 @@
     if (storeSelectionType.value === 'specific') {
       return selectedEcommerce.value?.name || 'Loja não selecionada'
     } else {
-      const category = categories.value.find(c => c.id === selectedCategory.value)
+      const category = categories.value.find(
+        c => c.id === selectedCategory.value
+      )
       return category?.name || 'Categoria não selecionada'
     }
   })
@@ -396,10 +437,13 @@
       // Para tipos, mostrar o nome do tipo selecionado
       const typeLabels = {
         cashback: 'Cashback',
-        points: 'Pontos', 
-        miles: 'Milhas'
+        points: 'Pontos',
+        miles: 'Milhas',
       }
-      return typeLabels[selectedProgramData.value as keyof typeof typeLabels] || 'Tipo não selecionado'
+      return (
+        typeLabels[selectedProgramData.value as keyof typeof typeLabels] ||
+        'Tipo não selecionado'
+      )
     }
   })
 
@@ -423,24 +467,26 @@
   const formatThreshold = (event: Event) => {
     const target = event.target as HTMLInputElement
     let value = target.value
-    
+
     if (isCashbackType.value) {
       value = value.replace(/[^0-9.]/g, '')
-      
+
       const parts = value.split('.')
       if (parts.length > 2) {
         value = parts[0] + '.' + parts.slice(1).join('')
       }
-      
+
       if (parts[1] && parts[1].length > 2) {
         value = parts[0] + '.' + parts[1].slice(0, 2)
       }
     } else {
       value = value.replace(/[^0-9]/g, '')
     }
-    
+
     threshold.value = value
   }
+
+  const router = useRouter()
 
   const handleCreateAlert = async () => {
     const { valid } = await alertForm.value.validate()
@@ -450,7 +496,9 @@
 
     try {
       const payload: any = {
-        threshold: isCashbackType.value ? parseFloat(threshold.value) : parseInt(threshold.value)
+        threshold: isCashbackType.value
+          ? parseFloat(threshold.value)
+          : parseInt(threshold.value),
       }
 
       if (storeSelectionType.value === 'specific') {
@@ -466,12 +514,15 @@
       }
 
       console.log('API: Criar alerta com payload:', payload)
+      const { data, error, status } = await useSanctumFetch(
+        `/api/promotional-alerts`,
+        {
+          method: 'POST',
+          body: payload,
+        }
+      )
 
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      console.log('API: Alerta criado com sucesso!')
-      console.log('Navigate to: /alerts/view')
-
+      router.push('/alerts/view')
     } catch (error) {
       console.error('Erro ao criar alerta:', error)
     } finally {
@@ -531,7 +582,11 @@
 
   .summary-card {
     border-radius: 12px;
-    background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgba(var(--v-theme-primary), 0.8));
+    background: linear-gradient(
+      135deg,
+      rgb(var(--v-theme-primary)),
+      rgba(var(--v-theme-primary), 0.8)
+    );
   }
 
   .section-header {

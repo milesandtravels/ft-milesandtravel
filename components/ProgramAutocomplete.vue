@@ -18,9 +18,7 @@
       no-data-text="Nenhum programa encontrado"
       :loading="isLoadingPrograms"
       :error="errorLoadingPrograms"
-      :error-messages="
-        errorLoadingPrograms ? 'Erro ao carregar programas' : []
-      "
+      :error-messages="errorLoadingPrograms ? 'Erro ao carregar programas' : []"
       class="mb-3"
       @update:model-value="handleSelectionChange"
     >
@@ -38,7 +36,11 @@
               >
                 <template #error>
                   <div class="logo-error-small">
-                    <v-icon :icon="getTypeIcon(item.raw.type)" size="16" color="grey"></v-icon>
+                    <v-icon
+                      :icon="getTypeIcon(item.raw.type)"
+                      size="16"
+                      color="grey"
+                    ></v-icon>
                   </div>
                 </template>
               </v-img>
@@ -69,7 +71,11 @@
             >
               <template #error>
                 <div class="logo-error-small">
-                  <v-icon :icon="getTypeIcon(item.raw.type)" size="12" color="grey"></v-icon>
+                  <v-icon
+                    :icon="getTypeIcon(item.raw.type)"
+                    size="12"
+                    color="grey"
+                  ></v-icon>
                 </div>
               </template>
             </v-img>
@@ -100,7 +106,11 @@
       :items="programTypesOptions"
       item-title="name"
       item-value="id"
-      :label="multiple ? 'Selecionar Tipos de Programa' : 'Selecionar Tipo de Programa'"
+      :label="
+        multiple
+          ? 'Selecionar Tipos de Programa'
+          : 'Selecionar Tipo de Programa'
+      "
       variant="outlined"
       density="comfortable"
       prepend-inner-icon="mdi-shape"
@@ -115,7 +125,9 @@
       <template #item="{ props, item }">
         <v-list-item v-bind="props" :title="item.raw.name">
           <template #prepend>
-            <v-icon :color="item.raw.color" class="mr-3">{{ item.raw.icon }}</v-icon>
+            <v-icon :color="item.raw.color" class="mr-3">{{
+              item.raw.icon
+            }}</v-icon>
           </template>
           <template #subtitle>
             <span class="text-caption">{{ item.raw.description }}</span>
@@ -128,8 +140,11 @@
 
 <script setup lang="ts">
   import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/program'
-
+  import type {
+    Program,
+    ProgramsResponseDTO,
+    ProgramType,
+  } from '~/interfaces/program'
 
   interface ProgramTypeOption {
     id: ProgramType
@@ -165,12 +180,16 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
 
   // Reactive state
   const selectedProgram = ref<number | number[] | null>(
-    props.selectionType === 'specific' ? (props.modelValue as number | number[] | null) : null
+    props.selectionType === 'specific'
+      ? (props.modelValue as number | number[] | null)
+      : null
   )
   const selectedProgramType = ref<string | string[] | null>(
-    props.selectionType === 'type' ? (props.modelValue as string | string[] | null) : null
+    props.selectionType === 'type'
+      ? (props.modelValue as string | string[] | null)
+      : null
   )
-  
+
   const programOptions = ref<Program[]>([])
   const isLoadingPrograms = ref(false)
   const errorLoadingPrograms = ref(false)
@@ -182,22 +201,22 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
       name: 'Cashback',
       icon: 'mdi-cash',
       color: 'success',
-      description: 'Receba dinheiro de volta nas suas compras'
+      description: 'Receba dinheiro de volta nas suas compras',
     },
     {
       id: 'points',
       name: 'Pontos',
       icon: 'mdi-star',
       color: 'warning',
-      description: 'Acumule pontos para trocar por produtos'
+      description: 'Acumule pontos para trocar por produtos',
     },
     {
       id: 'miles',
       name: 'Milhas',
       icon: 'mdi-airplane',
       color: 'info',
-      description: 'Ganhe milhas para viajar'
-    }
+      description: 'Ganhe milhas para viajar',
+    },
   ])
 
   // Computed para filtrar programas por tipo se necessário
@@ -205,7 +224,9 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     if (!props.filterByType) {
       return programOptions.value
     }
-    return programOptions.value.filter(program => program.type === props.filterByType)
+    return programOptions.value.filter(
+      program => program.type === props.filterByType
+    )
   })
 
   // Helper functions
@@ -213,7 +234,7 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     const iconMap: Record<ProgramType, string> = {
       cashback: 'mdi-cash',
       points: 'mdi-star',
-      miles: 'mdi-airplane'
+      miles: 'mdi-airplane',
     }
     return iconMap[type] || 'mdi-star'
   }
@@ -222,7 +243,7 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     const colorMap: Record<ProgramType, string> = {
       cashback: 'success',
       points: 'warning',
-      miles: 'info'
+      miles: 'info',
     }
     return colorMap[type] || 'primary'
   }
@@ -231,7 +252,7 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     const labelMap: Record<ProgramType, string> = {
       cashback: 'Cashback',
       points: 'Pontos',
-      miles: 'Milhas'
+      miles: 'Milhas',
     }
     return labelMap[type] || type
   }
@@ -277,15 +298,19 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
       })
 
       if (data.value) {
-        const allPrograms = [...data.value.cashback, ...data.value.points, ...data.value.miles]
-        
+        const allPrograms = [
+          ...data.value.cashback,
+          ...data.value.points,
+          ...data.value.miles,
+        ]
+
         // Atualizar estado local
         programOptions.value = allPrograms
-        
+
         // Salvar no cache localStorage
         cachedPrograms.value = allPrograms
         cacheTimestamp.value = Date.now()
-        
+
         console.log('Programas carregados da API e salvos no cache')
       }
 
@@ -295,7 +320,7 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     } catch (err) {
       console.error('Error fetching programs:', err)
       errorLoadingPrograms.value = true
-      
+
       // Em caso de erro, tentar usar cache mesmo que expirado
       if (cachedPrograms.value.length > 0) {
         programOptions.value = cachedPrograms.value
@@ -315,11 +340,13 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     let selectedProgramData: Program | Program[] | null = null
 
     if (props.multiple && Array.isArray(value)) {
-      selectedProgramData = value.length > 0
-        ? filteredPrograms.value.filter(p => value.includes(p.id))
-        : []
+      selectedProgramData =
+        value.length > 0
+          ? filteredPrograms.value.filter(p => value.includes(p.id))
+          : []
     } else if (!props.multiple && typeof value === 'number') {
-      selectedProgramData = filteredPrograms.value.find(p => p.id === value) || null
+      selectedProgramData =
+        filteredPrograms.value.find(p => p.id === value) || null
     } else {
       selectedProgramData = props.multiple ? [] : null
     }
@@ -334,7 +361,7 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     let selectedTypeData: ProgramType | ProgramType[] | null = null
 
     if (props.multiple && Array.isArray(value)) {
-      selectedTypeData = value.length > 0 ? value as ProgramType[] : []
+      selectedTypeData = value.length > 0 ? (value as ProgramType[]) : []
     } else if (!props.multiple && typeof value === 'string') {
       selectedTypeData = value as ProgramType
     } else {
@@ -378,7 +405,7 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
   // Lifecycle
   onMounted(async () => {
     await nextTick()
-    
+
     if (props.autoFetch && props.selectionType === 'specific') {
       loadPrograms()
     }
@@ -392,7 +419,7 @@ import type { Program, ProgramsResponseDTO, ProgramType } from '~/interfaces/pro
     selectedProgramType,
     programOptions: filteredPrograms,
     programTypesOptions,
-    allPrograms: programOptions
+    allPrograms: programOptions,
   })
 </script>
 

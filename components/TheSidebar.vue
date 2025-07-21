@@ -113,8 +113,8 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useDisplay } from 'vuetify'
+  import { useRouter } from 'vue-router'
+  import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -191,19 +191,19 @@ import { useDisplay } from 'vuetify'
     {
       title: 'Configurar Alertas',
       subtitle: 'Definir preferências de notificação',
-      icon: 'mdi-bell-cog-outline',
+      icon: 'mdi-cog-outline', // Ícone de engrenagem para configurações
       route: '/alerts/configure',
     },
-     {
+    {
       title: 'Criar Alertas',
       subtitle: 'Criar alertas da sua preferência',
-      icon: 'mdi-bell-cog-outline',
+      icon: 'mdi-bell-plus-outline', // Sino com símbolo de mais para criação
       route: '/alerts/create',
     },
     {
       title: 'Visualizar Alertas',
       subtitle: 'Ver histórico de notificações',
-      icon: 'mdi-bell-ring-outline',
+      icon: 'mdi-format-list-bulleted', // Lista para visualização de histórico
       route: '/alerts/view',
     },
   ])

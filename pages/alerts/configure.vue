@@ -78,7 +78,6 @@
             <div class="contact-info mb-4">
               <v-alert type="info" variant="tonal" class="mb-3" text>
                 <div class="d-flex align-start">
-                  <v-icon class="me-2 mt-1" size="20">mdi-information</v-icon>
                   <div>
                     <strong>Importante:</strong> Após entrar em contato, retorne
                     aqui para configurar seus alertas.
