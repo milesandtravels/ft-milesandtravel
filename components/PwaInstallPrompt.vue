@@ -78,7 +78,7 @@
     // Mostrar prompt se disponível
     if (deferredPrompt) {
       showInstallPrompt.value = true
-    } 
+    }
   }
 
   onMounted(() => {

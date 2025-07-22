@@ -9,23 +9,25 @@ Componente que exibe o histórico de promoções em formato de gráfico de linha
 ```typescript
 interface Props {
   chartData: PromotionHistoryChartData[] // Dados formatados para o gráfico
-  programs: Program[]                    // Lista de programas disponíveis
+  programs: Program[] // Lista de programas disponíveis
 }
 ```
 
 ## Interfaces TypeScript
 
 ### `PromotionHistoryChartData`
+
 ```typescript
 interface PromotionHistoryChartData {
-  date: string        // Data no formato YYYY-MM-DD
-  value: number       // Valor da promoção
-  program: string     // Nome do programa
+  date: string // Data no formato YYYY-MM-DD
+  value: number // Valor da promoção
+  program: string // Nome do programa
   programColor: string // Cor associada ao programa
 }
 ```
 
 ### `Program`
+
 ```typescript
 interface Program {
   id: number
@@ -35,6 +37,7 @@ interface Program {
 ```
 
 ### `ChartDataset`
+
 ```typescript
 interface ChartDataset {
   label: string
@@ -51,6 +54,7 @@ interface ChartDataset {
 ## Dependências
 
 ### Chart.js
+
 ```typescript
 import {
   Chart as ChartJS,
@@ -61,7 +65,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 } from 'chart.js'
 import { Line } from 'vue-chartjs'
 
@@ -82,15 +86,17 @@ ChartJS.register(
 
 ```typescript
 const selectedPrograms = ref<string[]>([]) // Programas selecionados para exibição
-const chartRef = ref<any>(null)            // Referência ao componente Chart.js
-const showLegend = ref(true)               // Controle de exibição da legenda
+const chartRef = ref<any>(null) // Referência ao componente Chart.js
+const showLegend = ref(true) // Controle de exibição da legenda
 const chartType = ref<'line' | 'area'>('line') // Tipo de gráfico
 ```
 
 ## Computed Properties
 
 ### `chartLabels`
+
 Extrai e ordena as datas únicas dos dados:
+
 ```typescript
 const chartLabels = computed(() => {
   const dates = [...new Set(props.chartData.map(item => item.date))]
@@ -99,54 +105,60 @@ const chartLabels = computed(() => {
 ```
 
 ### `chartDatasets`
+
 Transforma os dados em datasets do Chart.js:
+
 ```typescript
 const chartDatasets = computed(() => {
   const datasets: ChartDataset[] = []
-  
+
   // Agrupa dados por programa
   const programsData = new Map<string, PromotionHistoryChartData[]>()
-  
+
   props.chartData.forEach(item => {
     if (!programsData.has(item.program)) {
       programsData.set(item.program, [])
     }
     programsData.get(item.program)!.push(item)
   })
-  
+
   // Cria dataset para cada programa
   programsData.forEach((data, programName) => {
-    if (selectedPrograms.value.length === 0 || selectedPrograms.value.includes(programName)) {
+    if (
+      selectedPrograms.value.length === 0 ||
+      selectedPrograms.value.includes(programName)
+    ) {
       const programColor = data[0]?.programColor || '#1976D2'
-      
+
       // Mapeia valores para cada data
       const values = chartLabels.value.map(date => {
         const item = data.find(d => d.date === date)
         return item ? item.value : null
       })
-      
+
       datasets.push({
         label: programName,
         data: values,
         borderColor: programColor,
-        backgroundColor: chartType.value === 'area' 
-          ? `${programColor}20` 
-          : programColor,
+        backgroundColor:
+          chartType.value === 'area' ? `${programColor}20` : programColor,
         tension: 0.4,
         fill: chartType.value === 'area',
         pointRadius: 4,
         pointHoverRadius: 6,
-        spanGaps: true // Conecta pontos mesmo com dados faltantes
+        spanGaps: true, // Conecta pontos mesmo com dados faltantes
       })
     }
   })
-  
+
   return datasets
 })
 ```
 
 ### `chartOptions`
+
 Configurações do gráfico:
+
 ```typescript
 const chartOptions = computed(() => ({
   responsive: true,
@@ -161,16 +173,16 @@ const chartOptions = computed(() => ({
       text: 'Evolução dos Valores de Promoções',
       font: {
         size: 16,
-        weight: 'bold'
-      }
+        weight: 'bold',
+      },
     },
     legend: {
       display: showLegend.value,
       position: 'top' as const,
       labels: {
         usePointStyle: true,
-        padding: 20
-      }
+        padding: 20,
+      },
     },
     tooltip: {
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -186,56 +198,58 @@ const chartOptions = computed(() => ({
         title: (tooltipItems: any[]) => {
           const date = tooltipItems[0]?.label
           return formatDate(date)
-        }
-      }
-    }
+        },
+      },
+    },
   },
   scales: {
     x: {
       display: true,
       title: {
         display: true,
-        text: 'Data'
+        text: 'Data',
       },
       ticks: {
-        callback: function(value: any, index: number) {
+        callback: function (value: any, index: number) {
           const date = chartLabels.value[index]
           return formatDateShort(date)
         },
-        maxTicksLimit: 10
-      }
+        maxTicksLimit: 10,
+      },
     },
     y: {
       display: true,
       title: {
         display: true,
-        text: 'Valor (R$)'
+        text: 'Valor (R$)',
       },
       ticks: {
-        callback: function(value: any) {
+        callback: function (value: any) {
           return formatCurrency(value)
-        }
+        },
       },
-      beginAtZero: true
-    }
+      beginAtZero: true,
+    },
   },
   elements: {
     point: {
       hoverBackgroundColor: '#fff',
-      hoverBorderWidth: 2
-    }
-  }
+      hoverBorderWidth: 2,
+    },
+  },
 }))
 ```
 
 ### `filteredPrograms`
+
 Lista de programas disponíveis para filtro:
+
 ```typescript
 const filteredPrograms = computed(() => {
   return props.programs.map(program => ({
     ...program,
     color: getProgramColor(program.name),
-    isSelected: selectedPrograms.value.includes(program.name)
+    isSelected: selectedPrograms.value.includes(program.name),
   }))
 })
 ```
@@ -243,44 +257,52 @@ const filteredPrograms = computed(() => {
 ## Métodos
 
 ### `formatCurrency(value: number)`
+
 Formata valores monetários:
+
 ```typescript
 const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-    minimumFractionDigits: 2
+    minimumFractionDigits: 2,
   }).format(value)
 }
 ```
 
 ### `formatDate(dateString: string)`
+
 Formata data completa:
+
 ```typescript
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
   return date.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
   })
 }
 ```
 
 ### `formatDateShort(dateString: string)`
+
 Formata data abreviada para eixo X:
+
 ```typescript
 const formatDateShort = (dateString: string): string => {
   const date = new Date(dateString)
   return date.toLocaleDateString('pt-BR', {
     day: '2-digit',
-    month: '2-digit'
+    month: '2-digit',
   })
 }
 ```
 
 ### `getProgramColor(programName: string)`
+
 Retorna cor associada ao programa:
+
 ```typescript
 const getProgramColor = (programName: string): string => {
   const item = props.chartData.find(d => d.program === programName)
@@ -289,7 +311,9 @@ const getProgramColor = (programName: string): string => {
 ```
 
 ### `toggleProgram(programName: string)`
+
 Alterna seleção de programa:
+
 ```typescript
 const toggleProgram = (programName: string): void => {
   const index = selectedPrograms.value.indexOf(programName)
@@ -302,7 +326,9 @@ const toggleProgram = (programName: string): void => {
 ```
 
 ### `selectAllPrograms()`
+
 Seleciona todos os programas:
+
 ```typescript
 const selectAllPrograms = (): void => {
   selectedPrograms.value = props.programs.map(p => p.name)
@@ -310,7 +336,9 @@ const selectAllPrograms = (): void => {
 ```
 
 ### `clearSelection()`
+
 Limpa seleção de programas:
+
 ```typescript
 const clearSelection = (): void => {
   selectedPrograms.value = []
@@ -318,7 +346,9 @@ const clearSelection = (): void => {
 ```
 
 ### `exportChart()`
+
 Exporta gráfico como imagem:
+
 ```typescript
 const exportChart = (): void => {
   if (chartRef.value?.chart) {
@@ -334,6 +364,7 @@ const exportChart = (): void => {
 ## Layout do Componente
 
 ### Controles Superiores
+
 ```vue
 <v-card class="promotion-chart-container">
   <!-- Header com controles -->
@@ -398,6 +429,7 @@ const exportChart = (): void => {
 ```
 
 ### Área do Gráfico
+
 ```vue
 <v-card-text>
   <div class="chart-container" style="height: 400px;">
@@ -425,13 +457,19 @@ const exportChart = (): void => {
 ## Estados de Interface
 
 ### Loading
+
 ```vue
-<div v-if="loading" class="d-flex justify-center align-center" style="height: 400px;">
+<div
+  v-if="loading"
+  class="d-flex justify-center align-center"
+  style="height: 400px;"
+>
   <v-progress-circular indeterminate size="64" />
 </div>
 ```
 
 ### Dados Vazios
+
 ```vue
 <div v-if="chartData.length === 0" class="text-center py-8">
   <v-icon size="64" color="grey-lighten-1">mdi-chart-line-variant</v-icon>
@@ -447,6 +485,7 @@ const exportChart = (): void => {
 ## Responsividade
 
 ### Adaptações Mobile
+
 ```typescript
 const mobileOptions = computed(() => ({
   ...chartOptions.value,
@@ -455,8 +494,8 @@ const mobileOptions = computed(() => ({
     legend: {
       ...chartOptions.value.plugins.legend,
       display: !$vuetify.display.mobile || showLegend.value,
-      position: $vuetify.display.mobile ? 'bottom' : 'top'
-    }
+      position: $vuetify.display.mobile ? 'bottom' : 'top',
+    },
   },
   scales: {
     ...chartOptions.value.scales,
@@ -464,22 +503,24 @@ const mobileOptions = computed(() => ({
       ...chartOptions.value.scales.x,
       ticks: {
         ...chartOptions.value.scales.x.ticks,
-        maxTicksLimit: $vuetify.display.mobile ? 5 : 10
-      }
-    }
-  }
+        maxTicksLimit: $vuetify.display.mobile ? 5 : 10,
+      },
+    },
+  },
 }))
 ```
 
 ## Performance
 
 ### Otimizações
+
 - Computed properties para transformação de dados
 - Debounce em filtros de programa
 - Lazy loading do Chart.js
 - Memoização de formatações
 
 ### Considerações
+
 - Limite de pontos no gráfico para performance
 - Agregação de dados para períodos longos
 - Virtual scrolling em listas de filtros
@@ -487,9 +528,10 @@ const mobileOptions = computed(() => ({
 ## Acessibilidade
 
 ### ARIA Labels
+
 ```vue
-<div 
-  role="img" 
+<div
+  role="img"
   aria-label="Gráfico de evolução dos valores de promoções"
   :aria-describedby="chartDescriptionId"
 >
@@ -506,10 +548,7 @@ const mobileOptions = computed(() => ({
 
 ```vue
 <!-- No PromotionHistoryModal -->
-<PromotionHistoryChart
-  :chart-data="chartData"
-  :programs="programs"
-/>
+<PromotionHistoryChart :chart-data="chartData" :programs="programs" />
 ```
 
 ## Exemplo de Uso
@@ -525,31 +564,32 @@ const mobileOptions = computed(() => ({
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import type { PromotionHistoryChartData, Program } from '~/types'
+  import { computed } from 'vue'
+  import type { PromotionHistoryChartData, Program } from '~/types'
 
-const rawData = ref(/* dados da API */)
+  const rawData = ref(/* dados da API */)
 
-const formattedChartData = computed((): PromotionHistoryChartData[] => {
-  // Transformação dos dados para o formato do gráfico
-  return rawData.value.map(item => ({
-    date: item.date,
-    value: parseFloat(item.value),
-    program: item.program.name,
-    programColor: item.color
-  }))
-})
+  const formattedChartData = computed((): PromotionHistoryChartData[] => {
+    // Transformação dos dados para o formato do gráfico
+    return rawData.value.map(item => ({
+      date: item.date,
+      value: parseFloat(item.value),
+      program: item.program.name,
+      programColor: item.color
+    }))
+  })
 
-const availablePrograms = computed((): Program[] => {
-  // Extração de programas únicos
-  return [...new Set(rawData.value.map(item => item.program))]
-})
+  const availablePrograms = computed((): Program[] => {
+    // Extração de programas únicos
+    return [...new Set(rawData.value.map(item => item.program))]
+  })
 </script>
 ```
 
 ## Melhorias Futuras
 
 ### Funcionalidades Planejadas
+
 - Zoom e pan no gráfico
 - Múltiplos tipos de gráfico (bar, pie, etc.)
 - Comparação entre períodos
@@ -558,6 +598,7 @@ const availablePrograms = computed((): Program[] => {
 - Temas personalizáveis
 
 ### Performance
+
 - WebGL rendering para grandes datasets
 - Data streaming para dados em tempo real
 - Caching inteligente de renderizações

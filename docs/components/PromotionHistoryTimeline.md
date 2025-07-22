@@ -9,25 +9,28 @@ Componente que exibe o histórico de promoções em formato de timeline cronoló
 ```typescript
 interface Props {
   historyData: PromotionHistoryResponse | null // Dados do histórico de promoções
-  ecommerce: Ecommerce | null                  // Dados do e-commerce
+  ecommerce: Ecommerce | null // Dados do e-commerce
 }
 ```
 
 ## Funcionalidades Principais
 
 ### 1. Timeline Cronológica
+
 - Exibição em ordem cronológica (mais recente primeiro)
 - Agrupamento por programa de fidelidade
 - Indicadores visuais para cada entrada
 - Formatação de datas em português brasileiro
 
 ### 2. Informações Detalhadas
+
 - Nome do programa de fidelidade
 - Valor atual da promoção
 - Data e hora da atualização
 - Status visual com cores diferenciadas
 
 ### 3. Design Responsivo
+
 - Layout adaptável para diferentes tamanhos de tela
 - Espaçamento otimizado para mobile
 - Tipografia escalável
@@ -35,13 +38,15 @@ interface Props {
 ## Computed Properties
 
 ### `timelineItems`
+
 Transforma os dados de histórico em itens de timeline ordenados:
+
 ```typescript
 const timelineItems = computed(() => {
   if (!props.historyData) return []
-  
+
   const items: TimelineItem[] = []
-  
+
   Object.entries(props.historyData).forEach(([programId, histories]) => {
     histories.forEach(history => {
       items.push({
@@ -54,7 +59,7 @@ const timelineItems = computed(() => {
       })
     })
   })
-  
+
   // Ordena por data (mais recente primeiro)
   return items.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 })
@@ -63,6 +68,7 @@ const timelineItems = computed(() => {
 ## Interfaces TypeScript
 
 ### `TimelineItem`
+
 ```typescript
 interface TimelineItem {
   id: number
@@ -75,6 +81,7 @@ interface TimelineItem {
 ```
 
 ### `Program`
+
 ```typescript
 interface Program {
   id: number
@@ -86,38 +93,44 @@ interface Program {
 ## Métodos Utilitários
 
 ### `formatDate(dateString: string)`
+
 Formata data para exibição em português:
+
 ```typescript
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
   return date.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
   })
 }
 ```
 
 ### `formatTime(dateString: string)`
+
 Formata horário para exibição:
+
 ```typescript
 const formatTime = (dateString: string): string => {
   const date = new Date(dateString)
   return date.toLocaleTimeString('pt-BR', {
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 ```
 
 ### `formatCurrency(value: string)`
+
 Formata valores monetários:
+
 ```typescript
 const formatCurrency = (value: string): string => {
   const numValue = parseFloat(value)
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
-    currency: 'BRL'
+    currency: 'BRL',
   }).format(numValue)
 }
 ```
@@ -125,6 +138,7 @@ const formatCurrency = (value: string): string => {
 ## Estados de Interface
 
 ### Dados Vazios
+
 ```vue
 <div v-if="timelineItems.length === 0" class="text-center py-8">
   <v-icon size="64" color="grey-lighten-1">mdi-timeline-outline</v-icon>
@@ -138,6 +152,7 @@ const formatCurrency = (value: string): string => {
 ```
 
 ### Timeline com Dados
+
 ```vue
 <v-timeline v-else align="start" side="end">
   <v-timeline-item
@@ -154,18 +169,20 @@ const formatCurrency = (value: string): string => {
 ## Sistema de Cores
 
 ### `getProgramColor(programId: number)`
+
 Atribui cores únicas para cada programa:
+
 ```typescript
 const getProgramColor = (programId: number): string => {
   const colors = [
     'primary',
-    'success', 
+    'success',
     'warning',
     'error',
     'info',
     'purple',
     'teal',
-    'orange'
+    'orange',
   ]
   return colors[programId % colors.length]
 }
@@ -174,6 +191,7 @@ const getProgramColor = (programId: number): string => {
 ## Layout da Timeline
 
 ### Estrutura do Item
+
 ```vue
 <v-timeline-item>
   <template #opposite>
@@ -206,6 +224,7 @@ const getProgramColor = (programId: number): string => {
 ## Estilização
 
 ### Classes CSS Customizadas
+
 ```css
 .promotion-timeline {
   max-height: 600px;
@@ -236,27 +255,31 @@ const getProgramColor = (programId: number): string => {
 ## Responsividade
 
 ### Breakpoints
+
 - **Mobile (< 600px)**: Timeline compacta, cards menores
 - **Tablet (600px - 960px)**: Layout intermediário
 - **Desktop (> 960px)**: Layout completo com espaçamento amplo
 
 ### Adaptações Mobile
+
 ```vue
-<v-timeline 
+<v-timeline
   :density="$vuetify.display.mobile ? 'compact' : 'default'"
   :line-thickness="$vuetify.display.mobile ? 2 : 3"
->
+></v-timeline>
 ```
 
 ## Performance
 
 ### Otimizações
+
 - Computed property para transformação de dados
 - Virtual scrolling para listas grandes
 - Lazy loading de imagens (se aplicável)
 - Memoização de formatações de data/hora
 
 ### Considerações
+
 - Limite de itens exibidos (paginação futura)
 - Debounce em filtros (se implementados)
 - Cache de cores de programas
@@ -264,20 +287,16 @@ const getProgramColor = (programId: number): string => {
 ## Acessibilidade
 
 ### ARIA Labels
+
 ```vue
-<v-timeline 
-  role="list" 
+<v-timeline
+  role="list"
   aria-label="Histórico de promoções em timeline"
->
-  <v-timeline-item 
-    v-for="item in timelineItems"
-    :key="item.id"
-    role="listitem"
-    :aria-label="`Promoção ${item.program.name} em ${item.formattedDate}`"
-  >
+></v-timeline>
 ```
 
 ### Navegação por Teclado
+
 - Suporte a Tab navigation
 - Focus indicators visíveis
 - Shortcuts para navegação rápida
@@ -285,6 +304,7 @@ const getProgramColor = (programId: number): string => {
 ## Estados de Loading
 
 ### Skeleton Loading
+
 ```vue
 <div v-if="loading" class="pa-4">
   <v-skeleton-loader
@@ -299,15 +319,14 @@ const getProgramColor = (programId: number): string => {
 ## Integração com Parent
 
 ### Recebimento de Props
+
 ```vue
 <!-- No PromotionHistoryModal -->
-<PromotionHistoryTimeline
-  :history-data="historyData"
-  :ecommerce="ecommerce"
-/>
+<PromotionHistoryTimeline :history-data="historyData" :ecommerce="ecommerce" />
 ```
 
 ### Eventos (Futuros)
+
 ```typescript
 // Possíveis eventos para implementação futura
 const emit = defineEmits<{
@@ -330,19 +349,20 @@ const emit = defineEmits<{
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import type { PromotionHistoryResponse, Ecommerce } from '~/types'
+  import { ref } from 'vue'
+  import type { PromotionHistoryResponse, Ecommerce } from '~/types'
 
-const historyData = ref<PromotionHistoryResponse | null>(null)
-const ecommerce = ref<Ecommerce | null>(null)
+  const historyData = ref<PromotionHistoryResponse | null>(null)
+  const ecommerce = ref<Ecommerce | null>(null)
 
-// Dados seriam carregados via API
+  // Dados seriam carregados via API
 </script>
 ```
 
 ## Melhorias Futuras
 
 ### Funcionalidades Planejadas
+
 - Filtros por programa
 - Filtros por período
 - Busca textual
@@ -351,6 +371,7 @@ const ecommerce = ref<Ecommerce | null>(null)
 - Notificações de mudanças
 
 ### Performance
+
 - Virtual scrolling para grandes datasets
 - Lazy loading de dados antigos
 - Cache inteligente

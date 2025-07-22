@@ -6,7 +6,12 @@
     persistent
     scrollable
   >
-    <v-card :class="[$vuetify.display.mobile ? 'h-screen' : '', 'promotion-history-modal']">
+    <v-card
+      :class="[
+        $vuetify.display.mobile ? 'h-screen' : '',
+        'promotion-history-modal',
+      ]"
+    >
       <v-card-title class="d-flex align-center justify-space-between pa-6">
         <div class="d-flex align-center ga-3">
           <v-avatar size="40" rounded="lg">
@@ -78,7 +83,10 @@
 
             <v-tabs-window v-model="activeTab">
               <!-- Timeline Tab -->
-              <v-tabs-window-item v-if="!$vuetify.display.mobile" value="timeline">
+              <v-tabs-window-item
+                v-if="!$vuetify.display.mobile"
+                value="timeline"
+              >
                 <PromotionHistoryTimeline
                   :history-data="historyData"
                   :ecommerce="ecommerce"
