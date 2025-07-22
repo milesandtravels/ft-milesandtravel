@@ -1,6 +1,12 @@
 <template>
-  <v-dialog v-model="isOpen" max-width="1200px" scrollable persistent>
-    <v-card class="promotion-history-modal">
+  <v-dialog
+    v-model="isOpen"
+    :max-width="$vuetify.display.mobile ? '100%' : '1200px'"
+    :fullscreen="$vuetify.display.mobile"
+    persistent
+    scrollable
+  >
+    <v-card :class="[$vuetify.display.mobile ? 'h-screen' : '', 'promotion-history-modal']">
       <v-card-title class="d-flex align-center justify-space-between pa-6">
         <div class="d-flex align-center ga-3">
           <v-avatar size="40" rounded="lg">
@@ -52,11 +58,11 @@
           <div v-else-if="historyData">
             <!-- Tabs -->
             <v-tabs v-model="activeTab" color="primary" class="mb-6">
-              <v-tab value="timeline">
+              <v-tab v-if="!$vuetify.display.mobile" value="timeline">
                 <v-icon start>mdi-timeline</v-icon>
                 Timeline
               </v-tab>
-              <v-tab value="chart">
+              <v-tab v-if="!$vuetify.display.mobile" value="chart">
                 <v-icon start>mdi-chart-line</v-icon>
                 Gráfico
               </v-tab>
@@ -72,7 +78,7 @@
 
             <v-tabs-window v-model="activeTab">
               <!-- Timeline Tab -->
-              <v-tabs-window-item value="timeline">
+              <v-tabs-window-item v-if="!$vuetify.display.mobile" value="timeline">
                 <PromotionHistoryTimeline
                   :history-data="historyData"
                   :ecommerce="ecommerce"
@@ -80,7 +86,7 @@
               </v-tabs-window-item>
 
               <!-- Chart Tab -->
-              <v-tabs-window-item value="chart">
+              <v-tabs-window-item v-if="!$vuetify.display.mobile" value="chart">
                 <PromotionHistoryChart
                   :chart-data="chartData"
                   :programs="programs"
@@ -153,13 +159,17 @@
   const loading = ref(false)
   const error = ref<string | null>(null)
   const historyData = ref<PromotionHistoryResponse | null>(null)
-  const activeTab = ref('timeline')
+  const activeTab = ref('calendar')
   const selectedProgram = ref<string | null>(null)
 
   // Computed
   const isOpen = computed({
     get: () => props.modelValue,
     set: value => emit('update:modelValue', value),
+  })
+
+  const defaultTab = computed(() => {
+    return 'calendar' // Always start with calendar for better mobile experience
   })
 
   const programs = computed(() => {
@@ -247,7 +257,7 @@
     setTimeout(() => {
       historyData.value = null
       error.value = null
-      activeTab.value = 'timeline'
+      activeTab.value = defaultTab.value
       selectedProgram.value = null
     }, 300)
   }
