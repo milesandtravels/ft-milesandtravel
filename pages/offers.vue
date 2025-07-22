@@ -7,7 +7,7 @@
           <div>
             <h1 class="text-h4 font-weight-bold mb-2">Ofertas Encontradas</h1>
             <p class="text-body-1 text-medium-emphasis mb-2">
-              {{ filteredOffers.length }} de {{ offers.length }} ofertas
+              {{ filteredOffers.length }} de {{ totalOffers }} ofertas
               disponíveis com cashback, pontos e milhas
             </p>
 
@@ -41,7 +41,7 @@
     <!-- Componente de Filtros -->
     <OffersFilters
       v-model="showFilters"
-      :search-id="route.query.searchId"
+      :search-id="route.query.searchId as string"
       :filters="activeFilters"
       @filters-applied="handleFiltersApplied"
       @clear="handleFilterClear"
@@ -122,6 +122,7 @@
   const route = useRoute()
   const router = useRouter()
   const offers = ref<OfferItem[]>([])
+  const totalOffers = ref<number>(0)
   const showFilters = ref<boolean>(false)
   const currentPage = ref<number>(1)
   const hasMoreData = ref<boolean>(true)
@@ -229,7 +230,7 @@
 
       // Fazer requisição POST com filtros no corpo
       const response = await useSanctumFetch<PaginatedOffersApiResponse>(
-        `/api/searches/${route.query.searchId}/offers`,
+        `/api/searches/${route.query.searchId as string}/offers`,
         {
           method: 'POST',
           body: payload,
@@ -240,15 +241,19 @@
         }
       )
 
-      const newOffers = response.data.value?.data.map((offer: OfferItem) => ({
+      const apiData = response.data.value
+      const newOffers = apiData?.data?.map((offer: OfferItem) => ({
         ...offer,
-      }))
+      })) || []
 
       if (resetPagination) {
         offers.value = newOffers
       } else {
         offers.value = [...offers.value, ...newOffers]
       }
+
+      // Atualizar total de ofertas da API
+      totalOffers.value = apiData?.meta?.total || 0
 
       // Verificar se há mais dados
       hasMoreData.value = newOffers.length === perPage
@@ -280,16 +285,17 @@
 
       // Fazer requisição POST com filtros no corpo
       const response = await useSanctumFetch<PaginatedOffersApiResponse>(
-        `/api/searches/${route.query.searchId}/offers`,
+        `/api/searches/${route.query.searchId as string}/offers`,
         {
           method: 'POST',
           body: payload,
         }
       )
 
-      const newOffers = response.data.value?.data.map((offer: OfferItem) => ({
+      const apiData = response.data.value
+      const newOffers = apiData?.data?.map((offer: OfferItem) => ({
         ...offer,
-      }))
+      })) || []
 
       offers.value = [...offers.value, ...newOffers]
 
@@ -362,7 +368,7 @@
   }
 
   const goBackToSearch = (): void => {
-    router.push(`/search-products?searchId=${route.query.searchId}`)
+    router.push(`/search-products?searchId=${route.query.searchId as string}`)
   }
 
   const showSnackbar = (message: string, color: string = 'success'): void => {

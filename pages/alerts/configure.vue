@@ -39,7 +39,7 @@
               density="compact"
               hide-details
               :disabled="isLoading"
-              @update:model-value="(value: boolean | null) => handleWhatsAppToggle(value ?? false)"
+              @update:model-value="handleWhatsAppToggle"
             />
           </div>
         </div>
