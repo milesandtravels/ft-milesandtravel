@@ -75,7 +75,7 @@
             </div>
 
             <div class="contact-info mb-4">
-              <v-alert type="info" variant="tonal" class="mb-3" text>
+              <v-alert type="info" variant="tonal" class="mb-3">
                 <div class="d-flex align-start">
                   <div>
                     <strong>Importante:</strong> Após entrar em contato, retorne
@@ -172,7 +172,6 @@
               type="error"
               variant="tonal"
               class="mt-3"
-              text
             >
               {{ codeError }}
             </v-alert>
@@ -331,70 +330,115 @@
     </v-dialog>
 
     <!-- Modal de confirmação para desabilitar WhatsApp -->
-    <v-dialog v-model="showDisableConfirmModal" max-width="400" persistent>
-      <v-card class="disable-confirm-modal">
-        <v-card-title class="d-flex align-center pa-4 pb-2">
-          <v-icon color="warning" size="28" class="me-2"
-            >mdi-alert-circle</v-icon
-          >
-          <span class="text-h6">Desabilitar WhatsApp</span>
-        </v-card-title>
-
-        <v-card-text class="pa-4">
+    <v-dialog 
+      v-model="showDisableConfirmModal" 
+      max-width="440" 
+      persistent
+      :fullscreen="$vuetify.display.mobile"
+    >
+      <v-card class="disable-confirm-modal" elevation="8">
+        <!-- Header com gradiente sutil -->
+        <div class="disable-modal-header pa-6 pb-4">
           <div class="text-center">
-            <v-icon color="warning" size="64" class="mb-3"
-              >mdi-whatsapp-off</v-icon
-            >
-            <h3 class="text-h6 mb-3">Tem certeza?</h3>
-            <p class="text-body-2 text-medium-emphasis mb-4">
-              Ao desabilitar as notificações do WhatsApp:
+            <div class="warning-icon-container mb-3">
+              <v-icon color="warning" size="56">mdi-alert-circle-outline</v-icon>
+            </div>
+            <h2 class="text-h5 font-weight-bold mb-2">Desabilitar alertas</h2>
+            <p class="text-body-1 text-medium-emphasis">
+              Você está prestes a desativar as notificações do WhatsApp
             </p>
-            <v-list class="text-start mb-4" density="compact">
-              <v-list-item>
-                <template #prepend>
-                  <v-icon color="error" size="16">mdi-close-circle</v-icon>
-                </template>
-                <v-list-item-title class="text-body-2">
-                  Todos os alertas configurados vão parar de funcionar
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <template #prepend>
-                  <v-icon color="error" size="16">mdi-close-circle</v-icon>
-                </template>
-                <v-list-item-title class="text-body-2">
-                  Você precisará refazer todo o processo de configuração
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <p class="text-body-2 font-weight-medium">
-              Deseja realmente continuar?
-            </p>
+          </div>
+        </div>
+
+        <v-card-text class="pa-6 pt-2">
+          <!-- Consequências em cards -->
+          <div class="consequences-section">
+            <h3 class="text-subtitle-1 font-weight-medium mb-3 text-center">
+              O que acontecerá:
+            </h3>
+            
+            <div class="consequences-grid">
+              <v-card 
+                variant="outlined" 
+                class="consequence-card pa-3 mb-3"
+                color="primary"
+              >
+                <div class="d-flex align-start">
+                  <v-avatar size="32" color="primary" class="me-3 mt-1">
+                    <v-icon color="white" size="18">mdi-bell-off</v-icon>
+                  </v-avatar>
+                  <div class="flex-grow-1">
+                    <h4 class="text-subtitle-2 font-weight-medium mb-1">
+                      Alertas interrompidos
+                    </h4>
+                    <p class="text-body-2 text-medium-emphasis mb-0">
+                      Todos os alertas configurados param de funcionar imediatamente
+                    </p>
+                  </div>
+                </div>
+              </v-card>
+
+              <v-card 
+                variant="outlined" 
+                class="consequence-card pa-3 mb-4"
+                color="primary"
+              >
+                <div class="d-flex align-start">
+                  <v-avatar size="32" color="primary" class="me-3 mt-1">
+                    <v-icon color="white" size="18">mdi-refresh</v-icon>
+                  </v-avatar>
+                  <div class="flex-grow-1">
+                    <h4 class="text-subtitle-2 font-weight-medium mb-1">
+                      Reconfiguração necessária
+                    </h4>
+                    <p class="text-body-2 text-medium-emphasis mb-0">
+                      Será preciso refazer todo o processo de verificação
+                    </p>
+                  </div>
+                </div>
+              </v-card>
+            </div>
+
+            <!-- Pergunta de confirmação -->
+            <div class="confirmation-question text-center pa-4">
+              <v-icon color="primary" size="24" class="mb-2">mdi-help-circle</v-icon>
+              <p class="text-h6 font-weight-medium text-primary">
+                Tem certeza que deseja continuar?
+              </p>
+            </div>
           </div>
         </v-card-text>
 
-        <v-card-actions class="pa-4 pt-0 flex-column">
-          <v-btn
-            color="error"
-            variant="flat"
-            :loading="isLoading"
-            :disabled="isLoading"
-            block
-            class="mb-2"
-            @click="confirmDisableWhatsApp"
-          >
-            <v-icon start>mdi-whatsapp-off</v-icon>
-            Sim, desabilitar
-          </v-btn>
+        <!-- Actions com melhor hierarquia -->
+        <v-card-actions class="pa-6 pt-2">
+          <div class="actions-container w-100">
+            <v-btn
+              color="primary"
+              variant="flat"
+              :loading="isLoading"
+              :disabled="isLoading"
+              size="large"
+              block
+              class="mb-3 disable-btn"
+              @click="confirmDisableWhatsApp"
+            >
+              <v-icon start size="20">mdi-whatsapp-off</v-icon>
+              Sim, desabilitar alertas
+            </v-btn>
 
-          <v-btn
-            variant="text"
-            :disabled="isLoading"
-            size="small"
-            @click="cancelDisableWhatsApp"
-          >
-            Cancelar
-          </v-btn>
+            <v-btn
+              color="primary"
+              variant="outlined"
+              :disabled="isLoading"
+              size="large"
+              block
+              class="cancel-btn"
+              @click="cancelDisableWhatsApp"
+            >
+              <v-icon start size="18">mdi-arrow-left</v-icon>
+              Manter ativo
+            </v-btn>
+          </div>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -495,10 +539,28 @@
   }
 
   // Handlers principais
-  const handleWhatsAppToggle = (enabled: boolean) => {
+  const handleWhatsAppToggle = async (enabled: boolean | null) => {
+    if (enabled === null) return
+    
     if (enabled && !user.value?.whatsapp_notification_enabled) {
-      showWhatsAppModal.value = true
-      resetModal()
+      // Verificar se o usuário já tem telefone cadastrado
+      if (user.value?.phone) {
+        // Usuário já tem telefone, apenas habilitar diretamente
+        try {
+          isLoading.value = true
+          await enableWhatsAppNotifications(true)
+          whatsappEnabled.value = true
+        } catch (error) {
+          console.error('Erro ao habilitar WhatsApp:', error)
+          whatsappEnabled.value = false
+        } finally {
+          isLoading.value = false
+        }
+      } else {
+        // Usuário não tem telefone, mostrar modal de configuração
+        showWhatsAppModal.value = true
+        resetModal()
+      }
     } else if (!enabled && user.value?.whatsapp_notification_enabled) {
       // Mostrar modal de confirmação antes de desabilitar
       showDisableConfirmModal.value = true
