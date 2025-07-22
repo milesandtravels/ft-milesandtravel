@@ -202,9 +202,15 @@
     },
     {
       title: 'Visualizar Alertas',
-      subtitle: 'Ver histórico de notificações',
+      subtitle: 'Ver alertas configurados',
       icon: 'mdi-format-list-bulleted', // Lista para visualização de histórico
       route: '/alerts/view',
+    },
+    {
+      title: 'Notificações',
+      subtitle: 'Ver notificações recebidas',
+      icon: 'mdi-bell-outline', // Sino para notificações
+      route: '/notifications/view',
     },
   ])
 

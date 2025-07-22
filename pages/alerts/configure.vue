@@ -7,8 +7,6 @@
         Configure como deseja receber notificações sobre ofertas e cashbacks
       </p>
     </div>
-    {{ user }}
-
     <!-- WhatsApp Settings Card -->
     <v-card class="whatsapp-card mb-4" elevation="1">
       <v-card-text class="pa-4">
