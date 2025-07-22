@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { onMounted, ref } from 'vue'
 
   const showInstallPrompt = ref(false)
   let deferredPrompt: any = null
@@ -46,8 +46,6 @@
   }
 
   const checkInstallPrompt = () => {
-    console.log('Verificando condições para mostrar prompt de instalação...')
-
     // Verificar se já foi dispensado recentemente (7 dias)
     const dismissed = localStorage.getItem('pwa-install-dismissed')
     if (dismissed) {
@@ -79,11 +77,8 @@
 
     // Mostrar prompt se disponível
     if (deferredPrompt) {
-      console.log('Mostrando prompt de instalação')
       showInstallPrompt.value = true
-    } else {
-      console.log('deferredPrompt não está disponível ainda')
-    }
+    } 
   }
 
   onMounted(() => {
@@ -102,7 +97,6 @@
 
     // Verificar novamente após um tempo para dar chance ao evento ser disparado
     setTimeout(() => {
-      console.log('Verificação após timeout')
       checkInstallPrompt()
     }, 3000)
   })
