@@ -167,12 +167,7 @@
               @finish="verifyCode"
             />
 
-            <v-alert
-              v-if="codeError"
-              type="error"
-              variant="tonal"
-              class="mt-3"
-            >
+            <v-alert v-if="codeError" type="error" variant="tonal" class="mt-3">
               {{ codeError }}
             </v-alert>
 
@@ -330,9 +325,9 @@
     </v-dialog>
 
     <!-- Modal de confirmação para desabilitar WhatsApp -->
-    <v-dialog 
-      v-model="showDisableConfirmModal" 
-      max-width="440" 
+    <v-dialog
+      v-model="showDisableConfirmModal"
+      max-width="440"
       persistent
       :fullscreen="$vuetify.display.mobile"
     >
@@ -341,7 +336,9 @@
         <div class="disable-modal-header pa-6 pb-4">
           <div class="text-center">
             <div class="warning-icon-container mb-3">
-              <v-icon color="warning" size="56">mdi-alert-circle-outline</v-icon>
+              <v-icon color="warning" size="56"
+                >mdi-alert-circle-outline</v-icon
+              >
             </div>
             <h2 class="text-h5 font-weight-bold mb-2">Desabilitar alertas</h2>
             <p class="text-body-1 text-medium-emphasis">
@@ -356,10 +353,10 @@
             <h3 class="text-subtitle-1 font-weight-medium mb-3 text-center">
               O que acontecerá:
             </h3>
-            
+
             <div class="consequences-grid">
-              <v-card 
-                variant="outlined" 
+              <v-card
+                variant="outlined"
                 class="consequence-card pa-3 mb-3"
                 color="primary"
               >
@@ -372,14 +369,15 @@
                       Alertas interrompidos
                     </h4>
                     <p class="text-body-2 text-medium-emphasis mb-0">
-                      Todos os alertas configurados param de funcionar imediatamente
+                      Todos os alertas configurados param de funcionar
+                      imediatamente
                     </p>
                   </div>
                 </div>
               </v-card>
 
-              <v-card 
-                variant="outlined" 
+              <v-card
+                variant="outlined"
                 class="consequence-card pa-3 mb-4"
                 color="primary"
               >
@@ -401,7 +399,9 @@
 
             <!-- Pergunta de confirmação -->
             <div class="confirmation-question text-center pa-4">
-              <v-icon color="primary" size="24" class="mb-2">mdi-help-circle</v-icon>
+              <v-icon color="primary" size="24" class="mb-2"
+                >mdi-help-circle</v-icon
+              >
               <p class="text-h6 font-weight-medium text-primary">
                 Tem certeza que deseja continuar?
               </p>
@@ -541,7 +541,7 @@
   // Handlers principais
   const handleWhatsAppToggle = async (enabled: boolean | null) => {
     if (enabled === null) return
-    
+
     if (enabled && !user.value?.whatsapp_notification_enabled) {
       // Verificar se o usuário já tem telefone cadastrado
       if (user.value?.phone) {

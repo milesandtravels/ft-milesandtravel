@@ -306,8 +306,8 @@
     <div v-if="alerts.length > 0" class="alerts-list">
       <v-row>
         <v-col v-for="alert in alerts" :key="alert.id" cols="12" sm="6" lg="4">
-          <v-card 
-            class="alert-card" 
+          <v-card
+            class="alert-card"
             :class="{ 'alert-disabled': !alert.active }"
             elevation="2"
           >
@@ -552,7 +552,10 @@
           <div v-if="editingAlert" class="edit-form">
             <!-- Informações do alerta -->
             <div class="alert-info mb-4">
-              <div v-if="editingAlert.ecommerce" class="d-flex align-center mb-2">
+              <div
+                v-if="editingAlert.ecommerce"
+                class="d-flex align-center mb-2"
+              >
                 <v-img
                   :src="editingAlert.ecommerce.logo_url"
                   :alt="editingAlert.ecommerce.name"
@@ -561,9 +564,11 @@
                   contain
                   class="me-2"
                 />
-                <span class="text-subtitle-2">{{ editingAlert.ecommerce.name }}</span>
+                <span class="text-subtitle-2">{{
+                  editingAlert.ecommerce.name
+                }}</span>
               </div>
-              
+
               <div v-if="editingAlert.program" class="d-flex align-center">
                 <v-img
                   :src="editingAlert.program.logo_url"
@@ -581,7 +586,12 @@
             <v-text-field
               v-model="alertThreshold"
               label="Limite mínimo"
-              :suffix="(editingAlert.program?.type || editingAlert.program_type) === 'points' ? 'pontos' : '%'"
+              :suffix="
+                (editingAlert.program?.type || editingAlert.program_type) ===
+                'points'
+                  ? 'pontos'
+                  : '%'
+              "
               type="number"
               variant="outlined"
               density="comfortable"
@@ -593,20 +603,24 @@
               <div>
                 <p class="text-subtitle-2 mb-1">Status do Alerta</p>
                 <p class="text-caption text-medium-emphasis">
-                  {{ alertActive ? 'Alerta ativo e funcionando' : 'Alerta pausado' }}
+                  {{
+                    alertActive
+                      ? 'Alerta ativo e funcionando'
+                      : 'Alerta pausado'
+                  }}
                 </p>
               </div>
-              <v-switch
-                v-model="alertActive"
-                color="primary"
-                hide-details
-              />
+              <v-switch v-model="alertActive" color="primary" hide-details />
             </div>
           </div>
         </v-card-text>
 
         <v-card-actions class="pa-4 pt-0">
-          <v-btn variant="text" :disabled="isSavingAlert" @click="closeEditModal">
+          <v-btn
+            variant="text"
+            :disabled="isSavingAlert"
+            @click="closeEditModal"
+          >
             Cancelar
           </v-btn>
 

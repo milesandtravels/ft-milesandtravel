@@ -113,8 +113,8 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { useDisplay } from 'vuetify'
+import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -179,12 +179,12 @@
       icon: 'mdi-tag-multiple',
       route: '/promotions',
     },
-    {
-      title: 'Pesquisas Realizadas',
-      subtitle: 'Histórico de buscas e comparações',
-      icon: 'mdi-clock-time-four-outline',
-      route: '/search-history',
-    },
+    // {
+    //   title: 'Pesquisas Realizadas',
+    //   subtitle: 'Histórico de buscas e comparações',
+    //   icon: 'mdi-clock-time-four-outline',
+    //   route: '/search-history',
+    // },
   ])
 
   const alertsMenuItems = ref<MenuItem[]>([
@@ -193,12 +193,6 @@
       subtitle: 'Definir preferências de notificação',
       icon: 'mdi-cog-outline', // Ícone de engrenagem para configurações
       route: '/alerts/configure',
-    },
-    {
-      title: 'Criar Alertas',
-      subtitle: 'Criar alertas da sua preferência',
-      icon: 'mdi-bell-plus-outline', // Sino com símbolo de mais para criação
-      route: '/alerts/create',
     },
     {
       title: 'Visualizar Alertas',
