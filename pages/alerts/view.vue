@@ -45,6 +45,13 @@
   const alertToDelete = ref<Alert | null>(null)
   const isDeleting = ref(false)
 
+  // Estados para edição de alertas
+  const showEditAlertModal = ref(false)
+  const editingAlert = ref<Alert | null>(null)
+  const alertThreshold = ref('')
+  const alertActive = ref(true)
+  const isSavingAlert = ref(false)
+
   // Buscar alertas com paginação
   const fetchAlerts = async (page = 1, append = false) => {
     if (isLoading.value) return
@@ -136,6 +143,80 @@
     alertToDelete.value = null
   }
 
+  // Alternar status do alerta
+  const toggleAlert = async (alert: Alert) => {
+    try {
+      const { error } = await useSanctumFetch(
+        `/api/promotional-alerts/${alert.id}`,
+        {
+          method: 'PUT',
+          body: {
+            threshold: parseFloat(alert.threshold),
+            active: !alert.active,
+          },
+        }
+      )
+
+      if (!error.value) {
+        // Atualizar o status local
+        alert.active = !alert.active
+      } else {
+        console.error('Erro ao alterar status do alerta:', error.value)
+      }
+    } catch (err) {
+      console.error('Erro ao alterar status do alerta:', err)
+    }
+  }
+
+  // Abrir modal de edição
+  const openEditModal = (alert: Alert) => {
+    editingAlert.value = alert
+    alertThreshold.value = alert.threshold
+    alertActive.value = alert.active
+    showEditAlertModal.value = true
+  }
+
+  // Fechar modal de edição
+  const closeEditModal = () => {
+    showEditAlertModal.value = false
+    editingAlert.value = null
+    alertThreshold.value = ''
+    alertActive.value = true
+  }
+
+  // Salvar alterações do alerta
+  const saveAlert = async () => {
+    if (!editingAlert.value) return
+
+    isSavingAlert.value = true
+
+    try {
+      const { error } = await useSanctumFetch(
+        `/api/promotional-alerts/${editingAlert.value.id}`,
+        {
+          method: 'PUT',
+          body: {
+            threshold: parseFloat(alertThreshold.value),
+            active: alertActive.value,
+          },
+        }
+      )
+
+      if (!error.value) {
+        // Atualizar o alerta local
+        editingAlert.value.threshold = alertThreshold.value
+        editingAlert.value.active = alertActive.value
+        closeEditModal()
+      } else {
+        console.error('Erro ao salvar alerta:', error.value)
+      }
+    } catch (err) {
+      console.error('Erro ao salvar alerta:', err)
+    } finally {
+      isSavingAlert.value = false
+    }
+  }
+
   // Criar novo alerta
   const createAlert = () => {
     navigateTo('/alerts/create')
@@ -173,7 +254,7 @@
 
     switch (programType) {
       case 'cashback':
-        return 'warning'
+        return 'primary'
       case 'miles':
         return 'primary'
       case 'points':
@@ -225,7 +306,11 @@
     <div v-if="alerts.length > 0" class="alerts-list">
       <v-row>
         <v-col v-for="alert in alerts" :key="alert.id" cols="12" sm="6" lg="4">
-          <v-card class="alert-card" elevation="2">
+          <v-card 
+            class="alert-card" 
+            :class="{ 'alert-disabled': !alert.active }"
+            elevation="2"
+          >
             <v-card-text class="pa-4">
               <!-- Status -->
               <div class="d-flex align-center justify-space-between mb-3">
@@ -241,6 +326,21 @@
                 </v-chip>
 
                 <div class="alert-actions">
+                  <v-switch
+                    :model-value="alert.active"
+                    @update:model-value="toggleAlert(alert)"
+                    color="primary"
+                    hide-details
+                    density="compact"
+                    class="me-2"
+                  />
+                  <v-btn
+                    icon="mdi-pencil"
+                    size="small"
+                    variant="text"
+                    color="primary"
+                    @click="openEditModal(alert)"
+                  />
                   <v-btn
                     icon="mdi-delete"
                     size="small"
@@ -324,7 +424,7 @@
                   v-else-if="alert.program_type"
                   class="program-type-display"
                 >
-                  <v-icon color="secondary" size="20" class="me-2"
+                  <v-icon color="primary" size="20" class="me-2"
                     >mdi-gift</v-icon
                   >
                   <span class="text-body-2 font-weight-medium">
@@ -439,6 +539,90 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Modal de edição de alerta -->
+    <v-dialog v-model="showEditAlertModal" max-width="500" persistent>
+      <v-card>
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon color="primary" size="24" class="me-2">mdi-pencil</v-icon>
+          <span>Editar Alerta</span>
+        </v-card-title>
+
+        <v-card-text class="pa-4">
+          <div v-if="editingAlert" class="edit-form">
+            <!-- Informações do alerta -->
+            <div class="alert-info mb-4">
+              <div v-if="editingAlert.ecommerce" class="d-flex align-center mb-2">
+                <v-img
+                  :src="editingAlert.ecommerce.logo_url"
+                  :alt="editingAlert.ecommerce.name"
+                  height="24"
+                  max-width="32"
+                  contain
+                  class="me-2"
+                />
+                <span class="text-subtitle-2">{{ editingAlert.ecommerce.name }}</span>
+              </div>
+              
+              <div v-if="editingAlert.program" class="d-flex align-center">
+                <v-img
+                  :src="editingAlert.program.logo_url"
+                  :alt="editingAlert.program.name"
+                  height="20"
+                  max-width="28"
+                  contain
+                  class="me-2"
+                />
+                <span class="text-body-2">{{ editingAlert.program.name }}</span>
+              </div>
+            </div>
+
+            <!-- Limite do alerta -->
+            <v-text-field
+              v-model="alertThreshold"
+              label="Limite mínimo"
+              :suffix="(editingAlert.program?.type || editingAlert.program_type) === 'points' ? 'pontos' : '%'"
+              type="number"
+              variant="outlined"
+              density="comfortable"
+              class="mb-4"
+            />
+
+            <!-- Status do alerta -->
+            <div class="d-flex align-center justify-space-between mb-4">
+              <div>
+                <p class="text-subtitle-2 mb-1">Status do Alerta</p>
+                <p class="text-caption text-medium-emphasis">
+                  {{ alertActive ? 'Alerta ativo e funcionando' : 'Alerta pausado' }}
+                </p>
+              </div>
+              <v-switch
+                v-model="alertActive"
+                color="primary"
+                hide-details
+              />
+            </div>
+          </div>
+        </v-card-text>
+
+        <v-card-actions class="pa-4 pt-0">
+          <v-btn variant="text" :disabled="isSavingAlert" @click="closeEditModal">
+            Cancelar
+          </v-btn>
+
+          <v-spacer />
+
+          <v-btn
+            color="primary"
+            variant="flat"
+            :loading="isSavingAlert"
+            @click="saveAlert"
+          >
+            Salvar Alterações
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -468,7 +652,17 @@
 
   .alert-actions {
     display: flex;
+    align-items: center;
     gap: 4px;
+  }
+
+  .alert-disabled {
+    opacity: 0.6;
+    filter: grayscale(0.3);
+  }
+
+  .alert-disabled .v-chip {
+    opacity: 0.7;
   }
 
   .ecommerce-logo,
@@ -526,6 +720,17 @@
     margin: 0 auto;
   }
 
+  .v-switch {
+    transition: all 0.3s ease;
+  }
+
+  .edit-form .alert-info {
+    padding: 12px;
+    background: rgba(var(--v-theme-surface), 0.5);
+    border-radius: 8px;
+    border: 1px solid rgba(var(--v-theme-outline), 0.2);
+  }
+
   /* Mobile adjustments */
   @media (max-width: 600px) {
     .alerts-view {
@@ -540,6 +745,7 @@
 
     .alert-actions {
       margin-top: 8px;
+      flex-wrap: wrap;
     }
   }
 
