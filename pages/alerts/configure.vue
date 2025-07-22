@@ -643,13 +643,13 @@
 
     try {
       console.log('API: Desabilitar notificações WhatsApp')
-      
+
       // Chamada para a API
       await useSanctumFetch('/api/user/notification-settings', {
         method: 'PUT',
-        body: { 
-          whatsapp_notification_enabled: false 
-        }
+        body: {
+          whatsapp_notification_enabled: false,
+        },
       })
 
       // Atualizar estado local
@@ -676,12 +676,15 @@
 
   // API para habilitar/desabilitar WhatsApp
   const enableWhatsAppNotifications = async (enable: boolean) => {
-    const { data, error } = await useSanctumFetch('/api/user/notification-settings', {
-      method: 'PUT',
-      body: {
-        whatsapp_notification_enabled: enable,
-      },
-    })
+    const { data, error } = await useSanctumFetch(
+      '/api/user/notification-settings',
+      {
+        method: 'PUT',
+        body: {
+          whatsapp_notification_enabled: enable,
+        },
+      }
+    )
 
     if (error.value) {
       throw new Error('Erro ao atualizar configurações do WhatsApp')

@@ -242,9 +242,10 @@
       )
 
       const apiResponse = response.data.value
-      const newOffers = apiResponse?.data?.data?.map((offer: OfferItem) => ({
-        ...offer,
-      })) || []
+      const newOffers =
+        apiResponse?.data?.data?.map((offer: OfferItem) => ({
+          ...offer,
+        })) || []
 
       if (resetPagination) {
         offers.value = newOffers
@@ -293,9 +294,10 @@
       )
 
       const apiResponse = response.data.value
-      const newOffers = apiResponse?.data?.data?.map((offer: OfferItem) => ({
-        ...offer,
-      })) || []
+      const newOffers =
+        apiResponse?.data?.data?.map((offer: OfferItem) => ({
+          ...offer,
+        })) || []
 
       offers.value = [...offers.value, ...newOffers]
 

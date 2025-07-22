@@ -12,7 +12,7 @@
       />
     </v-card-text>
 
-    <v-card-actions class="pa-6 pt-0">
+    <v-card-actions class="pa-6 pt-0 d-flex flex-column ga-2">
       <v-btn
         variant="outlined"
         color="primary"
@@ -24,6 +24,17 @@
         <v-icon start>mdi-external-link</v-icon>
         Ver promoção
       </v-btn>
+
+      <v-btn
+        color="primary"
+        block
+        size="large"
+        class="text-none"
+        @click="handleViewHistory"
+      >
+        <v-icon start>mdi-history</v-icon>
+        Ver histórico
+      </v-btn>
     </v-card-actions>
 
     <ProgramConfirmationModal
@@ -31,6 +42,11 @@
       :program="promotion.program"
       :guidelines="guidelines"
       @confirm="handleModalConfirm"
+    />
+
+    <PromotionHistoryModal
+      v-model="showHistoryModal"
+      :ecommerce="promotion.ecommerce"
     />
   </v-card>
 </template>
@@ -57,10 +73,12 @@
   const emit = defineEmits<{
     'view-details': [promotion: Promotion]
     'program-accessed': [promotion: Promotion]
+    'view-history': [promotion: Promotion]
   }>()
 
   // State
   const showConfirmationModal = ref(false)
+  const showHistoryModal = ref(false)
 
   // Computed
   const guidelines = computed(() => props.customGuidelines)
@@ -74,6 +92,11 @@
   const handleModalConfirm = (): void => {
     window.open(props.promotion.promotion_link, '_blank', 'noopener,noreferrer')
     emit('program-accessed', props.promotion)
+  }
+
+  const handleViewHistory = (): void => {
+    showHistoryModal.value = true
+    emit('view-history', props.promotion)
   }
 </script>
 

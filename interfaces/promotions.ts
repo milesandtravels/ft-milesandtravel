@@ -30,3 +30,26 @@ export interface PromotionResponseDTO {
   data: Promotion[]
   meta: PromotionMeta
 }
+
+export interface PromotionHistory {
+  id: number
+  ecommerce_id: number
+  program_id: number
+  current_value: string
+  previous_value: string
+  created_at: string
+  updated_at: string
+  ecommerce: Ecommerce
+  program: Program
+}
+
+export interface PromotionHistoryResponse {
+  [programId: string]: PromotionHistory[]
+}
+
+export interface PromotionHistoryChartData {
+  date: string
+  value: number
+  program: string
+  programColor: string
+}
