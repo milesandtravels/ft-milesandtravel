@@ -241,8 +241,8 @@
         }
       )
 
-      const apiData = response.data.value
-      const newOffers = apiData?.data?.map((offer: OfferItem) => ({
+      const apiResponse = response.data.value
+      const newOffers = apiResponse?.data?.data?.map((offer: OfferItem) => ({
         ...offer,
       })) || []
 
@@ -253,7 +253,7 @@
       }
 
       // Atualizar total de ofertas da API
-      totalOffers.value = apiData?.meta?.total || 0
+      totalOffers.value = apiResponse?.data?.meta?.total || 0
 
       // Verificar se há mais dados
       hasMoreData.value = newOffers.length === perPage
@@ -292,8 +292,8 @@
         }
       )
 
-      const apiData = response.data.value
-      const newOffers = apiData?.data?.map((offer: OfferItem) => ({
+      const apiResponse = response.data.value
+      const newOffers = apiResponse?.data?.data?.map((offer: OfferItem) => ({
         ...offer,
       })) || []
 
