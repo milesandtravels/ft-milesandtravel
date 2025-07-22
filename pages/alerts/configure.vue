@@ -640,14 +640,28 @@
   // Confirmar desabilitação do WhatsApp
   const confirmDisableWhatsApp = async () => {
     isLoading.value = true
+
     try {
-      await enableWhatsAppNotifications(false)
+      console.log('API: Desabilitar notificações WhatsApp')
+      
+      // Chamada para a API
+      await useSanctumFetch('/api/user/notification-settings', {
+        method: 'PUT',
+        body: { 
+          whatsapp_notification_enabled: false 
+        }
+      })
+
+      // Atualizar estado local
       whatsappEnabled.value = false
+      if (user.value) {
+        user.value.whatsapp_notification_enabled = false
+      }
+
       showDisableConfirmModal.value = false
-      verifiedPhone.value = ''
     } catch (error) {
       console.error('Erro ao desabilitar WhatsApp:', error)
-      // Reverter o estado em caso de erro
+      // Em caso de erro, reverter o estado
       whatsappEnabled.value = true
     } finally {
       isLoading.value = false
@@ -662,15 +676,20 @@
 
   // API para habilitar/desabilitar WhatsApp
   const enableWhatsAppNotifications = async (enable: boolean) => {
-    const { data, error } = await useSanctumFetch('/api/whatsapp/enable', {
+    const { data, error } = await useSanctumFetch('/api/user/notification-settings', {
       method: 'PUT',
       body: {
-        enable: enable,
+        whatsapp_notification_enabled: enable,
       },
     })
 
     if (error.value) {
       throw new Error('Erro ao atualizar configurações do WhatsApp')
+    }
+
+    // Atualizar estado local
+    if (user.value) {
+      user.value.whatsapp_notification_enabled = enable
     }
 
     return data.value
