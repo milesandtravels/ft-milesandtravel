@@ -25,7 +25,7 @@
           @click="navigateTo('/search-products')"
         >
           <v-icon start size="20" color="white" class="mr-2"
-            >mdi-gift-outline</v-icon
+            >mdi-cart</v-icon
           >
           <span class="btn-text">
             <span class="btn-main-text">Compras Bonificadas</span>
@@ -136,7 +136,7 @@
     <v-fab
       class="fab-search"
       color="primary"
-      icon="mdi-gift-outline"
+      icon="mdi-cart"
       location="bottom end"
       size="large"
       elevation="8"

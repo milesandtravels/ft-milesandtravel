@@ -58,7 +58,7 @@ export const onboardingSteps: OnboardingStep[] = [
     description:
       'Na página de ofertas, você encontra todas as oportunidades geradas a partir dos produtos que selecionou, comparando cashback, pontos e milhas de diferentes programas.',
     target: '[data-onboarding="offers-list"]',
-    icon: 'mdi-gift-outline',
+    icon: 'mdi-cart',
     animation: { icon: 'mdi-auto-fix', color: 'orange' },
     features: [
       'Ofertas dos seus produtos em Amazon, Shopee, Magazine Luiza e mais',
@@ -108,7 +108,7 @@ export const onboardingSteps: OnboardingStep[] = [
     description:
       'Transferências bonificadas são promoções onde você ganha pontos/milhas extras ao transferir entre programas. É a forma mais eficiente de multiplicar seus benefícios!',
     // SEM target - será centralizado
-    icon: 'mdi-gift',
+    icon: 'mdi-cart',
     animation: { icon: 'mdi-trending-up', color: 'purple' },
     features: [
       'Transfira 10.000 pontos e ganhe 20.000 (bônus de 100%)',

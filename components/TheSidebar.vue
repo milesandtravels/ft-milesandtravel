@@ -170,7 +170,7 @@ import { useDisplay } from 'vuetify'
     {
       title: 'Compras Bonificadas',
       subtitle: 'Encontrar produtos e ofertas',
-      icon: 'mdi-gift-outline',
+      icon: 'mdi-cart',
       route: '/search-products',
     },
     {
