@@ -235,7 +235,8 @@
             <v-btn
               color="primary"
               variant="elevated"
-              :disabled="!termsAccepted"
+              :disabled="!termsAccepted || isLoading"
+              :loading="isLoading"
               @click="acceptTerms"
               class="px-6"
             >
@@ -250,40 +251,74 @@
 </template>
 
 <script setup>
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, watch } from 'vue'
 
   // Reactive variables
   const showModal = ref(false)
   const termsAccepted = ref(false)
+  const isLoading = ref(false)
+
+  // Auth composable
+  const { user, refreshIdentity } = useSanctumAuth()
+
+  // Emit events
+  const emit = defineEmits(['terms-accepted'])
 
   // Check if terms were already accepted
   const checkTermsAcceptance = () => {
-    if (process.client) {
-      const accepted = localStorage.getItem('miles-travels-terms-accepted')
-      if (!accepted || accepted !== 'true') {
-        showModal.value = true
+    if (user.value && !user.value.terms_accepted_at) {
+      showModal.value = true
+    }
+  }
+
+  // Accept terms via API
+  const acceptTerms = async () => {
+    if (!termsAccepted.value || !user.value) return
+
+    isLoading.value = true
+
+    try {
+      const { data, error } = await useSanctumFetch('/api/user/terms-accepted', {
+        method: 'PUT',
+        body: {
+          name: user.value.name,
+          email: user.value.email
+        }
+      })
+
+      if (error.value) {
+        throw new Error('Erro ao aceitar os termos')
       }
-    }
-  }
 
-  // Accept terms and save to localStorage
-  const acceptTerms = () => {
-    if (termsAccepted.value && process.client) {
-      localStorage.setItem('miles-travels-terms-accepted', 'true')
-      localStorage.setItem('miles-travels-terms-date', new Date().toISOString())
+      // Atualizar dados do usuário
+      await refreshIdentity()
+      
       showModal.value = false
+      emit('terms-accepted')
+      console.log('🔥 EVENTO terms-accepted EMITIDO!')
+    } catch (err) {
+      console.error('Erro ao aceitar termos:', err)
+      // Aqui você pode adicionar uma notificação de erro se necessário
+    } finally {
+      isLoading.value = false
     }
-    emit('terms-accepted')
-    console.log('🔥 EVENTO terms-accepted EMITIDO!')
   }
-
-  // ADICIONAR APENAS ESTA LINHA
-  const emit = defineEmits(['terms-accepted'])
 
   // Check on component mount
   onMounted(() => {
     checkTermsAcceptance()
   })
+
+  // Watch user changes
+  watch(
+    () => user.value,
+    (newUser) => {
+      if (newUser) {
+        checkTermsAcceptance()
+      }
+    },
+    { immediate: true }
+  )
 </script>
 
 <style scoped>
