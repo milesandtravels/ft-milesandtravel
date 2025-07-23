@@ -203,7 +203,7 @@
   // Methods
   const getProgramColor = (programId: number): string => {
     const colors = [
-      '#1976D2',
+      '#0f2b46',
       '#388E3C',
       '#F57C00',
       '#7B1FA2',

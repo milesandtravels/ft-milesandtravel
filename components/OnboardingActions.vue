@@ -81,7 +81,7 @@
 
 <style scoped>
   .actions-section {
-    background: #f5f5f5;
+    background: white;
     border-top: 1px solid #e0e0e0;
     flex-shrink: 0;
   }
@@ -131,12 +131,12 @@
   }
 
   .next-btn {
-    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(15, 43, 70, 0.2) !important;
     min-width: 120px;
   }
 
   .next-btn:hover {
-    box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(15, 43, 70, 0.3) !important;
     transform: translateY(-1px);
   }
 

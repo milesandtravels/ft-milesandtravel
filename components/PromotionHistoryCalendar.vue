@@ -467,8 +467,8 @@
   }
 
   .calendar-day--today {
-    background: rgba(25, 118, 210, 0.1);
-    border-color: rgb(25, 118, 210);
+    background: rgba(15, 43, 70, 0.1);
+    border-color: rgb(15, 43, 70);
   }
 
   .calendar-day--has-data {

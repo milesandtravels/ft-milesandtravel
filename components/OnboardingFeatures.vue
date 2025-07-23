@@ -40,7 +40,7 @@
   .features-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1976d2;
+    color: #0f2b46;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -59,14 +59,14 @@
     padding: 12px;
     background: #f8f9fa;
     border-radius: 12px;
-    border-left: 3px solid #1976d2;
+    border-left: 3px solid #0f2b46;
   }
 
   .feature-number {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #1976d2;
+    background: #0f2b46;
     color: white;
     font-size: 11px;
     font-weight: 600;

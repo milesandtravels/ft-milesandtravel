@@ -273,7 +273,7 @@
 
   /* Email highlight */
   .text-primary {
-    background: linear-gradient(45deg, #1976d2, #42a5f5);
+    background: linear-gradient(45deg, #0f2b46, #1a3a5c);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

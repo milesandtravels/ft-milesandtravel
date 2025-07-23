@@ -175,7 +175,8 @@
       )
 
       if (data.value) {
-        emit('productCreated', data.value.data || data.value)
+        const responseData = data.value as any
+        emit('productCreated', responseData.data || responseData)
         closeModal()
 
         console.log('Produto criado com sucesso:', data.value)
@@ -234,8 +235,8 @@
   }
 
   .v-card-title {
-    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%) !important;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+    background: linear-gradient(135deg, #0f2b46 0%, #1a3a5c 100%) !important;
+    box-shadow: 0 2px 8px rgba(15, 43, 70, 0.2);
   }
 
   .hover-bg {
@@ -244,7 +245,7 @@
   }
 
   .hover-bg:hover {
-    background-color: rgba(25, 118, 210, 0.04);
+    background-color: rgba(15, 43, 70, 0.04);
   }
 
   .v-text-field {

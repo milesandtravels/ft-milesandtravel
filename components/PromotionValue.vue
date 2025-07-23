@@ -41,7 +41,7 @@
 
 <style scoped>
   .promotion-value {
-    background: rgba(25, 118, 210, 0.02);
+    background: rgba(15, 43, 70, 0.02);
     padding: 20px;
     border-radius: 16px;
     margin: 0 -24px -24px -24px;
@@ -57,6 +57,6 @@
 
   /* Dark theme */
   .v-theme--dark .promotion-value {
-    background: rgba(25, 118, 210, 0.08);
+    background: rgba(15, 43, 70, 0.08);
   }
 </style>

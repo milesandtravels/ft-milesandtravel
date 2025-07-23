@@ -326,7 +326,7 @@
 
   .terms-list li::before {
     content: '•';
-    color: #1976d2;
+    color: #0f2b46;
     font-weight: bold;
     font-size: 18px;
     position: absolute;
@@ -523,7 +523,7 @@
   }
 
   .email-link:hover {
-    background-color: rgba(25, 118, 210, 0.08);
+    background-color: rgba(15, 43, 70, 0.08);
     text-decoration: underline !important;
     transform: scale(1.02);
   }
@@ -534,7 +534,7 @@
 
   /* Focus styles for keyboard navigation */
   .v-btn:focus-visible {
-    outline: 2px solid #1976d2;
+    outline: 2px solid #0f2b46;
     outline-offset: 2px;
   }
 </style>

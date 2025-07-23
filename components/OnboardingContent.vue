@@ -45,7 +45,7 @@
 
 <style scoped>
   .content-area {
-    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+    background: white;
     overflow-y: auto !important;
     flex: 1 !important;
   }
@@ -60,11 +60,11 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    background: #e3f2fd;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 32px rgba(25, 118, 210, 0.2);
+    box-shadow: 0 8px 32px rgba(15, 43, 70, 0.2);
     animation: float 3s ease-in-out infinite;
   }
 

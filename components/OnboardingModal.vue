@@ -68,7 +68,7 @@
     // No mobile, fullscreen
     if (props.isMobile) {
       return {
-        position: 'fixed',
+        position: 'fixed' as const,
         top: '0',
         left: '0',
         width: '100vw',
@@ -86,7 +86,7 @@
 
     if (!element) {
       return {
-        position: 'fixed',
+        position: 'fixed' as const,
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
@@ -115,7 +115,7 @@
     }
 
     return {
-      position: 'fixed',
+      position: 'fixed' as const,
       top: `${Math.max(spacing, top)}px`,
       left: `${left}px`,
       zIndex: 10002,
@@ -142,10 +142,11 @@
   }
 
   .onboarding-card {
-    backdrop-filter: blur(10px);
+    background: white;
     border-radius: 16px !important;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid #e0e0e0;
   }
 
   .mobile-card {

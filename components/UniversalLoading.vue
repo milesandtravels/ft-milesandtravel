@@ -119,7 +119,7 @@
     width: 60px;
     height: 60px;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #1976d2;
+    border-top: 4px solid #0f2b46;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -151,7 +151,7 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #1976d2, #42a5f5);
+    background: linear-gradient(90deg, #0f2b46, #1a3a5c);
     border-radius: 4px;
     transition: width 0.3s ease;
   }

@@ -40,10 +40,10 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4caf50 0%, #66bb6a 100%);
+    background: #0f2b46;
     border-radius: 3px;
     transition: width 0.3s ease;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    box-shadow: 0 0 10px rgba(15, 43, 70, 0.3);
   }
 
   .progress-text {

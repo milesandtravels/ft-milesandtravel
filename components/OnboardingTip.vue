@@ -33,13 +33,14 @@
   }
 
   .tip-card {
-    background: linear-gradient(135deg, #fff8e1 0%, #fff3c4 100%);
-    border: 1px solid #ffecb3;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
     border-radius: 12px;
     padding: 16px;
     display: flex;
     gap: 12px;
     align-items: flex-start;
+    border-left: 3px solid #ffc107;
   }
 
   .tip-icon {
@@ -51,7 +52,6 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
   }
 
   .tip-content {
@@ -66,7 +66,7 @@
   }
 
   .tip-text {
-    color: #e65100;
+    color: #555;
     line-height: 1.4;
   }
 

@@ -484,7 +484,7 @@
   }
 
   .email-link:hover {
-    background-color: rgba(25, 118, 210, 0.1);
+    background-color: rgba(15, 43, 70, 0.1);
     text-decoration: underline !important;
     transform: scale(1.02);
   }

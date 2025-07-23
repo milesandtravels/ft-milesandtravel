@@ -272,8 +272,8 @@ import { useDisplay } from 'vuetify'
   }
 
   .menu-item.v-list-item--active {
-    background-color: rgba(25, 118, 210, 0.12);
-    color: rgb(25, 118, 210);
+    background-color: rgba(15, 43, 70, 0.12);
+    color: rgb(15, 43, 70);
   }
 
   .sidebar-footer {
@@ -357,7 +357,7 @@ import { useDisplay } from 'vuetify'
 
   /* Accessibility improvements */
   .menu-item:focus {
-    outline: 2px solid rgba(25, 118, 210, 0.5);
+    outline: 2px solid rgba(15, 43, 70, 0.5);
     outline-offset: 2px;
   }
 

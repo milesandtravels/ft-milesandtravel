@@ -27,16 +27,16 @@
     const padding = 10
 
     return {
-      position: 'fixed',
+      position: 'fixed' as const,
       top: `${rect.top - padding}px`,
       left: `${rect.left - padding}px`,
       width: `${rect.width + padding * 2}px`,
       height: `${rect.height + padding * 2}px`,
       borderRadius: '8px',
       background: 'rgba(255, 255, 255, 0.9)',
-      border: '3px solid #1976d2',
+      border: '3px solid #0f2b46',
       zIndex: 10001,
-      pointerEvents: 'none',
+      pointerEvents: 'none' as const,
       transition: 'all 0.3s ease',
     }
   })

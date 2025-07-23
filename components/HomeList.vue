@@ -497,7 +497,7 @@ import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
 
   .search-products-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(25, 118, 210, 0.3) !important;
+    box-shadow: 0 6px 20px rgba(15, 43, 70, 0.3) !important;
   }
 
   .btn-text {
@@ -542,7 +542,7 @@ import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
     bottom: 24px;
     right: 24px;
     z-index: 1000;
-    box-shadow: 0 8px 24px rgba(25, 118, 210, 0.4) !important;
+    box-shadow: 0 8px 24px rgba(15, 43, 70, 0.4) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Remove qualquer fundo branco */
@@ -577,7 +577,7 @@ import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
   /* Estados de hover e focus sem fundo branco */
   .fab-search:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(25, 118, 210, 0.5) !important;
+    box-shadow: 0 12px 32px rgba(15, 43, 70, 0.5) !important;
     background-color: rgba(var(--v-theme-primary), 0.9) !important;
   }
 

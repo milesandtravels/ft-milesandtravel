@@ -205,7 +205,7 @@
               </p>
               <p
                 class="text-subtitle-2 font-weight-bold mt-2"
-                style="color: #1976d2"
+                style="color: #0f2b46"
               >
                 Miles&Travels – Tornando suas compras mais inteligentes.
               </p>
