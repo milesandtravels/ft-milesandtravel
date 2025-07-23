@@ -1,42 +1,190 @@
 <template>
   <v-container class="pa-2 pa-md-4">
-    <!-- Page Header -->
-    <div class="mb-4">
-      <div
-        :class="{
-          'd-flex justify-space-between align-center': !mobile,
-        }"
-      >
-        <div class="">
-          <h1 class="text-h5 text-md-h4 font-weight-bold mb-1">
-            Promoções em Destaque
-          </h1>
-          <p class="text-caption text-md-body-2 text-medium-emphasis mb-3">
-            Descubra as melhores promoções e ofertas disponíveis
-          </p>
-        </div>
+    <!-- Welcome Header -->
+    <div class="welcome-section mb-8">
+      <div class="text-center">
+        <h1 class="text-h3 text-md-h2 font-weight-bold mb-3 text-primary">
+          Miles&Travels
+        </h1>
+        <p class="text-h6 text-md-h5 mb-6 text-medium-emphasis">
+          Maximize seus benefícios em compras online
+        </p>
         <v-btn
-          :block="mobile"
-          :width="mobile ? '100%' : '280px'"
-          color="primary"
           size="large"
+          color="primary"
           variant="flat"
-          class="search-products-btn"
+          rounded="xl"
+          class="px-8 py-3 text-h6"
           @click="navigateTo('/search-products')"
         >
-          <v-icon start size="20" color="white" class="mr-2"
-            >mdi-cart</v-icon
-          >
-          <span class="btn-text">
-            <span class="btn-main-text">Compras Bonificadas</span>
-            <span class="btn-sub-text">Encontre ofertas exclusivas</span>
-          </span>
-          <v-icon end size="16" class="ml-2">mdi-arrow-right</v-icon>
+          <v-icon start size="24">mdi-rocket-launch</v-icon>
+          Começar agora
         </v-btn>
       </div>
     </div>
 
+    <!-- Quick Actions Grid -->
+    <div class="quick-actions-section mb-8">
+      <h2 class="text-h4 font-weight-bold mb-6 text-center">
+        Ações Rápidas
+      </h2>
+      <v-row>
+        <v-col cols="12" sm="6" md="3">
+          <v-card
+            class="quick-action-card pa-6 text-center"
+            variant="flat"
+            color="primary"
+            hover
+            @click="navigateTo('/search-products')"
+          >
+            <v-icon class="mb-4" color="white" size="48">mdi-magnify</v-icon>
+            <h3 class="text-h6 font-weight-bold mb-2 text-white">
+              Busca Inteligente
+            </h3>
+            <p class="text-body-2 text-white opacity-90">
+              Encontre produtos e compare benefícios
+            </p>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="3">
+          <v-card
+            class="quick-action-card pa-6 text-center"
+            variant="outlined"
+            hover
+            @click="navigateTo('/alerts/create')"
+          >
+            <v-icon class="mb-4" color="primary" size="48">mdi-bell-plus</v-icon>
+            <h3 class="text-h6 font-weight-bold mb-2">
+              Criar Alerta
+            </h3>
+            <p class="text-body-2 text-medium-emphasis">
+              Configure alertas personalizados
+            </p>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="3">
+          <v-card
+            class="quick-action-card pa-6 text-center"
+            variant="outlined"
+            hover
+            @click="navigateTo('/promotions')"
+          >
+            <v-icon class="mb-4" color="primary" size="48">mdi-tag-multiple</v-icon>
+            <h3 class="text-h6 font-weight-bold mb-2">
+              Promoções
+            </h3>
+            <p class="text-body-2 text-medium-emphasis">
+              Veja todas as promoções ativas
+            </p>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="3">
+          <v-card
+            class="quick-action-card pa-6 text-center"
+            variant="outlined"
+            hover
+            @click="navigateTo('/alerts/view')"
+          >
+            <v-icon class="mb-4" color="primary" size="48">mdi-whatsapp</v-icon>
+            <h3 class="text-h6 font-weight-bold mb-2">
+              Alertas WhatsApp
+            </h3>
+            <p class="text-body-2 text-medium-emphasis">
+              Configure notificações via WhatsApp
+            </p>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
+
+    <!-- Features Overview -->
+    <div class="features-section mb-8">
+      <h2 class="text-h4 font-weight-bold mb-6 text-center">
+        Como Funciona
+      </h2>
+      <v-row>
+        <v-col cols="12" md="4">
+          <v-card class="feature-card pa-8 text-center" variant="outlined">
+            <v-icon class="mb-4" color="primary" size="64">mdi-bell-ring</v-icon>
+            <h3 class="text-h5 font-weight-bold mb-4">Alertas Personalizados</h3>
+            <p class="text-body-1 mb-6">
+              Configure alertas por loja, programa de benefícios ou tipo de recompensa.
+              Receba notificações via WhatsApp, e-mail e na plataforma.
+            </p>
+            <v-chip class="mr-2 mb-2" color="primary" variant="flat" size="small">
+              WhatsApp
+            </v-chip>
+            <v-chip class="mr-2 mb-2" color="primary" variant="outlined" size="small">
+              E-mail
+            </v-chip>
+            <v-chip class="mb-2" color="primary" variant="tonal" size="small">
+              Plataforma
+            </v-chip>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card class="feature-card pa-8 text-center" variant="outlined">
+            <v-icon class="mb-4" color="primary" size="64">mdi-chart-line</v-icon>
+            <h3 class="text-h5 font-weight-bold mb-4">Histórico de Promoções</h3>
+            <p class="text-body-1 mb-6">
+              Acompanhe o histórico de variação de valores e calendário de promoções
+              para identificar o melhor momento para comprar.
+            </p>
+            <v-chip class="mr-2 mb-2" color="primary" variant="flat" size="small">
+              Calendário
+            </v-chip>
+            <v-chip class="mr-2 mb-2" color="primary" variant="outlined" size="small">
+              Gráficos
+            </v-chip>
+            <v-chip class="mb-2" color="primary" variant="tonal" size="small">
+              Tendências
+            </v-chip>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card class="feature-card pa-8 text-center" variant="outlined">
+            <v-icon class="mb-4" color="primary" size="64">mdi-magnify</v-icon>
+            <h3 class="text-h5 font-weight-bold mb-4">Busca Inteligente</h3>
+            <p class="text-body-1 mb-6">
+              Busque produtos específicos e compare automaticamente quais lojas
+              oferecem os melhores benefícios em milhas, pontos ou cashback.
+            </p>
+            <v-chip class="mr-2 mb-2" color="primary" variant="flat" size="small">
+              Milhas
+            </v-chip>
+            <v-chip class="mr-2 mb-2" color="primary" variant="outlined" size="small">
+              Pontos
+            </v-chip>
+            <v-chip class="mb-2" color="primary" variant="tonal" size="small">
+              Cashback
+            </v-chip>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
+
     <!-- Promotion Sections -->
+    <div class="promotions-highlight-section mb-8">
+      <div class="text-center mb-6">
+        <h2 class="text-h4 font-weight-bold mb-4">
+          Promoções em Destaque
+        </h2>
+        <p class="text-h6 text-medium-emphasis mb-6">
+          Descubra as melhores promoções disponíveis agora
+        </p>
+        <v-btn
+          size="large"
+          variant="outlined"
+          color="primary"
+          rounded="xl"
+          class="px-6"
+          @click="navigateTo('/promotions')"
+        >
+          Ver todas as promoções
+          <v-icon end size="20" class="ml-2">mdi-arrow-right</v-icon>
+        </v-btn>
+      </div>
+    </div>
     <div
       v-for="(section, index) in promotionSections"
       :key="section.id"
@@ -148,37 +296,8 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
-
-  // Types
-  interface Program {
-    id: number
-    name: string
-    logo_url: string
-    value_per_mile?: number
-  }
-
-  interface Ecommerce {
-    id: number
-    name: string
-    logo_url: string
-  }
-
-  type ProgramType = 'miles' | 'points' | 'cashback'
-
-  interface Promotion {
-    id: number
-    current_value: number
-    program_type: ProgramType
-    program: Program
-    ecommerce: Ecommerce
-  }
-
-  interface PromotionResponse {
-    data: Promotion[]
-    meta?: any
-    links?: any
-  }
+import { useDisplay } from 'vuetify'
+import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
 
   interface PromotionSection {
     id: string
@@ -287,7 +406,7 @@
         query['program_types[]'] = section.filterType
       }
 
-      const { data } = await useSanctumFetch<PromotionResponse>(
+      const { data } = await useSanctumFetch<PromotionResponseDTO>(
         '/api/promotions',
         {
           query,
@@ -326,12 +445,46 @@
 </script>
 
 <style scoped>
+  /* Welcome Section */
+  .welcome-section {
+    padding: 48px 16px;
+    margin-bottom: 48px;
+  }
+
+  /* Quick Actions */
+  .quick-action-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border-radius: 20px;
+    height: 100%;
+    min-height: 180px;
+  }
+
+  .quick-action-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(var(--v-theme-primary), 0.3);
+  }
+
+  /* Feature Cards */
+  .feature-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 20px;
+    height: 100%;
+    min-height: 320px;
+    border: 2px solid rgba(var(--v-theme-primary), 0.1);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(var(--v-theme-primary), 0.15);
+    border-color: rgba(var(--v-theme-primary), 0.3);
+  }
+
   /* Custom styles */
   .promotion-section {
-    border-radius: 16px;
-    background: rgba(var(--v-theme-surface), 0.7);
-    padding: 16px;
-    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 32px;
   }
 
   /* Botão Compras Bonificadas - Padrão Vuetify */
@@ -503,10 +656,37 @@
     }
   }
 
-  /* Dark theme enhancements */
-  .v-theme--dark .promotion-section {
-    background: rgba(var(--v-theme-surface), 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Responsive Design */
+  @media (max-width: 960px) {
+    .welcome-section {
+      padding: 32px 16px;
+      margin-bottom: 32px;
+    }
+
+    .quick-action-card {
+      min-height: 160px;
+    }
+
+    .feature-card {
+      min-height: 280px;
+      margin-bottom: 24px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .welcome-section {
+      padding: 24px 12px;
+    }
+
+    .quick-action-card {
+      min-height: 140px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card {
+      min-height: 240px;
+      margin-bottom: 16px;
+    }
   }
 
   /* Dark theme FAB */
@@ -516,5 +696,36 @@
 
   .v-theme--dark .fab-search .v-icon {
     color: white !important;
+  }
+
+
+
+  /* Enhanced Animations */
+  .quick-actions-section,
+  .features-section,
+  .promotions-highlight-section {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .quick-actions-section {
+    animation-delay: 0.1s;
+  }
+
+  .features-section {
+    animation-delay: 0.2s;
+  }
+
+  .promotions-highlight-section {
+    animation-delay: 0.3s;
+  }
+
+  /* Dark theme enhancements */
+  .v-theme--dark .feature-card {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .v-theme--dark .feature-card:hover {
+    border-color: rgba(var(--v-theme-primary), 0.4);
+    box-shadow: 0 16px 48px rgba(var(--v-theme-primary), 0.2);
   }
 </style>
