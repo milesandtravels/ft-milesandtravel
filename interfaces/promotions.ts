@@ -2,6 +2,7 @@ import type { Ecommerce } from './ecommerces'
 import type { Program } from './program'
 
 export interface Promotion {
+  id: number
   current_value: number
   program: Program
   ecommerce: Ecommerce
