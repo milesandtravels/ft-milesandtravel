@@ -90,6 +90,16 @@
                 >
                   Continuar com Google
                 </v-btn>
+                <v-btn
+                  block
+                  class="google-btn mt-2"
+                  prepend-icon="mdi-account-plus"
+                  @click="navigateTo('register')"
+                  size="large"
+                  variant="outlined"
+                >
+                  Cadastre-se aqui
+                </v-btn>
 
                 <!-- Support Section -->
                 <div class="support-section">
@@ -101,7 +111,7 @@
                       color="primary"
                       variant="outlined"
                       size="small"
-                      prepend-icon="mdi-information"
+                      prepend-icon="mdi-account-plus"
                       @click="navigateTo('register')"
                     >
                       Cadastre-se aqui

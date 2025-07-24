@@ -209,7 +209,6 @@
       answer: `Sem crise! Na tela de login, clique em <strong>"Esqueci minha senha"</strong> e siga as instruções. 
              Você receberá um e-mail para criar uma nova senha rapidinho.`,
     },
- 
     {
       icon: '👥',
       question: 'Quem pode usar o Miles&Travels?',
