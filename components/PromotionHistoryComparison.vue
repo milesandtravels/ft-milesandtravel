@@ -109,143 +109,6 @@
       </v-row>
     </div>
 
-    <!-- Comparison Chart -->
-    <div class="comparison-chart mb-6">
-      <v-card elevation="2">
-        <v-card-title class="d-flex align-center justify-space-between">
-          <span>Comparação de Valores ao Longo do Tempo</span>
-          <v-btn-toggle
-            v-model="chartTimeRange"
-            variant="outlined"
-            density="compact"
-            mandatory
-          >
-            <v-btn value="7d" size="small">7D</v-btn>
-            <v-btn value="30d" size="small">30D</v-btn>
-            <v-btn value="90d" size="small">90D</v-btn>
-            <v-btn value="all" size="small">Tudo</v-btn>
-          </v-btn-toggle>
-        </v-card-title>
-
-        <v-card-text>
-          <div class="comparison-chart-container">
-            <div
-              v-if="filteredComparisonData.length === 0"
-              class="text-center py-8"
-            >
-              <v-icon
-                icon="mdi-chart-timeline-variant"
-                size="48"
-                color="grey-lighten-1"
-                class="mb-3"
-              />
-              <p class="text-body-1 text-medium-emphasis">
-                Nenhum dado encontrado para o período selecionado
-              </p>
-            </div>
-
-            <div v-else class="chart-wrapper">
-              <!-- Mini Chart using SVG -->
-              <svg
-                :width="comparisonChartDimensions.width"
-                :height="comparisonChartDimensions.height"
-                class="comparison-svg-chart"
-              >
-                <!-- Grid Lines -->
-                <g class="grid">
-                  <line
-                    v-for="(tick, index) in comparisonYTicks"
-                    :key="`h-grid-${index}`"
-                    :x1="comparisonChartDimensions.margin.left"
-                    :y1="getComparisonYPosition(tick)"
-                    :x2="
-                      comparisonChartDimensions.width -
-                      comparisonChartDimensions.margin.right
-                    "
-                    :y2="getComparisonYPosition(tick)"
-                    stroke="rgba(0,0,0,0.1)"
-                    stroke-width="1"
-                  />
-                </g>
-
-                <!-- Chart Lines -->
-                <g class="lines">
-                  <path
-                    v-for="(line, programId) in comparisonChartLines"
-                    :key="`line-${programId}`"
-                    :d="line.path"
-                    :stroke="line.color"
-                    stroke-width="2"
-                    fill="none"
-                    class="comparison-chart-line"
-                  />
-                </g>
-
-                <!-- Data Points -->
-                <g class="points">
-                  <circle
-                    v-for="(point, index) in comparisonChartPoints"
-                    :key="`point-${index}`"
-                    :cx="point.x"
-                    :cy="point.y"
-                    :r="3"
-                    :fill="point.color"
-                    class="comparison-chart-point"
-                  />
-                </g>
-
-                <!-- Axes -->
-                <g class="axes">
-                  <line
-                    :x1="comparisonChartDimensions.margin.left"
-                    :y1="
-                      comparisonChartDimensions.height -
-                      comparisonChartDimensions.margin.bottom
-                    "
-                    :x2="
-                      comparisonChartDimensions.width -
-                      comparisonChartDimensions.margin.right
-                    "
-                    :y2="
-                      comparisonChartDimensions.height -
-                      comparisonChartDimensions.margin.bottom
-                    "
-                    stroke="rgba(0,0,0,0.3)"
-                    stroke-width="1"
-                  />
-                  <line
-                    :x1="comparisonChartDimensions.margin.left"
-                    :y1="comparisonChartDimensions.margin.top"
-                    :x2="comparisonChartDimensions.margin.left"
-                    :y2="
-                      comparisonChartDimensions.height -
-                      comparisonChartDimensions.margin.bottom
-                    "
-                    stroke="rgba(0,0,0,0.3)"
-                    stroke-width="1"
-                  />
-                </g>
-
-                <!-- Axis Labels -->
-                <g class="axis-labels">
-                  <text
-                    v-for="(tick, index) in comparisonYTicks"
-                    :key="`y-label-${index}`"
-                    :x="comparisonChartDimensions.margin.left - 10"
-                    :y="getComparisonYPosition(tick) + 4"
-                    text-anchor="end"
-                    class="comparison-axis-label"
-                  >
-                    {{ formatValue(tick, 'cashback') }}
-                  </text>
-                </g>
-              </svg>
-            </div>
-          </div>
-        </v-card-text>
-      </v-card>
-    </div>
-
     <!-- Detailed Comparison Table -->
     <div class="comparison-table">
       <v-card elevation="2">
@@ -296,13 +159,13 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import type {
-    PromotionHistoryResponse,
-    PromotionHistory,
-  } from '~/interfaces/promotions'
-  import type { Ecommerce } from '~/interfaces/ecommerces'
-  import type { Program } from '~/interfaces/program'
+  import { computed, ref } from 'vue'
+import type { Ecommerce } from '~/interfaces/ecommerces'
+import type { Program } from '~/interfaces/program'
+import type {
+  PromotionHistory,
+  PromotionHistoryResponse,
+} from '~/interfaces/promotions'
 
   interface Props {
     historyData: PromotionHistoryResponse
