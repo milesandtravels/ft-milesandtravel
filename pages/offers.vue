@@ -22,18 +22,6 @@
               Voltar para Compras Bonificadas
             </v-btn>
           </div>
-
-          <!-- Filtros rápidos (chips) -->
-          <div class="d-flex align-center gap-2 flex-wrap">
-            <v-btn
-              v-if="selectedOffers.length > 0"
-              color="success"
-              variant="flat"
-              @click="processSelectedOffers"
-            >
-              Processar {{ selectedOffers.length }} Selecionadas
-            </v-btn>
-          </div>
         </div>
       </v-col>
     </v-row>
@@ -89,10 +77,8 @@
       :loading="loading"
       :loading-more="loadingMore"
       :has-more-data="hasMoreData"
-      @update:selection="handleOfferSelection"
       @load-more="loadMoreOffers"
     />
-
   </v-container>
 </template>
 
@@ -109,7 +95,6 @@ import type {
     middleware: ['sanctum:auth'],
   })
 
-  // Estados reativos
   const loading = ref<boolean>(false)
   const loadingMore = ref<boolean>(false)
   const route = useRoute()
@@ -128,13 +113,6 @@ import type {
     cashback_programs: [],
     program_types: [],
   })
-
-
-
-  // Computed
-  const selectedOffers = computed<OfferItem[]>(() =>
-    offers.value.filter(offer => offer.selected)
-  )
 
   const activeFiltersCount = computed(() => {
     let count = 0
@@ -190,8 +168,6 @@ import type {
     return filtered
   })
 
-  // Métodos
-
   const fetchOffers = async (
     filters?: OfferFilters,
     resetPagination: boolean = true
@@ -205,7 +181,6 @@ import type {
         offers.value = []
       }
 
-      // Preparar payload para POST
       const payload = {
         ...(filters || {
           ecommerces: [],
@@ -217,8 +192,7 @@ import type {
         }),
       }
 
-      // Fazer requisição POST com filtros no corpo
-      const {data} = await useSanctumFetch<PaginatedOffersApiResponse>(
+      const { data } = await useSanctumFetch<PaginatedOffersApiResponse>(
         `/api/searches/${route.query.searchId as string}/offers`,
         {
           method: 'POST',
@@ -230,10 +204,7 @@ import type {
         }
       )
 
-      
-      const apiResponse = data.value
-      const newOffers = apiResponse?.data?.data || []
-      const meta = apiResponse?.data?.meta
+      const newOffers = data.value?.data as OfferItem[]
 
       if (resetPagination) {
         offers.value = newOffers
@@ -241,16 +212,8 @@ import type {
         offers.value = [...offers.value, ...newOffers]
       }
 
-      // Atualizar total de ofertas da API
-      totalOffers.value = meta?.total || 0
-
-      // Verificar se há mais dados
+      totalOffers.value = data.value?.meta?.total || 0
       hasMoreData.value = newOffers.length === perPage
-
-
-    } catch (error) {
-      console.error('Erro ao buscar ofertas:', error)
-      console.error('Erro ao carregar ofertas:', error)
     } finally {
       loading.value = false
     }
@@ -263,15 +226,13 @@ import type {
       loadingMore.value = true
       currentPage.value += 1
 
-      // Preparar payload para POST
       const payload = {
         ...activeFilters.value,
         page: currentPage.value,
         per_page: perPage,
       }
 
-      // Fazer requisição POST com filtros no corpo
-      const response = await useSanctumFetch<PaginatedOffersApiResponse>(
+      const { data } = await useSanctumFetch<PaginatedOffersApiResponse>(
         `/api/searches/${route.query.searchId as string}/offers`,
         {
           method: 'POST',
@@ -279,15 +240,12 @@ import type {
         }
       )
 
-      const apiResponse = response.data.value
-      const newOffers = apiResponse?.data?.data || []
+      const newOffers = data.value?.data as OfferItem[]
 
       offers.value = [...offers.value, ...newOffers]
 
-      // Verificar se há mais dados
       hasMoreData.value = newOffers.length === perPage
     } catch (error) {
-      console.error('Erro ao carregar mais ofertas:', error)
       console.error('Erro ao carregar mais ofertas:', error)
     } finally {
       loadingMore.value = false
@@ -295,7 +253,6 @@ import type {
   }
 
   const handleFiltersApplied = (filteredOffers: OfferItem[]): void => {
-    // Resetar paginação quando novos filtros são aplicados
     currentPage.value = 1
     hasMoreData.value = true
 
@@ -303,7 +260,6 @@ import type {
       ...offer,
       selected: false,
     }))
-
   }
 
   const handleFilterClear = (): void => {
@@ -315,51 +271,17 @@ import type {
       cashback_programs: [],
       program_types: [],
     }
-    // Recarregar ofertas sem filtros e resetar paginação
     fetchOffers(undefined, true)
-
-  }
-
-  const handleOfferSelection = (updatedOffer: OfferItem): void => {
-    const index = offers.value.findIndex(
-      offer =>
-        offer.ecommerce.id === updatedOffer.ecommerce.id &&
-        offer.product.id === updatedOffer.product.id &&
-        offer.program.id === updatedOffer.program.id
-    )
-
-    if (index !== -1) {
-      offers.value[index] = { ...updatedOffer }
-
-
-    }
-  }
-
-  const processSelectedOffers = (): void => {
-    if (selectedOffers.value.length === 0) {
-      return
-    }
-
-    offers.value.forEach(offer => {
-      offer.selected = false
-    })
   }
 
   const goBackToSearch = (): void => {
     router.push(`/search-products?searchId=${route.query.searchId as string}`)
   }
 
-
-
-  // Watchers
-  // Removido watcher do selectedProgramType pois os chips foram removidos
-
-  // Lifecycle
   onMounted(async () => {
     await fetchOffers()
   })
 
-  // Meta tags para SEO
   useSeoMeta({
     title: 'Ofertas com Cashback, Pontos e Milhas',
     ogTitle: 'Ofertas com Cashback, Pontos e Milhas',

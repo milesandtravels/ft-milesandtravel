@@ -25,9 +25,7 @@
 
     <!-- Quick Actions Grid -->
     <div class="quick-actions-section mb-8">
-      <h2 class="text-h4 font-weight-bold mb-6 text-center">
-        Ações Rápidas
-      </h2>
+      <h2 class="text-h4 font-weight-bold mb-6 text-center">Ações Rápidas</h2>
       <v-row>
         <v-col cols="12" sm="6" md="3">
           <v-card
@@ -53,10 +51,10 @@
             hover
             @click="navigateTo('/alerts/create')"
           >
-            <v-icon class="mb-4" color="primary" size="48">mdi-bell-plus</v-icon>
-            <h3 class="text-h6 font-weight-bold mb-2">
-              Criar Alerta
-            </h3>
+            <v-icon class="mb-4" color="primary" size="48"
+              >mdi-bell-plus</v-icon
+            >
+            <h3 class="text-h6 font-weight-bold mb-2">Criar Alerta</h3>
             <p class="text-body-2 text-medium-emphasis">
               Configure alertas personalizados
             </p>
@@ -69,10 +67,10 @@
             hover
             @click="navigateTo('/promotions')"
           >
-            <v-icon class="mb-4" color="primary" size="48">mdi-tag-multiple</v-icon>
-            <h3 class="text-h6 font-weight-bold mb-2">
-              Promoções
-            </h3>
+            <v-icon class="mb-4" color="primary" size="48"
+              >mdi-tag-multiple</v-icon
+            >
+            <h3 class="text-h6 font-weight-bold mb-2">Promoções</h3>
             <p class="text-body-2 text-medium-emphasis">
               Veja todas as promoções ativas
             </p>
@@ -86,9 +84,7 @@
             @click="navigateTo('/alerts/view')"
           >
             <v-icon class="mb-4" color="primary" size="48">mdi-whatsapp</v-icon>
-            <h3 class="text-h6 font-weight-bold mb-2">
-              Alertas WhatsApp
-            </h3>
+            <h3 class="text-h6 font-weight-bold mb-2">Alertas WhatsApp</h3>
             <p class="text-body-2 text-medium-emphasis">
               Configure notificações via WhatsApp
             </p>
@@ -99,22 +95,35 @@
 
     <!-- Features Overview -->
     <div class="features-section mb-8">
-      <h2 class="text-h4 font-weight-bold mb-6 text-center">
-        Como Funciona
-      </h2>
+      <h2 class="text-h4 font-weight-bold mb-6 text-center">Como Funciona</h2>
       <v-row>
         <v-col cols="12" md="4">
           <v-card class="feature-card pa-8 text-center" variant="outlined">
-            <v-icon class="mb-4" color="primary" size="64">mdi-bell-ring</v-icon>
-            <h3 class="text-h5 font-weight-bold mb-4">Alertas Personalizados</h3>
+            <v-icon class="mb-4" color="primary" size="64"
+              >mdi-bell-ring</v-icon
+            >
+            <h3 class="text-h5 font-weight-bold mb-4">
+              Alertas Personalizados
+            </h3>
             <p class="text-body-1 mb-6">
-              Configure alertas por loja, programa de benefícios ou tipo de recompensa.
-              Receba notificações via WhatsApp, e-mail e na plataforma.
+              Configure alertas por loja, programa de benefícios ou tipo de
+              recompensa. Receba notificações via WhatsApp, e-mail e na
+              plataforma.
             </p>
-            <v-chip class="mr-2 mb-2" color="primary" variant="flat" size="small">
+            <v-chip
+              class="mr-2 mb-2"
+              color="primary"
+              variant="flat"
+              size="small"
+            >
               WhatsApp
             </v-chip>
-            <v-chip class="mr-2 mb-2" color="primary" variant="outlined" size="small">
+            <v-chip
+              class="mr-2 mb-2"
+              color="primary"
+              variant="outlined"
+              size="small"
+            >
               E-mail
             </v-chip>
             <v-chip class="mb-2" color="primary" variant="tonal" size="small">
@@ -124,16 +133,30 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-card class="feature-card pa-8 text-center" variant="outlined">
-            <v-icon class="mb-4" color="primary" size="64">mdi-chart-line</v-icon>
-            <h3 class="text-h5 font-weight-bold mb-4">Histórico de Promoções</h3>
+            <v-icon class="mb-4" color="primary" size="64"
+              >mdi-chart-line</v-icon
+            >
+            <h3 class="text-h5 font-weight-bold mb-4">
+              Histórico de Promoções
+            </h3>
             <p class="text-body-1 mb-6">
-              Acompanhe o histórico de variação de valores e calendário de promoções
-              para identificar o melhor momento para comprar.
+              Acompanhe o histórico de variação de valores e calendário de
+              promoções para identificar o melhor momento para comprar.
             </p>
-            <v-chip class="mr-2 mb-2" color="primary" variant="flat" size="small">
+            <v-chip
+              class="mr-2 mb-2"
+              color="primary"
+              variant="flat"
+              size="small"
+            >
               Calendário
             </v-chip>
-            <v-chip class="mr-2 mb-2" color="primary" variant="outlined" size="small">
+            <v-chip
+              class="mr-2 mb-2"
+              color="primary"
+              variant="outlined"
+              size="small"
+            >
               Gráficos
             </v-chip>
             <v-chip class="mb-2" color="primary" variant="tonal" size="small">
@@ -149,10 +172,20 @@
               Busque produtos específicos e compare automaticamente quais lojas
               oferecem os melhores benefícios em milhas, pontos ou cashback.
             </p>
-            <v-chip class="mr-2 mb-2" color="primary" variant="flat" size="small">
+            <v-chip
+              class="mr-2 mb-2"
+              color="primary"
+              variant="flat"
+              size="small"
+            >
               Milhas
             </v-chip>
-            <v-chip class="mr-2 mb-2" color="primary" variant="outlined" size="small">
+            <v-chip
+              class="mr-2 mb-2"
+              color="primary"
+              variant="outlined"
+              size="small"
+            >
               Pontos
             </v-chip>
             <v-chip class="mb-2" color="primary" variant="tonal" size="small">
@@ -166,9 +199,7 @@
     <!-- Promotion Sections -->
     <div class="promotions-highlight-section mb-8">
       <div class="text-center mb-6">
-        <h2 class="text-h4 font-weight-bold mb-4">
-          Promoções em Destaque
-        </h2>
+        <h2 class="text-h4 font-weight-bold mb-4">Promoções em Destaque</h2>
         <p class="text-h6 text-medium-emphasis mb-6">
           Descubra as melhores promoções disponíveis agora
         </p>
@@ -296,8 +327,8 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-import { useDisplay } from 'vuetify'
-import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
+  import { useDisplay } from 'vuetify'
+  import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
 
   interface PromotionSection {
     id: string
@@ -697,8 +728,6 @@ import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
   .v-theme--dark .fab-search .v-icon {
     color: white !important;
   }
-
-
 
   /* Enhanced Animations */
   .quick-actions-section,

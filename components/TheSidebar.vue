@@ -113,8 +113,8 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useDisplay } from 'vuetify'
+  import { useRouter } from 'vue-router'
+  import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {

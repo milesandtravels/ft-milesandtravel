@@ -278,13 +278,16 @@
     isLoading.value = true
 
     try {
-      const { data, error } = await useSanctumFetch('/api/user/terms-accepted', {
-        method: 'PUT',
-        body: {
-          name: user.value.name,
-          email: user.value.email
+      const { data, error } = await useSanctumFetch(
+        '/api/user/terms-accepted',
+        {
+          method: 'PUT',
+          body: {
+            name: user.value.name,
+            email: user.value.email,
+          },
         }
-      })
+      )
 
       if (error.value) {
         throw new Error('Erro ao aceitar os termos')
@@ -292,7 +295,7 @@
 
       // Atualizar dados do usuário
       await refreshIdentity()
-      
+
       showModal.value = false
       emit('terms-accepted')
       console.log('🔥 EVENTO terms-accepted EMITIDO!')
@@ -312,7 +315,7 @@
   // Watch user changes
   watch(
     () => user.value,
-    (newUser) => {
+    newUser => {
       if (newUser) {
         checkTermsAcceptance()
       }
