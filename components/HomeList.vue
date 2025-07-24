@@ -573,6 +573,7 @@
     bottom: 24px;
     right: 24px;
     z-index: 1000;
+    border-radius: 50%;
     box-shadow: 0 8px 24px rgba(15, 43, 70, 0.4) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
