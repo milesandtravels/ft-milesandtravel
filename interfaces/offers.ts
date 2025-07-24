@@ -58,10 +58,6 @@ export interface OfferItem {
 
 export interface OffersApiResponse {
   data: OfferItem[]
-}
-
-export interface PaginatedOffersApiResponse {
-  data: OfferItem[]
   links: {
     first: string
     last: string

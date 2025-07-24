@@ -88,7 +88,7 @@ import OffersList from '~/components/OffersList.vue'
 import type {
   OfferFilters,
   OfferItem,
-  PaginatedOffersApiResponse,
+  OffersApiResponse,
 } from '~/interfaces/offers'
 
   definePageMeta({
@@ -192,7 +192,7 @@ import type {
         }),
       }
 
-      const { data } = await useSanctumFetch<PaginatedOffersApiResponse>(
+      const { data } = await useSanctumFetch<OffersApiResponse>(
         `/api/searches/${route.query.searchId as string}/offers`,
         {
           method: 'POST',
@@ -232,7 +232,7 @@ import type {
         per_page: perPage,
       }
 
-      const { data } = await useSanctumFetch<PaginatedOffersApiResponse>(
+      const { data } = await useSanctumFetch<OffersApiResponse>(
         `/api/searches/${route.query.searchId as string}/offers`,
         {
           method: 'POST',
