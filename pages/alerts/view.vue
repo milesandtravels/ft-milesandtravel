@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ProgramType } from '~/interfaces/program'
+
   interface Program {
     id: number
     name: string
@@ -21,7 +23,7 @@
     program: Program | null
     ecommerce: Ecommerce | null
     ecommerce_category: string | null
-    program_type: string | null
+    program_type: ProgramType
     active: boolean
     threshold: string
     created_at: string
@@ -452,6 +454,14 @@
                       Alerta a partir de
                       <strong>{{ alert.threshold }}</strong> pontos
                     </template>
+                    <template
+                      v-else-if="
+                        (alert.program?.type || alert.program_type) === 'miles'
+                      "
+                    >
+                      Alerta a partir de
+                      <strong>{{ alert.threshold }}</strong> milhas
+                    </template>
                     <template v-else>
                       Alerta a partir de <strong>{{ alert.threshold }}%</strong>
                     </template>
@@ -590,28 +600,16 @@
                 (editingAlert.program?.type || editingAlert.program_type) ===
                 'points'
                   ? 'pontos'
-                  : '%'
+                  : (editingAlert.program?.type || editingAlert.program_type) ===
+                    'miles'
+                    ? 'milhas'
+                    : '%'
               "
               type="number"
               variant="outlined"
               density="comfortable"
               class="mb-4"
             />
-
-            <!-- Status do alerta -->
-            <div class="d-flex align-center justify-space-between mb-4">
-              <div>
-                <p class="text-subtitle-2 mb-1">Status do Alerta</p>
-                <p class="text-caption text-medium-emphasis">
-                  {{
-                    alertActive
-                      ? 'Alerta ativo e funcionando'
-                      : 'Alerta pausado'
-                  }}
-                </p>
-              </div>
-              <v-switch v-model="alertActive" color="primary" hide-details />
-            </div>
           </div>
         </v-card-text>
 
