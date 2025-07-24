@@ -209,12 +209,7 @@
       answer: `Sem crise! Na tela de login, clique em <strong>"Esqueci minha senha"</strong> e siga as instruções. 
              Você receberá um e-mail para criar uma nova senha rapidinho.`,
     },
-    {
-      icon: '🛍️',
-      question: 'O que é a vitrine de produtos?',
-      answer: `É uma seleção com os <strong>produtos mais buscados pelos nossos usuários</strong>, já com os melhores 
-             benefícios aplicados. Ótima opção para quem quer comprar bem sem perder tempo procurando.`,
-    },
+ 
     {
       icon: '👥',
       question: 'Quem pode usar o Miles&Travels?',
