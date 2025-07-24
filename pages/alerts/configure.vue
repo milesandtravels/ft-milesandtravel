@@ -336,7 +336,7 @@
         <div class="disable-modal-header pa-6 pb-4">
           <div class="text-center">
             <div class="warning-icon-container mb-3">
-              <v-icon color="warning" size="56"
+              <v-icon color="warning" size="40"
                 >mdi-alert-circle-outline</v-icon
               >
             </div>
@@ -369,42 +369,11 @@
                       Alertas interrompidos
                     </h4>
                     <p class="text-body-2 text-medium-emphasis mb-0">
-                      Todos os alertas configurados param de funcionar
-                      imediatamente
+                   Todos os alertas configurados deixarão de enviar notificações via WhatsApp.
                     </p>
                   </div>
                 </div>
               </v-card>
-
-              <v-card
-                variant="outlined"
-                class="consequence-card pa-3 mb-4"
-                color="primary"
-              >
-                <div class="d-flex align-start">
-                  <v-avatar size="32" color="primary" class="me-3 mt-1">
-                    <v-icon color="white" size="18">mdi-refresh</v-icon>
-                  </v-avatar>
-                  <div class="flex-grow-1">
-                    <h4 class="text-subtitle-2 font-weight-medium mb-1">
-                      Reconfiguração necessária
-                    </h4>
-                    <p class="text-body-2 text-medium-emphasis mb-0">
-                      Será preciso refazer todo o processo de verificação
-                    </p>
-                  </div>
-                </div>
-              </v-card>
-            </div>
-
-            <!-- Pergunta de confirmação -->
-            <div class="confirmation-question text-center pa-4">
-              <v-icon color="primary" size="24" class="mb-2"
-                >mdi-help-circle</v-icon
-              >
-              <p class="text-h6 font-weight-medium text-primary">
-                Tem certeza que deseja continuar?
-              </p>
             </div>
           </div>
         </v-card-text>
@@ -417,7 +386,6 @@
               variant="flat"
               :loading="isLoading"
               :disabled="isLoading"
-              size="large"
               block
               class="mb-3 disable-btn"
               @click="confirmDisableWhatsApp"
@@ -430,7 +398,6 @@
               color="primary"
               variant="outlined"
               :disabled="isLoading"
-              size="large"
               block
               class="cancel-btn"
               @click="cancelDisableWhatsApp"
