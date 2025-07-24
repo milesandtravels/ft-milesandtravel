@@ -95,15 +95,6 @@
         <span class="price-text">
           {{ formattedPrice }}
         </span>
-        <v-chip
-          v-if="hasDiscount"
-          color="error"
-          variant="flat"
-          size="x-small"
-          class="discount-chip"
-        >
-          -15%
-        </v-chip>
       </div>
 
       <!-- Product Title -->
