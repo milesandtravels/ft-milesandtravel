@@ -105,12 +105,12 @@
 
 <script setup lang="ts">
   import OffersFilters from '~/components/OffersFilters.vue'
-  import OffersList from '~/components/OffersList.vue'
-  import type {
-    OfferFilters,
-    OfferItem,
-    PaginatedOffersApiResponse,
-  } from '~/interfaces/offers'
+import OffersList from '~/components/OffersList.vue'
+import type {
+  OfferFilters,
+  OfferItem,
+  PaginatedOffersApiResponse,
+} from '~/interfaces/offers'
 
   definePageMeta({
     middleware: ['sanctum:auth'],
@@ -229,7 +229,7 @@
       }
 
       // Fazer requisição POST com filtros no corpo
-      const response = await useSanctumFetch<PaginatedOffersApiResponse>(
+      const {data} = await useSanctumFetch<PaginatedOffersApiResponse>(
         `/api/searches/${route.query.searchId as string}/offers`,
         {
           method: 'POST',
@@ -241,11 +241,9 @@
         }
       )
 
-      const apiResponse = response.data.value
-      const newOffers =
-        apiResponse?.data?.data?.map((offer: OfferItem) => ({
-          ...offer,
-        })) || []
+      
+      const apiResponse = data.value
+      const newOffers = apiResponse?.data
 
       if (resetPagination) {
         offers.value = newOffers
@@ -295,7 +293,7 @@
 
       const apiResponse = response.data.value
       const newOffers =
-        apiResponse?.data?.data?.map((offer: OfferItem) => ({
+        apiResponse?.data?.map((offer: OfferItem) => ({
           ...offer,
         })) || []
 
