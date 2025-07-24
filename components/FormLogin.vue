@@ -106,17 +106,6 @@
                   <div class="support-divider" />
 
                   <div class="support-content">
-                    <v-chip
-                      class="support-chip"
-                      color="primary"
-                      variant="outlined"
-                      size="small"
-                      prepend-icon="mdi-account-plus"
-                      @click="navigateTo('register')"
-                    >
-                      Cadastre-se aqui
-                    </v-chip>
-
                     <p class="support-text">
                       Não sabe como funciona? Acesse nossa central de ajuda
                     </p>
