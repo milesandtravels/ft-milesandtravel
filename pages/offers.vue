@@ -93,13 +93,6 @@
       @load-more="loadMoreOffers"
     />
 
-    <!-- Snackbar de feedback -->
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
-      {{ snackbar.message }}
-      <template v-slot:actions>
-        <v-btn variant="text" @click="snackbar.show = false"> Fechar </v-btn>
-      </template>
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -136,11 +129,7 @@ import type {
     program_types: [],
   })
 
-  const snackbar = ref({
-    show: false,
-    message: '',
-    color: 'success',
-  })
+
 
   // Computed
   const selectedOffers = computed<OfferItem[]>(() =>
@@ -243,7 +232,8 @@ import type {
 
       
       const apiResponse = data.value
-      const newOffers = apiResponse?.data
+      const newOffers = apiResponse?.data?.data || []
+      const meta = apiResponse?.data?.meta
 
       if (resetPagination) {
         offers.value = newOffers
@@ -252,17 +242,15 @@ import type {
       }
 
       // Atualizar total de ofertas da API
-      totalOffers.value = apiResponse?.data?.meta?.total || 0
+      totalOffers.value = meta?.total || 0
 
       // Verificar se há mais dados
       hasMoreData.value = newOffers.length === perPage
 
-      if (resetPagination) {
-        showSnackbar('Ofertas carregadas com sucesso!', 'success')
-      }
+
     } catch (error) {
       console.error('Erro ao buscar ofertas:', error)
-      showSnackbar('Erro ao carregar ofertas. Tente novamente.', 'error')
+      console.error('Erro ao carregar ofertas:', error)
     } finally {
       loading.value = false
     }
@@ -292,10 +280,7 @@ import type {
       )
 
       const apiResponse = response.data.value
-      const newOffers =
-        apiResponse?.data?.map((offer: OfferItem) => ({
-          ...offer,
-        })) || []
+      const newOffers = apiResponse?.data?.data || []
 
       offers.value = [...offers.value, ...newOffers]
 
@@ -303,7 +288,7 @@ import type {
       hasMoreData.value = newOffers.length === perPage
     } catch (error) {
       console.error('Erro ao carregar mais ofertas:', error)
-      showSnackbar('Erro ao carregar mais ofertas. Tente novamente.', 'error')
+      console.error('Erro ao carregar mais ofertas:', error)
     } finally {
       loadingMore.value = false
     }
@@ -318,7 +303,7 @@ import type {
       ...offer,
       selected: false,
     }))
-    showSnackbar('Filtros aplicados com sucesso!', 'success')
+
   }
 
   const handleFilterClear = (): void => {
@@ -332,7 +317,7 @@ import type {
     }
     // Recarregar ofertas sem filtros e resetar paginação
     fetchOffers(undefined, true)
-    showSnackbar('Filtros limpos!', 'info')
+
   }
 
   const handleOfferSelection = (updatedOffer: OfferItem): void => {
@@ -346,21 +331,14 @@ import type {
     if (index !== -1) {
       offers.value[index] = { ...updatedOffer }
 
-      const action = updatedOffer.selected ? 'selecionada' : 'removida'
-      showSnackbar(`Oferta ${action}!`, 'info')
+
     }
   }
 
   const processSelectedOffers = (): void => {
     if (selectedOffers.value.length === 0) {
-      showSnackbar('Selecione pelo menos uma oferta', 'warning')
       return
     }
-
-    showSnackbar(
-      `${selectedOffers.value.length} ofertas processadas com sucesso!`,
-      'success'
-    )
 
     offers.value.forEach(offer => {
       offer.selected = false
@@ -371,13 +349,7 @@ import type {
     router.push(`/search-products?searchId=${route.query.searchId as string}`)
   }
 
-  const showSnackbar = (message: string, color: string = 'success'): void => {
-    snackbar.value = {
-      show: true,
-      message,
-      color,
-    }
-  }
+
 
   // Watchers
   // Removido watcher do selectedProgramType pois os chips foram removidos
