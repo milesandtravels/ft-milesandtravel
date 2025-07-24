@@ -18,7 +18,6 @@ export default defineNuxtConfig({
     'nuxt-auth-sanctum',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    '@vite-pwa/nuxt',
   ],
   runtimeConfig: {
     public: {
@@ -51,102 +50,6 @@ export default defineNuxtConfig({
     endpoints: {
       login: '/api/login',
       logout: '/api/logout',
-    },
-  },
-  pwa: {
-    registerType: 'autoUpdate',
-    workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-      navigateFallback: null,
-      cleanupOutdatedCaches: true,
-      skipWaiting: true,
-      clientsClaim: true,
-      runtimeCaching: [
-        {
-          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'google-fonts-cache',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 60 * 60 * 24 * 365,
-            },
-          },
-        },
-      ],
-    },
-    client: {
-      installPrompt: true,
-      periodicSyncForUpdates: 20,
-    },
-    devOptions: {
-      enabled: true,
-      suppressWarnings: true,
-      type: 'module',
-    },
-    manifest: {
-      name: 'Miles and Travel',
-      short_name: 'M&T',
-      description: 'Aplicativo de milhas e viagens',
-      theme_color: '#0F2B46',
-      background_color: '#ffffff',
-      display: 'standalone',
-      orientation: 'portrait',
-      scope: '/',
-      start_url: '/?utm_source=pwa',
-      id: '/?utm_source=pwa',
-      categories: ['travel', 'lifestyle'],
-      lang: 'pt-BR',
-      prefer_related_applications: false,
-      icons: [
-        {
-          src: '/pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
-          purpose: 'any',
-        },
-        {
-          src: '/pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
-          purpose: 'maskable',
-        },
-        {
-          src: '/pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'any',
-        },
-        {
-          src: '/pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'maskable',
-        },
-      ],
-    },
-  },
-  app: {
-    head: {
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
-      title: 'Miles and Travel',
-      meta: [
-        { name: 'description', content: 'Aplicativo de milhas e viagens' },
-        { name: 'theme-color', content: '#0F2B46' },
-        { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'apple-mobile-web-app-title', content: 'Miles and Travel' },
-        { name: 'mobile-web-app-capable', content: 'yes' },
-        { name: 'msapplication-TileColor', content: '#0F2B46' },
-        { name: 'msapplication-tap-highlight', content: 'no' },
-      ],
-      link: [
-        { rel: 'apple-touch-icon', href: '/pwa-192x192.png', sizes: '192x192' },
-        { rel: 'apple-touch-icon', href: '/pwa-512x512.png', sizes: '512x512' },
-        { rel: 'mask-icon', href: '/pwa-192x192.png', color: '#0F2B46' },
-        { rel: 'icon', type: 'image/png', href: '/pwa-192x192.png' },
-      ],
     },
   },
 })

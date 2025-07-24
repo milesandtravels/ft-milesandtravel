@@ -369,7 +369,8 @@
                       Alertas interrompidos
                     </h4>
                     <p class="text-body-2 text-medium-emphasis mb-0">
-                   Todos os alertas configurados deixarão de enviar notificações via WhatsApp.
+                      Todos os alertas configurados deixarão de enviar
+                      notificações via WhatsApp.
                     </p>
                   </div>
                 </div>

@@ -54,6 +54,10 @@
 </template>
 
 <script setup lang="ts">
+  definePageMeta({
+    middleware: ['sanctum:auth'],
+  })
+
   import { useSnackbarStore } from '../store/snackbar'
 
   const route = useRoute()

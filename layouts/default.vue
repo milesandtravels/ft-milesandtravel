@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <TheHeader
-      v-if="value"
-      :user="value"
+      v-if="user"
+      :user="user"
       @account-settings="handleAccountSettings"
       @help="handleHelp"
       @notifications="handleNotifications"
@@ -10,14 +10,14 @@
     />
 
     <TheSidebar
-      v-if="value"
+      v-if="user"
       v-model="sidebarOpen"
       :current-route="currentRoute"
       @navigate="handleNavigation"
     />
 
     <TermsModal
-      v-if="value && value.email_verified_at"
+      v-if="user && user.email_verified_at"
       @terms-accepted="onTermsAccepted"
     />
 
@@ -36,16 +36,11 @@
     />
 
     <UniversalLoading />
-
-    <PwaInstallPrompt />
-    <PwaUpdatePrompt />
-    <PwaOfflineIndicator />
   </v-app>
 </template>
 
 <script setup lang="ts">
   import { useOneSignal } from '@onesignal/onesignal-vue3'
-  import { useLocalStorage } from '@vueuse/core'
   import type { User } from '~/types/user'
 
   const { user } = useSanctumAuth<User>()
@@ -58,16 +53,17 @@
   oneSignal.init({
     appId: onesignalAppId,
     safari_web_id: onesignalSafariWebId,
-    allowLocalhostAsSecureOrigin: process.env.NODE_ENV === 'development',
+    allowLocalhostAsSecureOrigin: true,
     welcomeNotification: {
       disable: false,
-      message: 'Bem-vindo(a) ao Miles & Travels!',
+      message: 'Bem-vindo(a) ao Miles&Travels!',
     },
     promptOptions: {
       slidedown: {
         prompts: [
           {
             autoPrompt: true,
+            categories: [],
             delay: {
               pageViews: 3,
               timeDelay: 20,
@@ -90,7 +86,7 @@
     if (event.current.token) {
       //this is a good place to call OneSignal.login and pass in your user ID
       oneSignal.login(user.value?.id?.toString() || '')
-      oneSignal.User.addEmail(user.value?.email)
+      oneSignal.User.addEmail(user.value?.email || '')
       oneSignal.User.setLanguage('pt')
     }
   }
@@ -102,17 +98,16 @@
   oneSignal.Slidedown.promptPush()
 
   const route = useRoute()
-  const { value }: any = useSanctumUser()
 
-  // Estados reativos com VueUse
-  const termsAccepted = useLocalStorage('miles-travels-terms-accepted', false)
-  const onboardingCompleted = useLocalStorage('onboarding-completed', false)
+  // Estados reativos
+  const termsAccepted = ref(false)
+  const onboardingCompleted = ref(false)
   const showOnboarding = ref(false)
 
   // Computed para mostrar onboarding
   const shouldShowOnboarding = computed(() => {
     return (
-      value?.email_verified_at &&
+      user.value?.email_verified_at &&
       termsAccepted.value &&
       !onboardingCompleted.value &&
       showOnboarding.value
@@ -161,18 +156,13 @@
     handleNavigation('/settings')
   }
 
-  const handleNotifications = () => {
-    // Implementar lógica de notificações
-  }
-
   const handleHelp = () => {
     onboardingCompleted.value = false
     showOnboarding.value = true
   }
 
-  // Inicializar onboarding se necessário
   onMounted(() => {
-    if (termsAccepted.value && !onboardingCompleted.value) {
+    if (user.value && termsAccepted.value && !onboardingCompleted.value) {
       showOnboarding.value = true
     }
   })

@@ -1,5 +1,4 @@
 <template>
-  <VitePwaManifest />
   <NuxtLayout>
     <v-app>
       <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />

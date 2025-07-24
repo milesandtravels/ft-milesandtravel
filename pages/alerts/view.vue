@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ProgramType } from '~/interfaces/program'
+  import type { ProgramType } from '~/interfaces/program'
 
   interface Program {
     id: number
@@ -600,8 +600,8 @@ import type { ProgramType } from '~/interfaces/program'
                 (editingAlert.program?.type || editingAlert.program_type) ===
                 'points'
                   ? 'pontos'
-                  : (editingAlert.program?.type || editingAlert.program_type) ===
-                    'miles'
+                  : (editingAlert.program?.type ||
+                        editingAlert.program_type) === 'miles'
                     ? 'milhas'
                     : '%'
               "

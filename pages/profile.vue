@@ -371,8 +371,7 @@
   })
 
   definePageMeta({
-    auth: true,
-    layout: 'default',
+    middleware: ['sanctum:auth'],
   })
 </script>
 
