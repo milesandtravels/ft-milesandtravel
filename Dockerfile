@@ -23,10 +23,7 @@ FROM nginx/unit:latest
 COPY --from=builder /app/.output/public /var/www/html
 
 # Copiar configuração do nginx unit
-COPY nginx-unit-config.json /docker-entrypoint.d/config.json
+COPY nginx-unit-config.json /var/lib/unit/conf.json
 
 # Expor porta
 EXPOSE 3000
-
-# Comando padrão
-CMD ["unitd", "--no-daemon", "--control", "unix:/var/run/control.unit.sock"]
