@@ -18,9 +18,6 @@ RUN yarn generate
 # Etapa 2: Servidor de produção
 FROM nginx:stable-alpine AS production-stage
 
-# Segurança: não expõe versão do Nginx
-RUN echo "server_tokens off;" >> /etc/nginx/nginx.conf
-
 # Remove config padrão e adiciona a nossa
 RUN rm /etc/nginx/conf.d/default.conf  
 COPY nginx.conf /etc/nginx/conf.d
