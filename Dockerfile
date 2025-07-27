@@ -1,29 +1,29 @@
-# Multi-stage build para otimizar o tamanho da imagem final
-FROM node:latest AS builder
+# Etapa 1: Build
+FROM node:latest AS build-stage
 
-# Definir diretório de trabalho
 WORKDIR /app
-
-# Copiar arquivos de dependências
-COPY package.json yarn.lock ./
-
-# Instalar dependências
-RUN yarn install --frozen-lockfile
-
-# Copiar código fonte
 COPY . .
 
-# Gerar build estático
-RUN yarn generate
+# Instala o Yarn globalmente
+RUN corepack enable && corepack prepare yarn@stable --activate
 
-# Estágio final com nginx unit
-FROM nginx/unit:latest
+# Instala as dependências com Yarn
+RUN yarn install
 
-# Copiar arquivos gerados do estágio anterior
-COPY --from=builder /app/.output/public /var/www/html
+# Build do projeto Nuxt com SSR desabilitado
+RUN yarn build
 
-# Copiar arquivos estáticos
-COPY --from=builder /app/.output/public /usr/share/unit/welcome/
+# Etapa 2: Servidor de produção
+FROM nginx:stable-alpine AS production-stage
 
-# Expor porta
-EXPOSE 8080
+# Remove a configuração padrão do Nginx
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copia a configuração personalizada do Nginx
+COPY nginx.conf /etc/nginx/conf.d
+
+# Copia os arquivos estáticos gerados pelo Nuxt
+COPY --from=build-stage /app/.output/public /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
