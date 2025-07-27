@@ -1,0 +1,28 @@
+{
+    "listeners": {
+        "*:3000": {
+            "pass": "routes"
+        }
+    },
+    "routes": [
+        {
+            "match": {
+                "uri": "~\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$"
+            },
+            "action": {
+                "share": "/var/www/html$uri",
+                "fallback": {
+                    "share": "/var/www/html/index.html"
+                }
+            }
+        },
+        {
+            "action": {
+                "share": "/var/www/html$uri",
+                "fallback": {
+                    "share": "/var/www/html/index.html"
+                }
+            }
+        }
+    ]
+}
