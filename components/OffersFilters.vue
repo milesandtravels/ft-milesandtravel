@@ -110,7 +110,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { OfferFilters, ProgramType } from '~/interfaces/offers'
+  import type { OfferFilters } from '~/interfaces/offers'
+  import type { ProgramType } from '../interfaces/program'
 
   type LocalFilters = {
     program_types: ProgramType[]
@@ -140,7 +141,7 @@
 
   const emit = defineEmits<{
     'update:modelValue': [value: boolean]
-    'filters-applied': [offers: any[]]
+    'filters-applied': [offers: OfferFilters]
     clear: []
   }>()
 
@@ -172,13 +173,6 @@
   const selectedPointsPrograms = ref<any[]>([])
   const selectedCashbackPrograms = ref<any[]>([])
 
-  // Opções dos filtros
-  const programTypeOptions = [
-    { label: 'Cashback', value: 'cashback' as ProgramType },
-    { label: 'Pontos', value: 'points' as ProgramType },
-    { label: 'Milhas', value: 'miles' as ProgramType },
-  ]
-
   // Computed para todos os programas selecionados
   const selectedPrograms = computed(() => [
     ...selectedMilesPrograms.value.map(p => ({ ...p, type: 'miles' })),
@@ -194,15 +188,6 @@
       selectedProducts.value.length > 0 ||
       selectedPrograms.value.length > 0
     )
-  })
-
-  const activeFiltersCount = computed(() => {
-    let count = 0
-    if (localFilters.value.program_types.length > 0) count++
-    if (selectedEcommerces.value.length > 0) count++
-    if (selectedProducts.value.length > 0) count++
-    if (selectedPrograms.value.length > 0) count++
-    return count
   })
 
   // Métodos para lidar com as seleções dos componentes
@@ -238,30 +223,6 @@
     localFilters.value.cashback_programs = programs.map(p => p.id)
   }
 
-  // Métodos auxiliares
-  const getProgramTypeIcon = (type: ProgramType) => {
-    const icons = {
-      cashback: 'mdi-cash',
-      points: 'mdi-star',
-      miles: 'mdi-airplane',
-    }
-    return icons[type] || 'mdi-gift'
-  }
-
-  const getProgramTypeColor = (type: string) => {
-    const colors = {
-      cashback: 'green',
-      points: 'blue',
-      miles: 'purple',
-    }
-    return colors[type] || 'primary'
-  }
-
-  const getProgramTypeLabel = (type: ProgramType) => {
-    const option = programTypeOptions.find(opt => opt.value === type)
-    return option?.label || type
-  }
-
   // Métodos principais
   const applyFilters = async () => {
     try {
@@ -276,16 +237,7 @@
         program_types: localFilters.value.program_types,
       }
 
-      // Fazer a chamada para a API de ofertas filtradas
-      const { data: offersData } = await useSanctumFetch<any>(
-        `/api/searches/${props.searchId}/offers`,
-        {
-          method: 'POST',
-          body: payload,
-        }
-      )
-
-      emit('filters-applied', offersData.value?.data || [])
+      emit('filters-applied', payload)
       dialogModel.value = false
     } catch (error) {
       console.error('Erro ao aplicar filtros:', error)

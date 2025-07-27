@@ -7,8 +7,8 @@
           <div>
             <h1 class="text-h4 font-weight-bold mb-2">Ofertas Encontradas</h1>
             <p class="text-body-1 text-medium-emphasis mb-2">
-              {{ filteredOffers.length }} de {{ totalOffers }} ofertas
-              disponíveis com cashback, pontos e milhas
+              {{ offers.length }} de {{ totalOffers }} ofertas disponíveis com
+              cashback, pontos e milhas
             </p>
 
             <!-- Botão Voltar -->
@@ -45,12 +45,6 @@
           @click="showFilters = true"
         >
           Filtros Avançados
-          <v-badge
-            v-if="activeFiltersCount > 0"
-            :content="activeFiltersCount"
-            color="error"
-            class="ms-2"
-          />
         </v-btn>
       </v-col>
     </v-row>
@@ -62,7 +56,7 @@
     </div>
 
     <!-- Empty state -->
-    <div v-else-if="filteredOffers.length === 0" class="text-center py-8">
+    <div v-else-if="offers.length === 0" class="text-center py-8">
       <v-icon icon="mdi-package-variant" size="64" color="grey-lighten-1" />
       <h2 class="text-h6 mt-4 mb-2">Nenhuma oferta encontrada</h2>
       <p class="text-body-2 text-medium-emphasis">
@@ -73,7 +67,7 @@
     <!-- Cards de ofertas -->
     <OffersList
       v-else
-      :offers="filteredOffers"
+      :offers="offers"
       :loading="loading"
       :loading-more="loadingMore"
       :has-more-data="hasMoreData"
@@ -112,60 +106,6 @@
     points_programs: [],
     cashback_programs: [],
     program_types: [],
-  })
-
-  const activeFiltersCount = computed(() => {
-    let count = 0
-    if (activeFilters.value.ecommerces.length > 0) count++
-    if (activeFilters.value.products.length > 0) count++
-    if (activeFilters.value.miles_programs.length > 0) count++
-    if (activeFilters.value.points_programs.length > 0) count++
-    if (activeFilters.value.cashback_programs.length > 0) count++
-    if (activeFilters.value.program_types.length > 0) count++
-    return count
-  })
-
-  const filteredOffers = computed<OfferItem[]>(() => {
-    let filtered = offers.value
-
-    // Aplicar filtros avançados
-    if (activeFilters.value.ecommerces.length > 0) {
-      filtered = filtered.filter(offer =>
-        activeFilters.value.ecommerces.includes(offer.ecommerce.id)
-      )
-    }
-
-    if (activeFilters.value.products.length > 0) {
-      filtered = filtered.filter(offer =>
-        activeFilters.value.products.includes(offer.product.id)
-      )
-    }
-
-    if (activeFilters.value.miles_programs.length > 0) {
-      filtered = filtered.filter(offer =>
-        activeFilters.value.miles_programs.includes(offer.program.id)
-      )
-    }
-
-    if (activeFilters.value.points_programs.length > 0) {
-      filtered = filtered.filter(offer =>
-        activeFilters.value.points_programs.includes(offer.program.id)
-      )
-    }
-
-    if (activeFilters.value.cashback_programs.length > 0) {
-      filtered = filtered.filter(offer =>
-        activeFilters.value.cashback_programs.includes(offer.program.id)
-      )
-    }
-
-    if (activeFilters.value.program_types.length > 0) {
-      filtered = filtered.filter(offer =>
-        activeFilters.value.program_types.includes(offer.program.type)
-      )
-    }
-
-    return filtered
   })
 
   const fetchOffers = async (
@@ -252,14 +192,9 @@
     }
   }
 
-  const handleFiltersApplied = (filteredOffers: OfferItem[]): void => {
-    currentPage.value = 1
-    hasMoreData.value = true
-
-    offers.value = filteredOffers.map((offer: OfferItem) => ({
-      ...offer,
-      selected: false,
-    }))
+  const handleFiltersApplied = async (filteredOffers: OfferFilters) => {
+    activeFilters.value = filteredOffers
+    fetchOffers(filteredOffers, true)
   }
 
   const handleFilterClear = (): void => {
