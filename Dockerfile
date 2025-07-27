@@ -11,7 +11,7 @@ RUN corepack enable && corepack prepare yarn@stable --activate
 RUN yarn install
 
 # Build do projeto Nuxt com SSR desabilitado
-RUN yarn build
+RUN yarn generate
 
 # Etapa 2: Servidor de produção
 FROM nginx:stable-alpine AS production-stage
