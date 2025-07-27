@@ -25,9 +25,6 @@ COPY --from=builder /app/.output/public /var/www/html
 # Copiar configuração do nginx unit
 COPY nginx-unit-config.json /docker-entrypoint.d/config.json
 
-# Definir permissões corretas
-RUN chown -R unit:unit /var/www/html
-
 # Expor porta
 EXPOSE 3000
 
