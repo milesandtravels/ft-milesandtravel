@@ -47,6 +47,13 @@ export default defineNuxtConfig({
     baseUrl: process.env.API_URL, // Laravel API
     redirectIfAuthenticated: true,
     redirectIfUnauthenticated: true,
+    redirect: {
+      keepRequestedRoute: true, // ✅ Preserva rota solicitada
+      onLogin: '/', // Fallback se não houver redirect
+      onLogout: '/login',
+      onAuthOnly: '/login', // Para rotas protegidas
+      onGuestOnly: '/', // Se já logado tenta acessar login
+    },
     endpoints: {
       login: '/api/login',
       logout: '/api/logout',

@@ -4,18 +4,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const { value: user }: any = useSanctumUser()
   const router = useRouter()
-  
-  // Debug logs (remover em produção)
-  console.log('Middleware Debug:', {
-    path: to.path,
-    userExists: !!user,
-    emailVerified: user?.email_verified_at,
-    fromPath: from?.path
-  })
 
   // Aguarda o estado do usuário estar disponível
   if (user === undefined) {
-    console.log('User state not ready, waiting...')
     return
   }
 
@@ -39,11 +30,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   // Redireciona usuário não verificado para confirmação
   if (user && !user?.email_verified_at) {
-    console.log('Redirecting unverified user to confirmation')
     return router.push(
       '/confirmation-email?email=' + encodeURIComponent(user.email)
     )
   }
-
-  console.log('No redirect needed')
 })
