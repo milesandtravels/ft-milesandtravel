@@ -9,7 +9,7 @@ export const useAuthGoogle = () => {
     isGoogleLoading.value = true
     try {
       const redirectURL = route.query?.redirect
-      const paramsRedirect = `&redirectTo=${redirectURL}`
+      const paramsRedirect = `?redirectTo=${redirectURL ?? '/'}`
       const config = useRuntimeConfig()
       const { data } = await useSanctumFetch<{ redirect_url: string }>(
         `/api/auth/${provider}/redirect`,
@@ -25,7 +25,7 @@ export const useAuthGoogle = () => {
       )
 
       if (data.value?.redirect_url) {
-        window.location.href = data.value.redirect_url + paramsRedirect
+        window.location.href = data.value.redirect_url
       }
     } catch (error) {
       snackbarStore.showError(`Falha ao conectar com Google.`)
