@@ -154,7 +154,7 @@
           @click.stop
         >
           <v-icon start :size="isMobile ? 'small' : 'default'">mdi-open-in-new</v-icon>
-          Visitar Loja
+          Ver produto
         </v-btn>
       </div>
     </v-card-text>

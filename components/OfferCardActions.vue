@@ -9,6 +9,7 @@
         class="flex-grow-1 text-white font-weight-medium"
         @click="$emit('view:product', offer)"
       >
+        <v-icon start size="18">mdi-open-in-new</v-icon>
         Ver produto
       </v-btn>
     </v-card-actions>
@@ -24,7 +25,7 @@
         <v-icon size="18" class="me-2">
           {{ getProgramTypeIcon(offer.program.type) }}
         </v-icon>
-        Ver Programa
+        Ver Promoção
       </v-btn>
     </v-card-actions>
 
@@ -37,8 +38,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { OfferItem } from '~/interfaces/offers'
-  import type { ProgramType } from '~/interfaces/program'
+  import type { OfferItem } from '~/interfaces/offers';
+import type { ProgramType } from '~/interfaces/program';
   const showConfirmationModal = ref(false)
   interface Props {
     offer: OfferItem
@@ -66,11 +67,20 @@
 
   const getProgramTypeIcon = (type: ProgramType): string => {
     const icons = {
-      cashback: 'mdi-cash',
-      points: 'mdi-star',
-      miles: 'mdi-airplane',
+      cashback: 'mdi-wallet',
+      points: 'mdi-trophy',
+      miles: 'mdi-flight',
     }
-    return icons[type] || 'mdi-gift'
+    return icons[type] || 'mdi-gift-outline'
+  }
+
+  const getRewardLabel = (type: ProgramType): string => {
+    const labels = {
+      cashback: 'Cashback',
+      points: 'Pontos',
+      miles: 'Milhas',
+    }
+    return labels[type] || 'Desconto'
   }
 </script>
 

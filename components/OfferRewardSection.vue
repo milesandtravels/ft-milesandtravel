@@ -2,7 +2,7 @@
   <div class="reward-section">
     <v-card
       variant="outlined"
-      class="program-header-card pa-3 mb-3"
+      class="program-header-card pa-2 mb-2"
       elevation="0"
     >
       <div class="d-flex align-center justify-space-between">
@@ -11,8 +11,8 @@
             v-if="offer.program.logo_url"
             :src="offer.program.logo_url"
             :alt="offer.program.name"
-            size="lg"
-            class="mr-2"
+            size="sm"
+            class="mr-3"
             :type="offer.program.type"
           />
 
@@ -43,7 +43,7 @@
     <v-card
       variant="tonal"
       :color="getRewardColor(offer.program.type)"
-      class="reward-value-card pa-3"
+      class="reward-value-card pa-2"
       elevation="0"
     >
       <div class="d-flex align-center justify-space-between">
@@ -140,7 +140,7 @@
   .reward-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
 
   .reward-chip {
@@ -148,11 +148,10 @@
   }
 
   .program-header-card {
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid rgba(var(--v-theme-primary), 0.12);
-    background: rgba(var(--v-theme-surface), 0.8);
-    backdrop-filter: blur(8px);
-    transition: all 0.3s ease-in-out;
+    background: rgba(var(--v-theme-surface), 0.9);
+    transition: all 0.2s ease-in-out;
   }
 
   .program-header-card:hover {
@@ -203,8 +202,7 @@
   }
 
   .reward-value-card {
-    border-radius: 12px;
-    margin-top: 8px;
+    border-radius: 10px;
     transition: transform 0.2s ease-in-out;
   }
 
@@ -225,17 +223,21 @@
 
   /* Mobile optimizations */
   @media (max-width: 600px) {
+    .reward-section {
+      gap: 4px;
+    }
+
     .reward-value-text {
       font-size: 1.125rem;
     }
 
     .reward-value-card {
-      padding: 12px !important;
+      padding: 10px !important;
     }
 
     .program-header-card {
-      padding: 12px !important;
-      margin-bottom: 12px !important;
+      padding: 10px !important;
+      margin-bottom: 8px !important;
     }
 
     .program-name {
