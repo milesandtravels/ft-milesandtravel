@@ -159,9 +159,9 @@
       <v-card class="selection-card mb-6" elevation="1">
         <v-card-text class="pa-4">
           <div class="section-header mb-4">
-            <v-icon color="warning" size="24" class="mr-2">mdi-percent</v-icon>
+            <v-icon color="warning" size="24" class="mr-2">mdi-tag</v-icon>
             <h3 class="text-subtitle-1 font-weight-medium">
-              Valor mínimo do benefício
+              Valor mínimo da promoção
             </h3>
           </div>
 
@@ -372,7 +372,7 @@
   const categoryRules = [(v: string) => !!v || 'Selecione uma categoria']
 
   const thresholdRules = computed(() => {
-    const baseRules = [
+    const baseRules: Array<(v: string) => true | string> = [
       (v: string) => !!v || 'Informe o valor mínimo',
       (v: string) => {
         const num = parseFloat(v)
@@ -427,7 +427,7 @@
       return selectedEcommerce.value?.name || 'Loja não selecionada'
     } else {
       const category = categories.value.find(
-        c => c.id === selectedCategory.value
+        (c: any) => c.id === selectedCategory.value
       )
       return category?.name || 'Categoria não selecionada'
     }
