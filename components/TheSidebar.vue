@@ -179,12 +179,12 @@
       icon: 'mdi-tag-multiple',
       route: '/promotions',
     },
-    // {
-    //   title: 'Pesquisas Realizadas',
-    //   subtitle: 'Histórico de buscas e comparações',
-    //   icon: 'mdi-clock-time-four-outline',
-    //   route: '/search-history',
-    // },
+    {
+      title: 'Minhas Buscas',
+      subtitle: 'Histórico de buscas realizadas',
+      icon: 'mdi-history',
+      route: '/searches-did',
+    },
   ])
 
   const alertsMenuItems = ref<MenuItem[]>([
