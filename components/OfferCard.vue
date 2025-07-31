@@ -95,13 +95,15 @@
       <div class="current-value-section mb-3">
         <div class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
-            <v-icon 
-              :icon="getCurrentValueIcon()" 
-              size="small" 
-              class="mr-2 text-primary" 
+            <v-icon
+              :icon="getCurrentValueIcon()"
+              size="small"
+              class="mr-2 text-primary"
             />
             <div>
-              <span class="text-caption text-medium-emphasis">Valor atual:</span>
+              <span class="text-caption text-medium-emphasis"
+                >Valor atual:</span
+              >
               <div class="text-body-2 font-weight-medium">
                 {{ getCurrentValueDisplay() }}
                 <v-chip
@@ -147,44 +149,35 @@
         <v-card-title class="text-h6">
           Editar Valor Atual da Promoção
         </v-card-title>
-        
+
         <v-card-text>
-           <div class="mb-4">
-             <span class="text-body-2 text-medium-emphasis">
-               Valor automático atual: {{ getAutomaticValueDisplay() }}
-             </span>
-           </div>
-           
-           <v-radio-group v-model="valueType" class="mb-4">
-             <v-radio
-               label="Usar valor automático"
-               value="automatic"
-             />
-             <v-radio
-               label="Definir valor personalizado"
-               value="custom"
-             />
-           </v-radio-group>
-           
-           <v-text-field
-             v-if="valueType === 'custom'"
-             v-model="customValue"
-             :label="getCustomValueLabel()"
-             type="number"
-             min="0"
-             step="0.01"
-             variant="outlined"
-             density="comfortable"
-             :rules="[validateCustomValue]"
-           />
-         </v-card-text>
-        
+          <div class="mb-4">
+            <span class="text-body-2 text-medium-emphasis">
+              Valor automático atual: {{ getAutomaticValueDisplay() }}
+            </span>
+          </div>
+
+          <v-radio-group v-model="valueType" class="mb-4">
+            <v-radio label="Usar valor automático" value="automatic" />
+            <v-radio label="Definir valor personalizado" value="custom" />
+          </v-radio-group>
+
+          <v-text-field
+            v-if="valueType === 'custom'"
+            v-model="customValue"
+            :label="getCustomValueLabel()"
+            type="number"
+            min="0"
+            step="0.01"
+            variant="outlined"
+            density="comfortable"
+            :rules="[validateCustomValue]"
+          />
+        </v-card-text>
+
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            text="Cancelar"
-            @click="closeEditModal"
-          />
+          <v-btn text="Cancelar" @click="closeEditModal" />
           <v-btn
             color="primary"
             text="Confirmar"
@@ -280,8 +273,8 @@
 
   // Funções para valor atual da promoção
   const getCurrentValue = (): number => {
-    return props.offer.custom_current_value !== null 
-      ? props.offer.custom_current_value 
+    return props.offer.custom_current_value !== null
+      ? props.offer.custom_current_value
       : props.offer.current_value
   }
 
@@ -369,7 +362,11 @@
         return 'Valor deve estar entre 0 e 100%'
       }
       // Para pontos e milhas, permitir valores maiores mas com limite razoável
-      if ((props.offer.program.type === 'points' || props.offer.program.type === 'miles') && value > 999999) {
+      if (
+        (props.offer.program.type === 'points' ||
+          props.offer.program.type === 'miles') &&
+        value > 999999
+      ) {
         return 'Valor muito alto'
       }
     }
@@ -383,7 +380,9 @@
     if (valueType.value === 'custom') {
       const validation = validateCustomValue(customValue.value)
       if (validation !== true) {
-        snackbarStore.showError(typeof validation === 'string' ? validation : 'Valor inválido')
+        snackbarStore.showError(
+          typeof validation === 'string' ? validation : 'Valor inválido'
+        )
         return
       }
     }
@@ -391,7 +390,8 @@
     isUpdatingValue.value = true
 
     const requestBody = {
-      custom_current_value: valueType.value === 'custom' ? Number(customValue.value) : null
+      custom_current_value:
+        valueType.value === 'custom' ? Number(customValue.value) : null,
     }
 
     const { data, error } = await useSanctumFetch<any>(
