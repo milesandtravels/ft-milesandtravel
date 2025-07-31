@@ -86,7 +86,7 @@
                   prepend-icon="mdi-google"
                   size="large"
                   variant="outlined"
-                  @click="loginWithGoogle('google')"
+                  @click="handleGoogleLogin"
                 >
                   Continuar com Google
                 </v-btn>
@@ -146,6 +146,7 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   const { login } = useSanctumAuth()
+  const route = useRoute()
 
   // Form data
   const form = ref()
@@ -209,6 +210,14 @@
   }
 
   const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
+
+  const handleGoogleLogin = () => {
+    const redirectTo = route.query?.redirect?.toString() || '/'
+    
+    sessionStorage.setItem('googleAuthRedirectTo', redirectTo)
+    
+    loginWithGoogle('google')
+  }
 
   // Forgot password handler
   const handleForgotPassword = () => {

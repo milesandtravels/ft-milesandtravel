@@ -112,7 +112,7 @@
                   prepend-icon="mdi-google"
                   size="large"
                   variant="outlined"
-                  @click="loginWithGoogle('google')"
+                  @click="handleGoogleLogin"
                 >
                   {{
                     isGoogleLoading ? 'Conectando...' : 'Continuar com Google'
@@ -143,9 +143,10 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { useSnackbarStore } from '~/store/snackbar'
+import { useSnackbarStore } from '~/store/snackbar'
 
   const router = useRouter()
+  const route = useRoute()
 
   interface RegisterResponse {
     token: string
@@ -173,6 +174,12 @@
   const snackbarStore = useSnackbarStore()
 
   const { loginWithGoogle, isGoogleLoading } = useAuthGoogle()
+
+  const handleGoogleLogin = () => {
+    const redirectTo = route.query?.redirect?.toString() || '/'
+    sessionStorage.setItem('googleAuthRedirectTo', redirectTo)
+    loginWithGoogle('google')
+  }
 
   const onSubmit = async () => {
     if (!isFormValid.value) return
