@@ -38,6 +38,7 @@ export interface Product {
   reviews: number
   rating: string
   isCustomProduct: boolean
+  thumbnails: string
 }
 
 export interface OfferItem {
