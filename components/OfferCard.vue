@@ -90,6 +90,41 @@
           via {{ offer.program.name }}
         </span>
       </div>
+
+      <!-- Valor atual da promoção -->
+      <div class="current-value-section mb-3">
+        <div class="d-flex align-center justify-space-between">
+          <div class="d-flex align-center">
+            <v-icon 
+              :icon="getCurrentValueIcon()" 
+              size="small" 
+              class="mr-2 text-primary" 
+            />
+            <div>
+              <span class="text-caption text-medium-emphasis">Valor atual:</span>
+              <div class="text-body-2 font-weight-medium">
+                {{ getCurrentValueDisplay() }}
+                <v-chip
+                  v-if="offer.custom_current_value !== null"
+                  color="orange"
+                  variant="tonal"
+                  size="x-small"
+                  class="ml-1"
+                >
+                  Personalizado
+                </v-chip>
+              </div>
+            </div>
+          </div>
+          <v-btn
+            icon="mdi-pencil"
+            variant="text"
+            size="small"
+            color="primary"
+            @click="openEditModal"
+          />
+        </div>
+      </div>
     </v-card-text>
 
     <!-- Componente de ações -->
@@ -105,6 +140,60 @@
       :program="offer.program"
       @confirm="handleProgramConfirm"
     />
+
+    <!-- Modal de edição do valor atual -->
+    <v-dialog v-model="showEditModal" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h6">
+          Editar Valor Atual da Promoção
+        </v-card-title>
+        
+        <v-card-text>
+           <div class="mb-4">
+             <span class="text-body-2 text-medium-emphasis">
+               Valor automático atual: {{ getAutomaticValueDisplay() }}
+             </span>
+           </div>
+           
+           <v-radio-group v-model="valueType" class="mb-4">
+             <v-radio
+               label="Usar valor automático"
+               value="automatic"
+             />
+             <v-radio
+               label="Definir valor personalizado"
+               value="custom"
+             />
+           </v-radio-group>
+           
+           <v-text-field
+             v-if="valueType === 'custom'"
+             v-model="customValue"
+             :label="getCustomValueLabel()"
+             type="number"
+             min="0"
+             step="0.01"
+             variant="outlined"
+             density="comfortable"
+             :rules="[validateCustomValue]"
+           />
+         </v-card-text>
+        
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            text="Cancelar"
+            @click="closeEditModal"
+          />
+          <v-btn
+            color="primary"
+            text="Confirmar"
+            :loading="isUpdatingValue"
+            @click="updateCurrentValue"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -131,6 +220,12 @@
   // Estados para favoritar
   const isLoadingFavorite = ref(false)
   const isFavorited = ref(props.offer.selected)
+
+  // Estados para modal de edição do valor atual
+  const showEditModal = ref(false)
+  const isUpdatingValue = ref(false)
+  const valueType = ref<'automatic' | 'custom'>('automatic')
+  const customValue = ref<number | null>(null)
 
   const handleViewProduct = (offer: OfferItem): void => {
     // Lógica para visualizar produto
@@ -183,6 +278,144 @@
     showConfirmationModal.value = false
   }
 
+  // Funções para valor atual da promoção
+  const getCurrentValue = (): number => {
+    return props.offer.custom_current_value !== null 
+      ? props.offer.custom_current_value 
+      : props.offer.current_value
+  }
+
+  const getCurrentValueIcon = (): string => {
+    switch (props.offer.program.type) {
+      case 'cashback':
+        return 'mdi-percent'
+      case 'points':
+        return 'mdi-star-circle'
+      case 'miles':
+        return 'mdi-airplane'
+      default:
+        return 'mdi-percent'
+    }
+  }
+
+  const getCurrentValueDisplay = (): string => {
+    const value = getCurrentValue()
+    switch (props.offer.program.type) {
+      case 'cashback':
+        return `${value}%`
+      case 'points':
+        return `${value.toLocaleString('pt-BR')} pontos`
+      case 'miles':
+        return `${value.toLocaleString('pt-BR')} milhas`
+      default:
+        return `${value}%`
+    }
+  }
+
+  const getAutomaticValueDisplay = (): string => {
+    switch (props.offer.program.type) {
+      case 'cashback':
+        return `${props.offer.current_value}%`
+      case 'points':
+        return `${props.offer.current_value.toLocaleString('pt-BR')} pontos`
+      case 'miles':
+        return `${props.offer.current_value.toLocaleString('pt-BR')} milhas`
+      default:
+        return `${props.offer.current_value}%`
+    }
+  }
+
+  const getCustomValueLabel = (): string => {
+    switch (props.offer.program.type) {
+      case 'cashback':
+        return 'Valor personalizado (%)'
+      case 'points':
+        return 'Valor personalizado (pontos)'
+      case 'miles':
+        return 'Valor personalizado (milhas)'
+      default:
+        return 'Valor personalizado (%)'
+    }
+  }
+
+  const openEditModal = (): void => {
+    // Inicializar valores do modal
+    if (props.offer.custom_current_value !== null) {
+      valueType.value = 'custom'
+      customValue.value = props.offer.custom_current_value
+    } else {
+      valueType.value = 'automatic'
+      customValue.value = null
+    }
+    showEditModal.value = true
+  }
+
+  const closeEditModal = (): void => {
+    showEditModal.value = false
+    valueType.value = 'automatic'
+    customValue.value = null
+  }
+
+  const validateCustomValue = (value: number | null): boolean | string => {
+    if (valueType.value === 'custom') {
+      if (value === null || value === undefined) {
+        return 'Valor é obrigatório'
+      }
+      if (value < 0) {
+        return 'Valor deve ser maior que 0'
+      }
+      // Para cashback, limitar a 100%
+      if (props.offer.program.type === 'cashback' && value > 100) {
+        return 'Valor deve estar entre 0 e 100%'
+      }
+      // Para pontos e milhas, permitir valores maiores mas com limite razoável
+      if ((props.offer.program.type === 'points' || props.offer.program.type === 'miles') && value > 999999) {
+        return 'Valor muito alto'
+      }
+    }
+    return true
+  }
+
+  const updateCurrentValue = async (): Promise<void> => {
+    if (isUpdatingValue.value) return
+
+    // Validar valor personalizado se necessário
+    if (valueType.value === 'custom') {
+      const validation = validateCustomValue(customValue.value)
+      if (validation !== true) {
+        snackbarStore.showError(typeof validation === 'string' ? validation : 'Valor inválido')
+        return
+      }
+    }
+
+    isUpdatingValue.value = true
+
+    const requestBody = {
+      custom_current_value: valueType.value === 'custom' ? Number(customValue.value) : null
+    }
+
+    const { data, error } = await useSanctumFetch<any>(
+      `/api/searches/${route.query.searchId}/offers/${props.offer.id}`,
+      {
+        method: 'PUT',
+        body: requestBody,
+      }
+    )
+
+    if (data.value) {
+      // Atualizar o valor local
+      props.offer.custom_current_value = requestBody.custom_current_value
+      snackbarStore.showSuccess('Valor atual atualizado com sucesso!')
+      closeEditModal()
+    }
+
+    if (error.value) {
+      snackbarStore.showError('Erro ao atualizar valor atual. Tente novamente.')
+    }
+
+    isUpdatingValue.value = false
+  }
+
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -197,9 +430,9 @@
       case 'cashback':
         return formatPrice(numValue)
       case 'points':
-        return `${numValue.toLocaleString()} pts`
+        return `${numValue.toLocaleString('pt-BR')} pts`
       case 'miles':
-        return `${numValue.toLocaleString()} milhas`
+        return `${numValue.toLocaleString('pt-BR')} milhas`
       default:
         return value
     }
@@ -268,6 +501,11 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 4px;
+  }
+
+  .current-value-section {
+    border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+    padding-top: 12px;
   }
 
   .favorite-btn {

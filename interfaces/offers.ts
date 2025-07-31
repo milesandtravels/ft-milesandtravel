@@ -47,7 +47,11 @@ export interface OfferItem {
   product: Product
   program_type: ProgramType
   program: Program
-  current_value_promotion: number
+  current_value: number
+  custom_current_value: number | null
+  custom_final_price: number | null
+  custom_discount_percentage: number | null
+  custom_reward_value: number | null
   selected: boolean
   final_price: string
   discount_percentage: string
