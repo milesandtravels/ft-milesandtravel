@@ -84,6 +84,12 @@ import DiscountBadge from './DiscountBadge.vue'
 
   // Parse thumbnails and create image array
   const productImages = computed(() => {
+    const images = []
+    
+    // Always include the main image first
+    if (props.product.image_url && props.product.thumbnails?.length === 0) { 
+      images.push(props.product.image_url)
+    }
     
     // Parse thumbnails if available
     if (props.product.thumbnails) {
@@ -102,9 +108,6 @@ import DiscountBadge from './DiscountBadge.vue'
     return images
   })
 
-  const showCarouselArrows = computed(() => {
-    return productImages.value.length > 1 && !isMobile.value
-  })
 
   const imageHeight = computed(() => {
     if (props.height) {

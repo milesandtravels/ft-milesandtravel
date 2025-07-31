@@ -213,6 +213,10 @@
   // Parse thumbnails and create image array
   const productImages = computed(() => {
     const images = []
+
+    if (props.product.image_url && props.product.thumbnails?.length === 0) { 
+      images.push(props.product.image_url)
+    }
     
     // Parse thumbnails if available
     if (props.product.thumbnails) {
