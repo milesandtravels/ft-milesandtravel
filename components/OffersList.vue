@@ -6,7 +6,11 @@
         :key="`${offer.ecommerce.id}-${offer.product.id}-${offer.program.id}`"
         class="grid-item"
       >
-        <OfferCard :offer="offer" @view:product="handleViewProduct" />
+        <OfferCard 
+          :offer="offer" 
+          @view:product="handleViewProduct" 
+          @value-updated="handleValueUpdated"
+        />
       </div>
     </div>
 
@@ -57,6 +61,7 @@
     'view:product': [offer: OfferItem]
     'go:program': [offer: OfferItem]
     'load-more': []
+    'value-updated': []
   }>()
 
   // Referência para a sentinela
@@ -64,6 +69,10 @@
 
   const handleViewProduct = (offer: OfferItem): void => {
     emit('view:product', offer)
+  }
+
+  const handleValueUpdated = (): void => {
+    emit('value-updated')
   }
 
   // IntersectionObserver para scroll infinito

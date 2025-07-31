@@ -72,6 +72,7 @@
       :loading-more="loadingMore"
       :has-more-data="hasMoreData"
       @load-more="loadMoreOffers"
+      @value-updated="handleValueUpdated"
     />
   </v-container>
 </template>
@@ -207,6 +208,11 @@
       program_types: [],
     }
     fetchOffers(undefined, true)
+  }
+
+  const handleValueUpdated = async (): Promise<void> => {
+    // Recarregar as ofertas mantendo os filtros atuais
+    await fetchOffers(activeFilters.value, true)
   }
 
   const goBackToSearch = (): void => {

@@ -205,6 +205,7 @@
     'view:product': [offer: OfferItem]
     'go:program': [offer: OfferItem]
     'favorite-updated': [{ selected: boolean }]
+    'value-updated': []
   }>()
 
   const snackbarStore = useSnackbarStore()
@@ -407,6 +408,8 @@
       props.offer.custom_current_value = requestBody.custom_current_value
       snackbarStore.showSuccess('Valor atual atualizado com sucesso!')
       closeEditModal()
+      // Emitir evento para recarregar ofertas
+      emit('value-updated')
     }
 
     if (error.value) {
