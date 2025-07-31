@@ -37,41 +37,41 @@
 
     <!-- Product Image Section -->
     <div class="image-section">
-      <v-img
-        class="product-image"
-        :src="product.image_url"
-        :height="imageHeight"
-        cover
-        :aspect-ratio="1"
-      >
-        <template #placeholder>
-          <div class="image-placeholder">
-            <v-progress-circular
-              indeterminate
-              :size="isMobile ? 20 : 28"
-              width="2"
-              color="primary"
-            />
-          </div>
-        </template>
-      </v-img>
+      <!-- Image Carousel -->
+      <div class="image-carousel">
+        <v-carousel
+          v-model="currentImageIndex"
+          :height="imageHeight"
+          hide-delimiters
+          :show-arrows="showCarouselArrows"
+          :cycle="false"
+          class="product-carousel"
+        >
+          <v-carousel-item
+            v-for="(image, index) in productImages"
+            :key="index"
+            :src="image"
+            class="carousel-item"
+          >
+            <template #placeholder>
+              <div class="image-placeholder">
+                <v-progress-circular
+                  indeterminate
+                  :size="isMobile ? 20 : 28"
+                  width="2"
+                  color="primary"
+                />
+              </div>
+            </template>
+          </v-carousel-item>
+        </v-carousel>
 
-      <!-- Marketplace Logo Badge -->
-      <div class="marketplace-badge">
-        <BaseLogoAvatar
-          :src="product.ecommerce.logo_url"
-          :alt="product.name"
-          :size="isMobile ? 'xs' : 'md'"
-          class="mr-2"
-          :type="'points'"
-        />
-        <div class="marketplace-info">
-          <span class="marketplace-name">{{ product.ecommerce.name }}</span>
-          <span class="marketplace-category">{{
-            product.ecommerce.category
-          }}</span>
+        <!-- Image Counter -->
+        <div v-if="productImages.length > 1" class="image-counter">
+          <span class="counter-text">
+            {{ currentImageIndex + 1 }}/{{ productImages.length }}
+          </span>
         </div>
-        <!-- Mobile: Mostrar apenas logo maior -->
       </div>
 
       <!-- Custom Product Badge -->
@@ -123,17 +123,46 @@
         </span>
       </div>
 
-      <!-- Ecommerce Info (Mobile Only) -->
-      <div v-if="isMobile" class="ecommerce-info">
-        <span class="ecommerce-category">{{ product.ecommerce.category }}</span>
-        <span class="ecommerce-name">{{ marketplaceDisplayName }}</span>
+      <!-- Marketplace Info -->
+      <div class="marketplace-info-section">
+        <div class="marketplace-details">
+          <BaseLogoAvatar
+            :src="product.ecommerce.logo_url"
+            :alt="product.ecommerce.name"
+            :size="isMobile ? 'xs' : 'sm'"
+            :type="'points'"
+            class="marketplace-avatar"
+          />
+          <div class="marketplace-text">
+            <span class="marketplace-name">{{ product.ecommerce.name }}</span>
+            <span class="marketplace-category">{{ product.ecommerce.category }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="action-section">
+        <v-btn
+          :href="product.product_url"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="primary"
+          variant="flat"
+          :size="isMobile ? 'small' : 'default'"
+          class="visit-store-btn"
+          block
+          @click.stop
+        >
+          <v-icon start :size="isMobile ? 'small' : 'default'">mdi-open-in-new</v-icon>
+          Visitar Loja
+        </v-btn>
       </div>
     </v-card-text>
   </v-card>
 </template>
 
 <script lang="ts" setup>
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
 
   // Interfaces atualizadas
   interface Ecommerce {
@@ -156,6 +185,7 @@
     ecommerce: Ecommerce
     isCustomProduct: boolean
     selected: boolean
+    thumbnails?: string
   }
 
   interface Props {
@@ -171,6 +201,8 @@
   const emit = defineEmits<Emits>()
 
   // Reactive properties
+  const currentImageIndex = ref(0)
+  
   const isMobile = computed(() => {
     if (process.client) {
       return window.innerWidth < 768
@@ -178,13 +210,36 @@
     return false
   })
 
+  // Parse thumbnails and create image array
+  const productImages = computed(() => {
+    const images = []
+    
+    // Parse thumbnails if available
+    if (props.product.thumbnails) {
+      try {
+        const thumbnails = JSON.parse(props.product.thumbnails)
+        if (Array.isArray(thumbnails)) {
+          // Filter out the main image to avoid duplicates
+          const additionalImages = thumbnails.filter(thumb => thumb !== props.product.image_url)
+          images.push(...additionalImages)
+        }
+      } catch (error) {
+        console.warn('Error parsing thumbnails:', error)
+      }
+    }
+    
+    return images.length > 0 ? images : [props.product.image_url]
+  })
+
+  const showCarouselArrows = computed(() => {
+    return productImages.value.length > 1 && !isMobile.value
+  })
+
   // Computed properties
   const formattedPrice = computed(() => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
     }).format(props.product.price)
   })
 
@@ -281,6 +336,19 @@
     transition: transform 0.15s ease;
   }
 
+  /* Mobile carousel specific styles */
+  .mobile-card .product-carousel :deep(.v-carousel__controls) {
+    display: none;
+  }
+
+  .mobile-card .image-counter {
+    bottom: 6px;
+    right: 6px;
+    padding: 3px 6px;
+    font-size: 0.6rem;
+    border-radius: 8px;
+  }
+
   /* ================================
    SELECTION STATES
    ================================ */
@@ -336,8 +404,44 @@
     position: relative;
   }
 
-  .product-image {
+  .image-carousel {
+    position: relative;
+    width: 100%;
+  }
+
+  .product-carousel {
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .product-carousel :deep(.v-carousel__controls) {
+    background: transparent;
+  }
+
+  .product-carousel :deep(.v-btn--icon) {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    width: 32px;
+    height: 32px;
+  }
+
+  .product-carousel :deep(.v-btn--icon:hover) {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+  }
+
+  .carousel-item {
     transition: transform 0.3s ease;
+  }
+
+  .carousel-item :deep(.v-img__img) {
+    object-fit: contain !important;
+    background: rgba(var(--v-theme-surface), 1);
+  }
+
+  .carousel-item :deep(.v-responsive__content) {
+    background: rgba(var(--v-theme-surface), 1);
   }
 
   .image-placeholder {
@@ -348,57 +452,25 @@
     background: rgba(var(--v-theme-on-surface), 0.05);
   }
 
-  .marketplace-badge {
+  .image-counter {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(0, 0, 0, 0.9);
-    border-radius: 28px;
-    padding: 8px;
-    backdrop-filter: blur(12px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
-  }
-
-  .marketplace-badge:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-  }
-
-  .marketplace-logo {
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-    background: white;
-  }
-
-  .marketplace-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-right: 8px;
-  }
-
-  .marketplace-name {
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    letter-spacing: 0.3px;
-    line-height: 1.1;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    z-index: 5;
   }
 
-  .marketplace-category {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.65rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  .counter-text {
     line-height: 1;
   }
+
+
 
   .custom-badge {
     position: absolute;
@@ -490,27 +562,67 @@
     font-weight: 500;
   }
 
-  .ecommerce-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 4px;
-    padding-top: 6px;
+  .marketplace-info-section {
+    margin-top: 6px;
+    padding-top: 8px;
     border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
   }
 
-  .ecommerce-category {
-    font-size: 0.65rem;
-    color: rgba(var(--v-theme-on-surface), 0.6);
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+  .marketplace-details {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
-  .ecommerce-name {
-    font-size: 0.7rem;
-    color: rgba(var(--v-theme-on-surface), 0.8);
+  .marketplace-avatar {
+    flex-shrink: 0;
+  }
+
+  .marketplace-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .marketplace-name {
+    font-size: 0.75rem;
+    color: rgba(var(--v-theme-on-surface), 0.9);
     font-weight: 600;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .marketplace-category {
+    font-size: 0.65rem;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    font-weight: 500;
+    line-height: 1.1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .action-section {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  }
+
+  .visit-store-btn {
+    font-size: 0.75rem !important;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+  }
+
+  .visit-store-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.3);
   }
 
   .mobile-quick-action {
@@ -540,8 +652,20 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
     }
 
-    .desktop-card:hover .product-image {
+    .desktop-card:hover .carousel-item {
       transform: scale(1.05);
+    }
+
+    .product-carousel :deep(.v-btn--icon) {
+      width: 36px;
+      height: 36px;
+    }
+
+    .image-counter {
+      bottom: 12px;
+      right: 12px;
+      padding: 6px 10px;
+      font-size: 0.7rem;
     }
 
     .desktop-checkbox {
@@ -576,6 +700,10 @@
       min-height: 2.8em;
     }
 
+    .visit-store-btn {
+      font-size: 0.8rem !important;
+    }
+
     .action-buttons {
       margin-top: 8px;
       padding-top: 8px;
@@ -587,13 +715,7 @@
       font-weight: 600;
     }
 
-    .marketplace-badge {
-      padding: 6px 12px;
-    }
 
-    .marketplace-name {
-      font-size: 0.75rem;
-    }
   }
 
   /* ================================
@@ -616,6 +738,10 @@
 
     .product-title {
       font-size: 1rem;
+    }
+
+    .visit-store-btn {
+      font-size: 0.85rem !important;
     }
   }
 
@@ -673,7 +799,7 @@
       transform: none !important;
     }
 
-    .desktop-card:hover .product-image {
+    .desktop-card:hover .carousel-item {
       transform: none !important;
     }
   }
@@ -693,12 +819,9 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .marketplace-badge {
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
 
-    .ecommerce-info {
+
+    .marketplace-info-section {
       border-color: rgba(255, 255, 255, 0.08);
     }
 
