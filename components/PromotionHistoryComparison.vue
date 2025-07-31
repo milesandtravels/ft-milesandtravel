@@ -1,7 +1,7 @@
 <template>
   <div class="promotion-comparison">
     <!-- Comparison Header -->
-    <div class="comparison-header mb-6">
+    <div class="comparison-header my-6">
       <h3 class="text-h6 font-weight-bold mb-2">Comparação entre Programas</h3>
       <p class="text-body-2 text-medium-emphasis">
         Compare o desempenho do {{ ecommerce?.name }} em diferentes programas de
@@ -160,12 +160,12 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import type { Ecommerce } from '~/interfaces/ecommerces'
-  import type { Program } from '~/interfaces/program'
-  import type {
-    PromotionHistory,
-    PromotionHistoryResponse,
-  } from '~/interfaces/promotions'
+import type { Ecommerce } from '~/interfaces/ecommerces'
+import type { Program } from '~/interfaces/program'
+import type {
+  PromotionHistory,
+  PromotionHistoryResponse,
+} from '~/interfaces/promotions'
 
   interface Props {
     historyData: PromotionHistoryResponse

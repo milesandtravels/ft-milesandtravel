@@ -1,7 +1,7 @@
 <template>
   <div class="promotion-chart">
     <!-- Chart Controls -->
-    <div class="chart-controls mb-6">
+    <div class="chart-controls my-6">
       <v-row>
         <v-col cols="12" md="6">
           <v-select
@@ -226,9 +226,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, nextTick } from 'vue'
-  import type { PromotionHistoryChartData } from '~/interfaces/promotions'
-  import type { Program } from '~/interfaces/program'
+  import { computed, ref } from 'vue'
+import type { Program } from '~/interfaces/program'
+import type { PromotionHistoryChartData } from '~/interfaces/promotions'
 
   interface Props {
     chartData: PromotionHistoryChartData[]

@@ -1,7 +1,7 @@
 <template>
   <div class="promotion-calendar">
     <!-- Calendar Controls -->
-    <div class="calendar-controls mb-6">
+    <div class="calendar-controls my-6">
       <v-row>
         <v-col cols="12" md="6">
           <v-select
@@ -217,12 +217,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import type {
-    PromotionHistoryResponse,
-    PromotionHistory,
-  } from '~/interfaces/promotions'
-  import type { Program } from '~/interfaces/program'
+  import { computed, ref } from 'vue'
+import type { Program } from '~/interfaces/program'
+import type {
+  PromotionHistory,
+  PromotionHistoryResponse,
+} from '~/interfaces/promotions'
 
   interface Props {
     historyData: PromotionHistoryResponse

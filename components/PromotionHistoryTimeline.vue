@@ -1,7 +1,7 @@
 <template>
   <div class="promotion-timeline">
     <!-- Program Filter -->
-    <div class="mb-6">
+    <div class="my-6">
       <v-select
         v-model="selectedPrograms"
         :items="programOptions"
@@ -141,13 +141,13 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import type {
-    PromotionHistoryResponse,
-    PromotionHistory,
-  } from '~/interfaces/promotions'
-  import type { Ecommerce } from '~/interfaces/ecommerces'
-  import type { Program } from '~/interfaces/program'
+  import { computed, ref } from 'vue'
+import type { Ecommerce } from '~/interfaces/ecommerces'
+import type { Program } from '~/interfaces/program'
+import type {
+  PromotionHistory,
+  PromotionHistoryResponse,
+} from '~/interfaces/promotions'
 
   interface Props {
     historyData: PromotionHistoryResponse
