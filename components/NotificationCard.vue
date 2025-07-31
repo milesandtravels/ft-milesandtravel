@@ -42,9 +42,7 @@
               v-if="notification.data.program_type"
               size="small"
               :color="
-                notification.data.program_type === 'points'
-                  ? 'success'
-                  : 'info'
+                notification.data.program_type === 'points' ? 'success' : 'info'
               "
               variant="outlined"
             >
@@ -87,85 +85,85 @@
 </template>
 
 <script setup lang="ts">
-import type { Notification } from '~/types/notification'
+  import type { Notification } from '~/types/notification'
 
-interface Props {
-  notification: Notification
-  markingAsRead: string | null
-}
-
-defineProps<Props>()
-
-defineEmits<{
-  openModal: [notification: Notification]
-  markAsRead: [notificationId: string]
-}>()
-
-const getNotificationTitle = (notification: Notification): string => {
-  switch (notification.type) {
-    case 'promotional-alert':
-      return 'Alerta Promocional'
-    case 'alert-offer-price-change':
-      return 'Alerta de Preço'
-    default:
-      return 'Notificação'
+  interface Props {
+    notification: Notification
+    markingAsRead: string | null
   }
-}
 
-const getNotificationMessage = (notification: Notification): string => {
-  switch (notification.type) {
-    case 'promotional-alert':
-      const { program_name, ecommerce_name, current_value } =
-        notification.data
-      return `Nova promoção disponível no programa ${program_name} da ${ecommerce_name}. Valor atual: ${current_value}.`
-    case 'alert-offer-price-change':
-      const { product_name, old_price, new_price } = notification.data
-      const priceChange =
-        new_price && old_price
-          ? new_price < old_price
-            ? 'diminuiu'
-            : 'aumentou'
-          : 'foi alterado'
-      return `O preço do produto "${product_name}" ${priceChange}. Confira os detalhes.`
-    default:
-      return 'Você tem uma nova notificação.'
-  }
-}
+  defineProps<Props>()
 
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInHours = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-  )
+  defineEmits<{
+    openModal: [notification: Notification]
+    markAsRead: [notificationId: string]
+  }>()
 
-  if (diffInHours < 1) {
-    return 'Agora há pouco'
-  } else if (diffInHours < 24) {
-    return `${diffInHours}h atrás`
-  } else {
-    const diffInDays = Math.floor(diffInHours / 24)
-    if (diffInDays === 1) {
-      return 'Ontem'
-    } else if (diffInDays < 7) {
-      return `${diffInDays} dias atrás`
-    } else {
-      return date.toLocaleDateString('pt-BR')
+  const getNotificationTitle = (notification: Notification): string => {
+    switch (notification.type) {
+      case 'promotional-alert':
+        return 'Alerta Promocional'
+      case 'alert-offer-price-change':
+        return 'Alerta de Preço'
+      default:
+        return 'Notificação'
     }
   }
-}
+
+  const getNotificationMessage = (notification: Notification): string => {
+    switch (notification.type) {
+      case 'promotional-alert':
+        const { program_name, ecommerce_name, current_value } =
+          notification.data
+        return `Nova promoção disponível no programa ${program_name} da ${ecommerce_name}. Valor atual: ${current_value}.`
+      case 'alert-offer-price-change':
+        const { product_name, old_price, new_price } = notification.data
+        const priceChange =
+          new_price && old_price
+            ? new_price < old_price
+              ? 'diminuiu'
+              : 'aumentou'
+            : 'foi alterado'
+        return `O preço do produto "${product_name}" ${priceChange}. Confira os detalhes.`
+      default:
+        return 'Você tem uma nova notificação.'
+    }
+  }
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+    )
+
+    if (diffInHours < 1) {
+      return 'Agora há pouco'
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h atrás`
+    } else {
+      const diffInDays = Math.floor(diffInHours / 24)
+      if (diffInDays === 1) {
+        return 'Ontem'
+      } else if (diffInDays < 7) {
+        return `${diffInDays} dias atrás`
+      } else {
+        return date.toLocaleDateString('pt-BR')
+      }
+    }
+  }
 </script>
 
 <style scoped>
-.notification-unread {
-  border-left: 4px solid rgb(var(--v-theme-primary));
-}
+  .notification-unread {
+    border-left: 4px solid rgb(var(--v-theme-primary));
+  }
 
-.gap-2 {
-  gap: 8px;
-}
+  .gap-2 {
+    gap: 8px;
+  }
 
-.cursor-pointer {
-  cursor: pointer;
-}
+  .cursor-pointer {
+    cursor: pointer;
+  }
 </style>

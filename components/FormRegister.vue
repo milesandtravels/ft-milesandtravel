@@ -143,7 +143,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-import { useSnackbarStore } from '~/store/snackbar'
+  import { useSnackbarStore } from '~/store/snackbar'
 
   const router = useRouter()
   const route = useRoute()

@@ -57,9 +57,9 @@
   })
 
   import type {
-  Notification,
-  NotificationsResponse,
-} from '~/types/notification'
+    Notification,
+    NotificationsResponse,
+  } from '~/types/notification'
 
   // Estado reativo
   const notifications = ref<Notification[]>([])
@@ -69,7 +69,9 @@
   const markingAllAsRead = ref(false)
   const currentPage = ref(1)
   const hasMorePages = ref(false)
-  const loadMoreComponent = ref<{ loadMoreTrigger: HTMLElement | null } | null>(null)
+  const loadMoreComponent = ref<{ loadMoreTrigger: HTMLElement | null } | null>(
+    null
+  )
 
   // Estado do modal
   const showNotificationModal = ref(false)

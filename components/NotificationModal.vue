@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :model-value="isOpen" @update:model-value="$emit('close')" max-width="600px" scrollable>
+  <v-dialog
+    :model-value="isOpen"
+    @update:model-value="$emit('close')"
+    max-width="600px"
+    scrollable
+  >
     <v-card v-if="notification">
       <v-card-title class="d-flex justify-space-between align-center">
         <span>{{ getNotificationTitle(notification) }}</span>
@@ -22,9 +27,7 @@
       <v-card-actions class="pa-4">
         <v-spacer></v-spacer>
 
-        <v-btn color="primary" @click="$emit('close')">
-          Fechar
-        </v-btn>
+        <v-btn color="primary" @click="$emit('close')"> Fechar </v-btn>
 
         <!-- Botão para ir para ofertas (alert-offer-price-change) -->
         <v-btn
@@ -64,31 +67,31 @@
 </template>
 
 <script setup lang="ts">
-import type { Notification } from '~/types/notification'
+  import type { Notification } from '~/types/notification'
 
-interface Props {
-  isOpen: boolean
-  notification: Notification | null
-  markingAsRead: boolean
-}
-
-defineProps<Props>()
-
-defineEmits<{
-  close: []
-  goToOffers: []
-  goToPromotions: []
-  markAsRead: []
-}>()
-
-const getNotificationTitle = (notification: Notification): string => {
-  switch (notification.type) {
-    case 'promotional-alert':
-      return 'Alerta Promocional'
-    case 'alert-offer-price-change':
-      return 'Alerta de Preço'
-    default:
-      return 'Notificação'
+  interface Props {
+    isOpen: boolean
+    notification: Notification | null
+    markingAsRead: boolean
   }
-}
+
+  defineProps<Props>()
+
+  defineEmits<{
+    close: []
+    goToOffers: []
+    goToPromotions: []
+    markAsRead: []
+  }>()
+
+  const getNotificationTitle = (notification: Notification): string => {
+    switch (notification.type) {
+      case 'promotional-alert':
+        return 'Alerta Promocional'
+      case 'alert-offer-price-change':
+        return 'Alerta de Preço'
+      default:
+        return 'Notificação'
+    }
+  }
 </script>

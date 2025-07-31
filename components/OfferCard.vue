@@ -6,7 +6,7 @@
         :product="offer.product"
         :discount-percentage="offer.discount_percentage"
       />
-      
+
       <!-- Header compacto sobreposto -->
       <div class="header-overlay">
         <div class="d-flex align-center justify-space-between">
@@ -22,19 +22,19 @@
               {{ offer.ecommerce.name }}
             </span>
           </div>
-          
+
           <!-- Botão de favoritar -->
-           <div class="d-flex align-center mt-8">
-             <v-btn
-               :icon="isFavorited ? 'mdi-heart' : 'mdi-heart-outline'"
-               :color="isFavorited ? 'red' : 'white'"
-               variant="text"
-               size="small"
-               :loading="isLoadingFavorite"
-               @click="toggleFavorite"
-               class="favorite-btn"
-             />
-           </div>
+          <div class="d-flex align-center mt-8">
+            <v-btn
+              :icon="isFavorited ? 'mdi-heart' : 'mdi-heart-outline'"
+              :color="isFavorited ? 'red' : 'white'"
+              variant="text"
+              size="small"
+              :loading="isLoadingFavorite"
+              @click="toggleFavorite"
+              class="favorite-btn"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -47,33 +47,33 @@
       </h3>
 
       <!-- Preços em destaque -->
-        <div class="price-section mb-3">
-          <div class="d-flex align-center gap-2">
-            <span class="text-h6 font-weight-bold text-primary">
-              {{ formatPrice(parseFloat(offer.final_price)) }}
-            </span>
-            <span 
-              v-if="offer.product.price > parseFloat(offer.final_price)"
-              class="text-body-2 text-decoration-line-through text-medium-emphasis"
-            >
-              {{ formatPrice(offer.product.price) }}
-            </span>
-          </div>
-        
+      <div class="price-section mb-3">
+        <div class="d-flex align-center gap-2">
+          <span class="text-h6 font-weight-bold text-primary">
+            {{ formatPrice(parseFloat(offer.final_price)) }}
+          </span>
+          <span
+            v-if="offer.product.price > parseFloat(offer.final_price)"
+            class="text-body-2 text-decoration-line-through text-medium-emphasis"
+          >
+            {{ formatPrice(offer.product.price) }}
+          </span>
+        </div>
+
         <!-- Avaliações compactas -->
-         <div v-if="offer.product.reviews > 0" class="d-flex align-center mt-1">
-           <v-rating
-             :model-value="parseFloat(offer.product.rating)"
-             color="amber"
-             density="compact"
-             size="x-small"
-             readonly
-             half-increments
-           />
-           <span class="text-caption text-medium-emphasis ml-1">
-             ({{ offer.product.reviews }})
-           </span>
-         </div>
+        <div v-if="offer.product.reviews > 0" class="d-flex align-center mt-1">
+          <v-rating
+            :model-value="parseFloat(offer.product.rating)"
+            color="amber"
+            density="compact"
+            size="x-small"
+            readonly
+            half-increments
+          />
+          <span class="text-caption text-medium-emphasis ml-1">
+            ({{ offer.product.reviews }})
+          </span>
+        </div>
       </div>
 
       <!-- Recompensa em linha -->
@@ -98,21 +98,20 @@
       @view:product="handleViewProduct"
       @go:program="handleGoToProgram"
     />
-    
 
     <!-- Modal de confirmação do programa -->
-     <ProgramConfirmationModal
-       v-model="showConfirmationModal"
-       :program="offer.program"
-       @confirm="handleProgramConfirm"
-     />
+    <ProgramConfirmationModal
+      v-model="showConfirmationModal"
+      :program="offer.program"
+      @confirm="handleProgramConfirm"
+    />
   </v-card>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
-import type { OfferItem } from '~/interfaces/offers';
-import { useSnackbarStore } from '~/store/snackbar';
+  import { ref } from 'vue'
+  import type { OfferItem } from '~/interfaces/offers'
+  import { useSnackbarStore } from '~/store/snackbar'
 
   interface Props {
     offer: OfferItem
@@ -128,7 +127,7 @@ import { useSnackbarStore } from '~/store/snackbar';
 
   const snackbarStore = useSnackbarStore()
   const route = useRoute()
-  
+
   // Estados para favoritar
   const isLoadingFavorite = ref(false)
   const isFavorited = ref(props.offer.selected)
@@ -172,17 +171,17 @@ import { useSnackbarStore } from '~/store/snackbar';
     }
 
     if (error.value) {
-       snackbarStore.showError('Erro ao favoritar oferta. Tente novamente.')
-       isLoadingFavorite.value = false
-     }
-   }
+      snackbarStore.showError('Erro ao favoritar oferta. Tente novamente.')
+      isLoadingFavorite.value = false
+    }
+  }
 
-   // Função para confirmar programa
-   const handleProgramConfirm = (): void => {
-     window.open(props.offer.promotion_link, '_blank')
-     emit('go:program', props.offer)
-     showConfirmationModal.value = false
-   }
+  // Função para confirmar programa
+  const handleProgramConfirm = (): void => {
+    window.open(props.offer.promotion_link, '_blank')
+    emit('go:program', props.offer)
+    showConfirmationModal.value = false
+  }
 
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('pt-BR', {
@@ -193,7 +192,7 @@ import { useSnackbarStore } from '~/store/snackbar';
 
   const formatBenefit = (value: string, type: string): string => {
     const numValue = parseFloat(value)
-    
+
     switch (type) {
       case 'cashback':
         return formatPrice(numValue)
@@ -209,8 +208,8 @@ import { useSnackbarStore } from '~/store/snackbar';
   const getRewardColor = (type: string): string => {
     const colors = {
       cashback: 'green',
-      points: 'blue', 
-      miles: 'purple'
+      points: 'blue',
+      miles: 'purple',
     }
     return colors[type as keyof typeof colors] || 'primary'
   }
@@ -241,7 +240,11 @@ import { useSnackbarStore } from '~/store/snackbar';
     top: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.6) 0%,
+      transparent 100%
+    );
     padding: 12px;
     z-index: 2;
   }
@@ -282,15 +285,15 @@ import { useSnackbarStore } from '~/store/snackbar';
     .offer-card {
       border-radius: 8px !important;
     }
-    
+
     .header-overlay {
       padding: 8px;
     }
-    
+
     .product-name {
       font-size: 0.875rem;
     }
-    
+
     .reward-inline {
       flex-direction: column;
       align-items: flex-start;

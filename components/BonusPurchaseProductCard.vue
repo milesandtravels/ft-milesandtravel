@@ -135,7 +135,9 @@
           />
           <div class="marketplace-text">
             <span class="marketplace-name">{{ product.ecommerce.name }}</span>
-            <span class="marketplace-category">{{ product.ecommerce.category }}</span>
+            <span class="marketplace-category">{{
+              product.ecommerce.category
+            }}</span>
           </div>
         </div>
       </div>
@@ -153,7 +155,9 @@
           block
           @click.stop
         >
-          <v-icon start :size="isMobile ? 'small' : 'default'">mdi-open-in-new</v-icon>
+          <v-icon start :size="isMobile ? 'small' : 'default'"
+            >mdi-open-in-new</v-icon
+          >
           Ver produto
         </v-btn>
       </div>
@@ -202,7 +206,7 @@
 
   // Reactive properties
   const currentImageIndex = ref(0)
-  
+
   const isMobile = computed(() => {
     if (process.client) {
       return window.innerWidth < 768
@@ -214,24 +218,26 @@
   const productImages = computed(() => {
     const images = []
 
-    if (props.product.image_url && props.product.thumbnails?.length === 0) { 
+    if (props.product.image_url && props.product.thumbnails?.length === 0) {
       images.push(props.product.image_url)
     }
-    
+
     // Parse thumbnails if available
     if (props.product.thumbnails) {
       try {
         const thumbnails = JSON.parse(props.product.thumbnails)
         if (Array.isArray(thumbnails)) {
           // Filter out the main image to avoid duplicates
-          const additionalImages = thumbnails.filter(thumb => thumb !== props.product.image_url)
+          const additionalImages = thumbnails.filter(
+            thumb => thumb !== props.product.image_url
+          )
           images.push(...additionalImages)
         }
       } catch (error) {
         console.warn('Error parsing thumbnails:', error)
       }
     }
-    
+
     return images.length > 0 ? images : [props.product.image_url]
   })
 
@@ -473,8 +479,6 @@
   .counter-text {
     line-height: 1;
   }
-
-
 
   .custom-badge {
     position: absolute;
@@ -718,8 +722,6 @@
       font-size: 0.75rem !important;
       font-weight: 600;
     }
-
-
   }
 
   /* ================================
@@ -822,8 +824,6 @@
     .mobile-selection-indicator {
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
-
 
     .marketplace-info-section {
       border-color: rgba(255, 255, 255, 0.08);

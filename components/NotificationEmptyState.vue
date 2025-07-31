@@ -14,5 +14,5 @@
 </template>
 
 <script setup lang="ts">
-// Componente sem props ou emits
+  // Componente sem props ou emits
 </script>

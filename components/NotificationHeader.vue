@@ -18,14 +18,14 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  hasUnreadNotifications: boolean
-  markingAllAsRead: boolean
-}
+  interface Props {
+    hasUnreadNotifications: boolean
+    markingAllAsRead: boolean
+  }
 
-defineProps<Props>()
+  defineProps<Props>()
 
-defineEmits<{
-  markAllAsRead: []
-}>()
+  defineEmits<{
+    markAllAsRead: []
+  }>()
 </script>

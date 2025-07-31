@@ -1,9 +1,5 @@
 <template>
-  <div
-    v-if="hasMorePages"
-    ref="loadMoreTrigger"
-    class="text-center py-4"
-  >
+  <div v-if="hasMorePages" ref="loadMoreTrigger" class="text-center py-4">
     <v-progress-circular
       v-if="loadingMore"
       indeterminate
@@ -17,16 +13,16 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  hasMorePages: boolean
-  loadingMore: boolean
-}
+  interface Props {
+    hasMorePages: boolean
+    loadingMore: boolean
+  }
 
-defineProps<Props>()
+  defineProps<Props>()
 
-const loadMoreTrigger = ref<HTMLElement | null>(null)
+  const loadMoreTrigger = ref<HTMLElement | null>(null)
 
-defineExpose({
-  loadMoreTrigger
-})
+  defineExpose({
+    loadMoreTrigger,
+  })
 </script>

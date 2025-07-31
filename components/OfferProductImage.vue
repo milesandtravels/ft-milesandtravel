@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-import DiscountBadge from './DiscountBadge.vue'
+  import DiscountBadge from './DiscountBadge.vue'
 
   interface Product {
     id: number
@@ -74,7 +74,7 @@ import DiscountBadge from './DiscountBadge.vue'
 
   // Reactive properties
   const currentImageIndex = ref(0)
-  
+
   const isMobile = computed(() => {
     if (process.client) {
       return window.innerWidth < 768
@@ -85,29 +85,30 @@ import DiscountBadge from './DiscountBadge.vue'
   // Parse thumbnails and create image array
   const productImages = computed(() => {
     const images = []
-    
+
     // Always include the main image first
-    if (props.product.image_url && props.product.thumbnails?.length === 0) { 
+    if (props.product.image_url && props.product.thumbnails?.length === 0) {
       images.push(props.product.image_url)
     }
-    
+
     // Parse thumbnails if available
     if (props.product.thumbnails) {
       try {
         const thumbnails = JSON.parse(props.product.thumbnails)
         if (Array.isArray(thumbnails)) {
           // Filter out the main image to avoid duplicates
-          const additionalImages = thumbnails.filter(thumb => thumb !== props.product.image_url)
+          const additionalImages = thumbnails.filter(
+            thumb => thumb !== props.product.image_url
+          )
           images.push(...additionalImages)
         }
       } catch (error) {
         console.warn('Error parsing thumbnails:', error)
       }
     }
-    
+
     return images
   })
-
 
   const imageHeight = computed(() => {
     if (props.height) {

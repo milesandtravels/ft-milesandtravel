@@ -213,9 +213,9 @@
 
   const handleGoogleLogin = () => {
     const redirectTo = route.query?.redirect?.toString() || '/'
-    
+
     sessionStorage.setItem('googleAuthRedirectTo', redirectTo)
-    
+
     loginWithGoogle('google')
   }
 

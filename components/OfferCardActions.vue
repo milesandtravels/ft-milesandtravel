@@ -38,8 +38,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { OfferItem } from '~/interfaces/offers';
-import type { ProgramType } from '~/interfaces/program';
+  import type { OfferItem } from '~/interfaces/offers'
+  import type { ProgramType } from '~/interfaces/program'
   const showConfirmationModal = ref(false)
   interface Props {
     offer: OfferItem

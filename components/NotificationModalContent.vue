@@ -5,10 +5,7 @@
       <!-- Alerta de mudança de preço -->
       <div class="d-flex flex-column gap-4">
         <!-- Imagem do produto -->
-        <div
-          v-if="notification.data.product_image"
-          class="text-center"
-        >
+        <div v-if="notification.data.product_image" class="text-center">
           <v-img
             :src="notification.data.product_image"
             :alt="notification.data.product_name"
@@ -31,23 +28,17 @@
           <h3 class="text-h6 mb-2">Alteração de Preço</h3>
           <div class="d-flex gap-4">
             <div>
-              <p class="text-caption text-medium-emphasis">
-                Preço Anterior
-              </p>
+              <p class="text-caption text-medium-emphasis">Preço Anterior</p>
               <p class="text-h6 text-decoration-line-through text-error">
                 R$
-                {{
-                  formatPrice(notification.data.old_price || 0)
-                }}
+                {{ formatPrice(notification.data.old_price || 0) }}
               </p>
             </div>
             <div>
               <p class="text-caption text-medium-emphasis">Preço Atual</p>
               <p class="text-h6 text-success">
                 R$
-                {{
-                  formatPrice(notification.data.new_price || 0)
-                }}
+                {{ formatPrice(notification.data.new_price || 0) }}
               </p>
             </div>
           </div>
@@ -55,10 +46,7 @@
           <!-- Diferença de preço -->
           <div
             class="mt-2"
-            v-if="
-              notification.data.old_price &&
-              notification.data.new_price
-            "
+            v-if="notification.data.old_price && notification.data.new_price"
           >
             <v-chip
               :color="
@@ -82,9 +70,7 @@
         <!-- ID da busca -->
         <div v-if="notification.data.search_id">
           <h3 class="text-h6 mb-2">Busca Relacionada</h3>
-          <p class="text-body-2">
-            ID: {{ notification.data.search_id }}
-          </p>
+          <p class="text-body-2">ID: {{ notification.data.search_id }}</p>
         </div>
       </div>
     </div>
@@ -101,9 +87,7 @@
             </v-chip>
             <v-chip
               :color="
-                notification.data.program_type === 'points'
-                  ? 'success'
-                  : 'info'
+                notification.data.program_type === 'points' ? 'success' : 'info'
               "
               variant="outlined"
             >
@@ -133,9 +117,7 @@
           <p class="text-h5 text-primary font-weight-bold">
             {{ notification.data.current_value }}
             {{
-              notification.data.program_type === 'points'
-                ? 'pontos'
-                : 'milhas'
+              notification.data.program_type === 'points' ? 'pontos' : 'milhas'
             }}
           </p>
         </div>
@@ -195,9 +177,7 @@
 
     <div class="d-flex justify-space-between align-center">
       <div>
-        <p class="text-caption text-medium-emphasis mb-1">
-          Data de criação
-        </p>
+        <p class="text-caption text-medium-emphasis mb-1">Data de criação</p>
         <p class="text-body-2">
           {{ formatFullDate(notification.created_at) }}
         </p>
@@ -216,82 +196,82 @@
 </template>
 
 <script setup lang="ts">
-import type { Notification } from '~/types/notification'
+  import type { Notification } from '~/types/notification'
 
-interface Props {
-  notification: Notification
-}
-
-defineProps<Props>()
-
-const formatPrice = (price: number): string => {
-  return price.toLocaleString('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-}
-
-const getPriceChangeColor = (oldPrice: number, newPrice: number): string => {
-  if (newPrice < oldPrice) {
-    return 'success'
-  } else if (newPrice > oldPrice) {
-    return 'error'
+  interface Props {
+    notification: Notification
   }
-  return 'info'
-}
 
-const getPriceChangeText = (oldPrice: number, newPrice: number): string => {
-  if (oldPrice === 0) return 'Preço inicial'
+  defineProps<Props>()
 
-  const difference = newPrice - oldPrice
-  const percentage = ((difference / oldPrice) * 100).toFixed(1)
-
-  if (difference < 0) {
-    return `Desconto de R$ ${Math.abs(difference).toFixed(2)} (${Math.abs(parseFloat(percentage))}%)`
-  } else if (difference > 0) {
-    return `Aumento de R$ ${difference.toFixed(2)} (${percentage}%)`
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
   }
-  return 'Sem alteração'
-}
 
-const getNotificationMessage = (notification: Notification): string => {
-  switch (notification.type) {
-    case 'promotional-alert':
-      const { program_name, ecommerce_name, current_value } =
-        notification.data
-      return `Nova promoção disponível no programa ${program_name} da ${ecommerce_name}. Valor atual: ${current_value}.`
-    case 'alert-offer-price-change':
-      const { product_name, old_price, new_price } = notification.data
-      const priceChange =
-        new_price && old_price
-          ? new_price < old_price
-            ? 'diminuiu'
-            : 'aumentou'
-          : 'foi alterado'
-      return `O preço do produto "${product_name}" ${priceChange}. Confira os detalhes.`
-    default:
-      return 'Você tem uma nova notificação.'
+  const getPriceChangeColor = (oldPrice: number, newPrice: number): string => {
+    if (newPrice < oldPrice) {
+      return 'success'
+    } else if (newPrice > oldPrice) {
+      return 'error'
+    }
+    return 'info'
   }
-}
 
-const formatFullDate = (dateString: string): string => {
-  const date = new Date(dateString)
-  return date.toLocaleString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
+  const getPriceChangeText = (oldPrice: number, newPrice: number): string => {
+    if (oldPrice === 0) return 'Preço inicial'
+
+    const difference = newPrice - oldPrice
+    const percentage = ((difference / oldPrice) * 100).toFixed(1)
+
+    if (difference < 0) {
+      return `Desconto de R$ ${Math.abs(difference).toFixed(2)} (${Math.abs(parseFloat(percentage))}%)`
+    } else if (difference > 0) {
+      return `Aumento de R$ ${difference.toFixed(2)} (${percentage}%)`
+    }
+    return 'Sem alteração'
+  }
+
+  const getNotificationMessage = (notification: Notification): string => {
+    switch (notification.type) {
+      case 'promotional-alert':
+        const { program_name, ecommerce_name, current_value } =
+          notification.data
+        return `Nova promoção disponível no programa ${program_name} da ${ecommerce_name}. Valor atual: ${current_value}.`
+      case 'alert-offer-price-change':
+        const { product_name, old_price, new_price } = notification.data
+        const priceChange =
+          new_price && old_price
+            ? new_price < old_price
+              ? 'diminuiu'
+              : 'aumentou'
+            : 'foi alterado'
+        return `O preço do produto "${product_name}" ${priceChange}. Confira os detalhes.`
+      default:
+        return 'Você tem uma nova notificação.'
+    }
+  }
+
+  const formatFullDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
 </script>
 
 <style scoped>
-.gap-2 {
-  gap: 8px;
-}
+  .gap-2 {
+    gap: 8px;
+  }
 
-.gap-4 {
-  gap: 16px;
-}
+  .gap-4 {
+    gap: 16px;
+  }
 </style>
