@@ -37,12 +37,6 @@
       </v-btn>
     </v-card-actions>
 
-    <ProgramConfirmationModal
-      v-model="showConfirmationModal"
-      :program="promotion.program"
-      :guidelines="guidelines"
-      @confirm="handleModalConfirm"
-    />
 
     <PromotionHistoryModal
       v-model="showHistoryModal"
@@ -52,8 +46,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import type { Promotion } from '~/interfaces/promotions'
+  import { ref } from 'vue';
+import type { Promotion } from '~/interfaces/promotions';
 
   interface Props {
     promotion: Promotion

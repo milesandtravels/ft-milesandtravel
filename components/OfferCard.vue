@@ -136,12 +136,7 @@
       @go:program="handleGoToProgram"
     />
 
-    <!-- Modal de confirmação do programa -->
-    <ProgramConfirmationModal
-      v-model="showConfirmationModal"
-      :program="offer.program"
-      @confirm="handleProgramConfirm"
-    />
+
 
     <!-- Modal de edição do valor atual -->
     <v-dialog v-model="showEditModal" max-width="500px">
@@ -191,9 +186,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import type { OfferItem } from '~/interfaces/offers'
-  import { useSnackbarStore } from '~/store/snackbar'
+  import { ref } from 'vue';
+import type { OfferItem } from '~/interfaces/offers';
+import { useSnackbarStore } from '~/store/snackbar';
 
   interface Props {
     offer: OfferItem
@@ -222,16 +217,12 @@
   const customValue = ref<number | null>(null)
 
   const handleViewProduct = (offer: OfferItem): void => {
-    // Lógica para visualizar produto
-    console.log('Ver produto:', offer)
+    window.open(offer.product.product_url, '_blank')
   }
 
   const handleGoToProgram = (offer: OfferItem): void => {
-    showConfirmationModal.value = true
+    window.open(offer.program.link_url, '_blank')
   }
-
-  // Estados para modal de confirmação
-  const showConfirmationModal = ref(false)
 
   // Função para favoritar
   const toggleFavorite = async (): Promise<void> => {
@@ -263,13 +254,6 @@
       snackbarStore.showError('Erro ao favoritar oferta. Tente novamente.')
       isLoadingFavorite.value = false
     }
-  }
-
-  // Função para confirmar programa
-  const handleProgramConfirm = (): void => {
-    window.open(props.offer.promotion_link, '_blank')
-    emit('go:program', props.offer)
-    showConfirmationModal.value = false
   }
 
   // Funções para valor atual da promoção
