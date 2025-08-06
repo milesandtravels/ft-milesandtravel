@@ -37,6 +37,13 @@
       </v-btn>
     </v-card-actions>
 
+       <ProgramConfirmationModal
+      v-model="showConfirmationModal"
+      :program="promotion.program"
+      :guidelines="guidelines"
+      @confirm="handleModalConfirm"
+    />
+
 
     <PromotionHistoryModal
       v-model="showHistoryModal"

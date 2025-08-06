@@ -50,6 +50,7 @@
 
   const handleConfirm = (): void => {
     emit('confirm', props.program)
+     emit('update:modelValue', false)
   }
 </script>
 
