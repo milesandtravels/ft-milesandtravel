@@ -91,6 +91,40 @@
         </span>
       </div>
 
+      <!-- Preço do mileiro (apenas para programas que não são cashback) -->
+      <div v-if="offer.program.type !== 'cashback' && offer.program.value_per_mile && offer.program.value_per_mile > 0" class="mileiro-price-section mb-3">
+        <div class="d-flex align-center justify-space-between">
+          <div class="d-flex align-center">
+            <v-icon
+              icon="mdi-currency-usd"
+              size="small"
+              class="mr-2 text-secondary"
+            />
+            <div>
+              <span class="text-caption text-medium-emphasis">
+                Preço do mileiro:
+              </span>
+              <span class="text-body-2 font-weight-medium ml-1">
+                {{ formatPrice(offer.program.value_per_mile || 0) }}
+              </span>
+            </div>
+          </div>
+          <v-btn
+            icon
+            size="small"
+            variant="text"
+            @click="openMileiroConfigModal"
+            class="ml-2"
+          >
+            <v-icon
+              icon="mdi-cog"
+              size="small"
+              class="text-secondary"
+            />
+          </v-btn>
+        </div>
+      </div>
+
       <!-- Valor atual da promoção -->
       <div class="current-value-section mb-3">
         <div class="d-flex align-center justify-space-between">
@@ -180,6 +214,149 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Modal de configuração do mileiro -->
+    <v-dialog 
+      v-model="showMileiroConfigModal" 
+      max-width="480"
+      :fullscreen="$vuetify.display.xs"
+      persistent
+      class="mileiro-config-modal"
+    >
+      <v-card class="rounded-lg" :class="{ 'rounded-0': $vuetify.display.xs }">
+        <!-- Header com gradiente -->
+        <div class="modal-header pa-6 pb-4">
+          <div class="d-flex align-center mb-2">
+            <div class="icon-container mr-3">
+              <v-icon 
+                icon="mdi-tune-variant" 
+                size="24"
+                color="primary"
+              />
+            </div>
+            <div>
+              <h2 class="text-h6 font-weight-bold mb-1">
+                Personalize seu Mileiro
+              </h2>
+              <p class="text-caption text-medium-emphasis ma-0">
+                Configure valores que fazem sentido para você
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <v-card-text class="pa-6 pt-2">
+          <!-- Seção principal -->
+          <div class="content-section mb-5">
+            <div class="d-flex align-start mb-4">
+              <v-icon 
+                icon="mdi-lightbulb-outline" 
+                color="amber" 
+                size="20"
+                class="mr-3 mt-1"
+              />
+              <div>
+                <h3 class="text-subtitle-1 font-weight-medium mb-2">
+                  Por que personalizar?
+                </h3>
+                <p class="text-body-2 text-medium-emphasis mb-0">
+                  Cada pessoa tem uma estratégia diferente para usar milhas. 
+                  Defina valores que reflitam seu perfil de viagem.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informação sobre valor atual -->
+          <div class="current-value-section mb-5">
+            <v-card 
+              variant="tonal" 
+              color="primary"
+              class="pa-4"
+            >
+              <div class="d-flex align-center mb-2">
+                <v-icon 
+                  icon="mdi-chart-line" 
+                  size="18"
+                  class="mr-2"
+                />
+                <span class="text-subtitle-2 font-weight-medium">
+                  Valor atual do mercado
+                </span>
+              </div>
+              <p class="text-body-2 mb-0">
+                Estamos usando um valor base de <strong>{{ formatPrice(offer.program.value_per_mile || 0) }}</strong> 
+                por milha, baseado em nossa análise de mercado.
+              </p>
+            </v-card>
+          </div>
+
+          <!-- Benefícios -->
+          <div class="benefits-section">
+            <h3 class="text-subtitle-1 font-weight-medium mb-3">
+              O que você pode fazer:
+            </h3>
+            <div class="benefits-list">
+              <div class="d-flex align-start mb-3">
+                <v-icon 
+                  icon="mdi-check-circle" 
+                  color="success" 
+                  size="18"
+                  class="mr-3 mt-1"
+                />
+                <span class="text-body-2">
+                  Ajustar preços por programa de milhas
+                </span>
+              </div>
+              <div class="d-flex align-start mb-3">
+                <v-icon 
+                  icon="mdi-check-circle" 
+                  color="success" 
+                  size="18"
+                  class="mr-3 mt-1"
+                />
+                <span class="text-body-2">
+                  Ver cálculos mais precisos nas ofertas
+                </span>
+              </div>
+              <div class="d-flex align-start">
+                <v-icon 
+                  icon="mdi-check-circle" 
+                  color="success" 
+                  size="18"
+                  class="mr-3 mt-1"
+                />
+                <span class="text-body-2">
+                  Tomar decisões baseadas no seu perfil
+                </span>
+              </div>
+            </div>
+          </div>
+        </v-card-text>
+
+        <!-- Actions com melhor espaçamento -->
+        <v-card-actions class="pa-6 pt-0">
+          <v-btn
+            variant="text"
+            color="medium-emphasis"
+            @click="closeMileiroConfigModal"
+            class="mr-3"
+          >
+            Agora não
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            variant="elevated"
+            @click="goToMileiroConfig"
+            class="px-6"
+          >
+            <v-icon icon="mdi-cog" size="18" class="mr-2" />
+            Configurar agora
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -213,6 +390,40 @@
   const isUpdatingValue = ref(false)
   const valueType = ref<'automatic' | 'custom'>('automatic')
   const customValue = ref<number | null>(null)
+
+  // Estados para modal de configuração do mileiro
+  const showMileiroConfigModal = ref(false)
+
+  // Função para abrir modal de configuração do mileiro
+  const openMileiroConfigModal = (): void => {
+    showMileiroConfigModal.value = true
+  }
+
+  // Função para fechar modal de configuração do mileiro
+  const closeMileiroConfigModal = (): void => {
+    showMileiroConfigModal.value = false
+  }
+
+  // Função para redirecionar para configuração de mileiros
+  const goToMileiroConfig = (): void => {
+    closeMileiroConfigModal()
+    
+    // Capturar parâmetros da URL atual para permitir retorno
+    const currentQuery = route.query
+    const returnParams = new URLSearchParams()
+    
+    // Adicionar parâmetros relevantes para manter o contexto da busca
+    Object.keys(currentQuery).forEach(key => {
+      if (currentQuery[key]) {
+        returnParams.append(key, String(currentQuery[key]))
+      }
+    })
+    
+    // Adicionar parâmetro de retorno
+    const returnUrl = `/offers?${returnParams.toString()}`
+    
+    navigateTo(`/mileiros-config?returnTo=${encodeURIComponent(returnUrl)}`)
+  }
 
   const handleViewProduct = (offer: OfferItem): void => {
     window.open(offer.product.product_url, '_blank')
@@ -487,6 +698,82 @@
     flex-wrap: wrap;
     gap: 4px;
   }
+
+  .mileiro-price-section {
+    border-top: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+    background: rgba(var(--v-theme-surface-variant), 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+
+  /* Estilos para modal de configuração do mileiro */
+  .mileiro-config-modal {
+    .modal-header {
+      background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.05) 0%, rgba(var(--v-theme-primary), 0.02) 100%);
+      border-bottom: 1px solid rgba(var(--v-border-color), 0.1);
+    }
+
+    .icon-container {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(var(--v-theme-primary), 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content-section {
+      .v-icon {
+        flex-shrink: 0;
+      }
+    }
+
+    .current-value-section {
+      .v-card {
+        border: 1px solid rgba(var(--v-theme-primary), 0.2);
+      }
+    }
+
+    .benefits-list {
+      .v-icon {
+        flex-shrink: 0;
+      }
+    }
+
+    /* Responsividade mobile */
+    @media (max-width: 600px) {
+      .modal-header {
+        padding: 20px 16px 16px 16px !important;
+      }
+
+      .v-card-text {
+        padding: 16px !important;
+        padding-top: 8px !important;
+      }
+
+      .v-card-actions {
+        padding: 16px !important;
+        padding-top: 0 !important;
+        flex-direction: column;
+        gap: 8px;
+
+        .v-btn {
+          width: 100%;
+          margin: 0 !important;
+        }
+      }
+
+      .icon-container {
+        width: 40px;
+        height: 40px;
+      }
+
+      .text-h6 {
+         font-size: 1.1rem !important;
+       }
+     }
+   }
 
   .current-value-section {
     border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);

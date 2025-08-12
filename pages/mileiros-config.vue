@@ -4,18 +4,34 @@
       <v-row>
         <v-col cols="12">
           <!-- Header -->
-          <div class="d-flex align-center mb-6">
-            <v-icon size="32" color="primary" class="me-3">
-              mdi-currency-usd
-            </v-icon>
-            <div>
-              <h1 class="text-h4 font-weight-bold text-primary">
-                Configurar Mileiros
-              </h1>
-              <p class="text-subtitle-1 text-medium-emphasis ma-0">
-                Gerencie os preços dos programas de pontos e milhas
-              </p>
+          <div class="d-flex align-center justify-space-between mb-6">
+            <div class="d-flex align-center">
+              <v-icon size="32" color="primary" class="me-3">
+                mdi-currency-usd
+              </v-icon>
+              <div>
+                <h1 class="text-h4 font-weight-bold text-primary">
+                  Configurar Mileiros
+                </h1>
+                <p class="text-subtitle-1 text-medium-emphasis ma-0">
+                  Gerencie os preços dos programas de pontos e milhas
+                </p>
+              </div>
             </div>
+            
+            <!-- Botão de retorno (aparece apenas quando há returnTo na URL) -->
+            <v-btn
+              v-if="returnUrl"
+              color="primary"
+              variant="outlined"
+              @click="goBackToOffers"
+              class="text-none"
+            >
+              <v-icon start size="18">
+                mdi-arrow-left
+              </v-icon>
+              Voltar às Ofertas
+            </v-btn>
           </div>
 
           <!-- Loading State -->
@@ -192,6 +208,8 @@
 </template>
 
 <script setup lang="ts">
+import { useSnackbarStore } from '~/store/snackbar'
+
 // Interfaces
 interface Program {
   id: number
@@ -199,6 +217,20 @@ interface Program {
   logo_url: string
   link_url: string
   value_per_mile: number
+}
+
+// Router e route
+const router = useRouter()
+const route = useRoute()
+
+// URL de retorno
+const returnUrl = computed(() => route.query.returnTo as string || null)
+
+// Função para voltar às ofertas
+const goBackToOffers = () => {
+  if (returnUrl.value) {
+    router.push(returnUrl.value)
+  }
 }
 
 // Configurações da página
@@ -318,7 +350,21 @@ const savePrice = async () => {
       programs.value[programIndex].value_per_mile = newPrice
     }
     
+    // Mostrar notificação de sucesso
+    const snackbarStore = useSnackbarStore()
+    snackbarStore.showSuccess(`Preço do ${selectedProgram.value.name} atualizado com sucesso! As ofertas serão recalculadas com o novo valor.`)
+    
     closeEditModal()
+    
+    // Se há URL de retorno, mostrar opção de voltar
+    if (returnUrl.value) {
+      setTimeout(() => {
+        const shouldReturn = confirm('Deseja voltar às ofertas para ver os resultados atualizados?')
+        if (shouldReturn) {
+          goBackToOffers()
+        }
+      }, 1500)
+    }
   } catch (err) {
     console.error('Erro ao salvar preço:', err)
     // Aqui você pode adicionar uma notificação de erro para o usuário
