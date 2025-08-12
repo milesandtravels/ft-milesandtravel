@@ -67,10 +67,10 @@
                 <v-icon start>mdi-timeline</v-icon>
                 Timeline
               </v-tab>
-              <v-tab v-if="!$vuetify.display.mobile" value="chart">
+              <!-- <v-tab v-if="!$vuetify.display.mobile" value="chart">
                 <v-icon start>mdi-chart-line</v-icon>
                 Gráfico
-              </v-tab>
+              </v-tab> -->
               <v-tab value="calendar">
                 <v-icon start>mdi-calendar</v-icon>
                 Calendário
@@ -94,12 +94,12 @@
               </v-tabs-window-item>
 
               <!-- Chart Tab -->
-              <v-tabs-window-item v-if="!$vuetify.display.mobile" value="chart">
+              <!-- <v-tabs-window-item v-if="!$vuetify.display.mobile" value="chart">
                 <PromotionHistoryChart
                   :chart-data="chartData"
                   :programs="programs"
                 />
-              </v-tabs-window-item>
+              </v-tabs-window-item> -->
 
               <!-- Calendar Tab -->
               <v-tabs-window-item value="calendar">
@@ -141,16 +141,15 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-  import type { Ecommerce } from '~/interfaces/ecommerces'
-  import type { Program } from '~/interfaces/program'
-  import type {
-    PromotionHistoryChartData,
-    PromotionHistoryResponse,
-  } from '~/interfaces/promotions'
-  import PromotionHistoryCalendar from './PromotionHistoryCalendar.vue'
-  import PromotionHistoryChart from './PromotionHistoryChart.vue'
-  import PromotionHistoryComparison from './PromotionHistoryComparison.vue'
-  import PromotionHistoryTimeline from './PromotionHistoryTimeline.vue'
+import type { Ecommerce } from '~/interfaces/ecommerces'
+import type { Program } from '~/interfaces/program'
+import type {
+  PromotionHistoryChartData,
+  PromotionHistoryResponse,
+} from '~/interfaces/promotions'
+import PromotionHistoryCalendar from './PromotionHistoryCalendar.vue'
+import PromotionHistoryComparison from './PromotionHistoryComparison.vue'
+import PromotionHistoryTimeline from './PromotionHistoryTimeline.vue'
 
   interface Props {
     modelValue: boolean
