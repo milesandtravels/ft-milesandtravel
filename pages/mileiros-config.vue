@@ -70,7 +70,7 @@
                     <BaseLogoAvatar
                       :src="program.logo_url"
                       :alt="program.name"
-                      size="sm"
+                      size="md"
                       type="miles"
                       class="me-3"
                     />
