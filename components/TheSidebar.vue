@@ -216,6 +216,12 @@
       route: '/profile',
     },
     {
+      title: 'Configurar Mileiros',
+      subtitle: 'Preços dos programas de pontos e milhas',
+      icon: 'mdi-currency-usd',
+      route: '/mileiros-config',
+    },
+    {
       title: 'Termos de Uso',
       subtitle: 'Condições de utilização',
       icon: 'mdi-file-document-check-outline',
