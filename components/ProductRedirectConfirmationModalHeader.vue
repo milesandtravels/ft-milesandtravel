@@ -24,7 +24,7 @@
   const { xs, sm } = useDisplay()
 
   const headerClasses = computed(() => ({
-    'pa-4': xs.value,
+    'pa-3': xs.value,
     'pa-5': sm.value,
     'pa-6': !xs.value && !sm.value,
     'pb-2': xs.value,
@@ -182,16 +182,28 @@
 
   /* Responsividade para mobile */
   @media (max-width: 600px) {
+    .modal-header {
+      padding: 12px 16px 8px 16px !important;
+      min-height: auto;
+    }
+    
     .header-content {
-      gap: 12px;
+      gap: 10px;
     }
 
     .header-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      line-height: 1.3;
     }
 
     .header-subtitle {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      margin-top: 2px !important;
+    }
+    
+    .mobile-icon-container {
+      width: 36px;
+      height: 36px;
     }
   }
 </style>

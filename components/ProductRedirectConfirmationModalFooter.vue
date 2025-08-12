@@ -2,7 +2,7 @@
   <v-card-actions class="pa-0">
     <div class="modal-footer w-100">
       <v-divider />
-      <div class="pa-6 pt-4">
+      <div class="pa-6 pt-4 footer-content">
         <!-- Disclaimer adicional -->
         <div class="disclaimer-section mb-4" v-if="!isMobile">
           <v-alert
@@ -23,15 +23,15 @@
         </div>
 
         <!-- Botões de ação -->
-        <v-row no-gutters class="w-100">
+        <v-row no-gutters class="w-100 action-buttons">
           <v-col cols="5">
             <v-btn
               variant="outlined"
               color="grey-darken-1"
-              size="large"
+              :size="isMobile ? 'default' : 'large'"
               block
               @click="$emit('cancel')"
-              class="text-body-2"
+              class="text-body-2 cancel-btn"
             >
               Cancelar
             </v-btn>
@@ -39,13 +39,13 @@
           <v-col cols="7" class="ps-3">
             <v-btn
               color="primary"
-              size="large"
+              :size="isMobile ? 'default' : 'large'"
               block
               @click="$emit('confirm')"
-              class="text-body-2 font-weight-bold"
+              class="text-body-2 font-weight-bold confirm-btn"
               elevation="0"
             >
-              <v-icon start size="18">mdi-open-in-new</v-icon>
+              <v-icon start :size="isMobile ? '16' : '18'">mdi-open-in-new</v-icon>
               Ver Produto
             </v-btn>
           </v-col>
@@ -118,6 +118,54 @@
   @media (prefers-color-scheme: dark) {
     .disclaimer-text {
       color: rgba(var(--v-theme-on-surface), 0.9);
+    }
+  }
+
+  /* Responsividade para mobile */
+  @media (max-width: 600px) {
+    .footer-content {
+      padding: 16px !important;
+      padding-top: 12px !important;
+    }
+    
+    .action-buttons {
+      gap: 8px;
+    }
+    
+    .cancel-btn,
+    .confirm-btn {
+      min-height: 44px !important;
+      font-size: 0.875rem !important;
+    }
+    
+    .confirm-btn {
+      padding: 0 12px !important;
+    }
+    
+    .disclaimer-section {
+      margin-bottom: 12px !important;
+    }
+    
+    .disclaimer-alert {
+      padding: 8px 12px !important;
+    }
+    
+    .disclaimer-text {
+      font-size: 0.7rem !important;
+    }
+  }
+  
+  /* Ajustes para telas muito pequenas */
+  @media (max-width: 360px) {
+    .footer-content {
+      padding: 12px !important;
+      padding-top: 8px !important;
+    }
+    
+    .cancel-btn,
+    .confirm-btn {
+      font-size: 0.8rem !important;
+      min-height: 40px !important;
     }
   }
 </style>

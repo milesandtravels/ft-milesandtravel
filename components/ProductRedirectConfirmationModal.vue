@@ -145,6 +145,14 @@
     border-radius: 0 !important;
     height: 100vh;
     max-height: 100vh;
+    margin: 0 !important;
+  }
+
+  .mobile-card {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0 !important;
   }
 
   .tablet-modal {
@@ -162,6 +170,12 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(var(--v-theme-primary), 0.3) transparent;
+  }
+
+  .mobile-content {
+    padding: 16px !important;
+    flex: 1;
+    overflow-y: auto;
   }
 
   .modal-content::-webkit-scrollbar {
@@ -197,6 +211,35 @@
   @media (max-height: 600px) {
     .mobile-modal {
       max-height: 100vh;
+    }
+  }
+
+  /* Ajustes específicos para mobile */
+  @media (max-width: 600px) {
+    .mobile-modal {
+      height: 100dvh; /* Usa dynamic viewport height */
+      max-height: 100dvh;
+    }
+    
+    .mobile-card {
+      height: 100dvh;
+      max-height: 100dvh;
+    }
+    
+    .mobile-content {
+      padding: 12px !important;
+      flex: 1;
+      overflow-y: auto;
+      max-height: calc(100dvh - 120px); /* Reserva espaço para header e footer */
+    }
+    
+    .mobile-card {
+      overflow: hidden;
+    }
+    
+    .alert-section,
+    .guidelines-section {
+      margin-bottom: 12px !important;
     }
   }
 </style>
