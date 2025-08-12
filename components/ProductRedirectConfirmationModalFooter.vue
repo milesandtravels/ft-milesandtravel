@@ -163,14 +163,30 @@
   /* Ajustes para telas muito pequenas */
   @media (max-width: 360px) {
     .footer-content {
-      padding: 12px !important;
-      padding-top: 8px !important;
+      padding: 8px !important;
+      padding-top: 6px !important;
+    }
+    
+    .action-buttons .v-col {
+      padding: 2px !important;
     }
     
     .cancel-btn,
     .confirm-btn {
       font-size: 0.8rem !important;
       min-height: 40px !important;
+    }
+  }
+  
+  /* Garantir que o footer não seja cortado */
+  @media (max-height: 700px) and (max-width: 600px) {
+    .footer-content {
+      padding: 8px !important;
+      padding-top: 6px !important;
+    }
+    
+    .disclaimer-section {
+      display: none !important;
     }
   }
 </style>
