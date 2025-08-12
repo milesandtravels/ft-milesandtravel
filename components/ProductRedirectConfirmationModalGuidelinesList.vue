@@ -6,10 +6,12 @@
       class="guideline-item"
       :class="itemClasses"
     >
-      <div class="guideline-bullet" :class="bulletClasses">
-        <v-icon color="primary" :size="iconSize">mdi-check-circle</v-icon>
+      <div class="bullet-container" :class="bulletClasses">
+        <v-icon color="primary" :size="iconSize"> mdi-check-circle </v-icon>
       </div>
-      <span class="guideline-text" :class="textClasses">{{ guideline }}</span>
+      <p class="guideline-text" :class="textClasses">
+        {{ guideline }}
+      </p>
     </div>
   </div>
 </template>
@@ -39,26 +41,28 @@
 
   const textClasses = computed(() => ({
     'text-caption': xs.value,
-    'text-body-2': !xs.value,
+    'text-body-2': sm.value,
+    'text-body-1': !xs.value && !sm.value,
   }))
 
-  const iconSize = computed(() => (xs.value ? 12 : 14))
+  const iconSize = computed(() => (xs.value ? 16 : 18))
 </script>
 
 <style scoped>
   .guidelines-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
   }
 
   .guideline-item {
     display: flex;
     align-items: flex-start;
+    gap: 12px;
     padding: 12px 16px;
-    background: rgba(var(--v-theme-surface-variant), 0.08);
+    background: rgba(var(--v-theme-surface), 0.8);
+    border: 1px solid rgba(var(--v-theme-outline), 0.12);
     border-radius: 10px;
-    border: 1px solid rgba(var(--v-theme-outline), 0.06);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -70,17 +74,17 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 3px;
+    width: 2px;
     background: linear-gradient(
       180deg,
       rgb(var(--v-theme-primary)) 0%,
-      rgba(var(--v-theme-primary), 0.7) 100%
+      rgba(var(--v-theme-primary), 0.6) 100%
     );
     opacity: 0;
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .guideline-bullet {
+  .bullet-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -89,31 +93,51 @@
     background: rgba(var(--v-theme-primary), 0.1);
     border: 1px solid rgba(var(--v-theme-primary), 0.2);
     border-radius: 50%;
-    margin-right: 12px;
-    margin-top: 2px;
     flex-shrink: 0;
+    margin-top: 2px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .guideline-text {
-    flex: 1;
-    font-size: 0.875rem;
+    margin: 0;
     line-height: 1.5;
-    color: rgba(var(--v-theme-on-surface), 0.85);
+    color: rgba(var(--v-theme-on-surface), 0.8);
+    flex: 1;
     font-weight: 400;
-    word-break: break-word;
+  }
+
+  /* Estados de hover */
+  .guideline-item:hover {
+    background: rgba(var(--v-theme-surface), 1);
+    border-color: rgba(var(--v-theme-primary), 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--v-theme-shadow), 0.1);
+  }
+
+  .guideline-item:hover::before {
+    opacity: 1;
+  }
+
+  .guideline-item:hover .bullet-container {
+    background: rgba(var(--v-theme-primary), 0.15);
+    border-color: rgba(var(--v-theme-primary), 0.3);
+    transform: scale(1.1);
+  }
+
+  .guideline-item:hover .guideline-text {
+    color: rgba(var(--v-theme-on-surface), 0.9);
   }
 
   /* Responsividade para mobile */
   .mobile-item {
-    padding: 10px 12px;
     gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
   }
 
   .mobile-bullet {
     width: 20px;
     height: 20px;
-    margin-right: 10px;
   }
 
   .mobile-item .guideline-text {
@@ -123,89 +147,31 @@
 
   /* Responsividade para tablet */
   .tablet-item {
+    gap: 11px;
     padding: 11px 14px;
+    border-radius: 9px;
   }
 
   .tablet-bullet {
     width: 22px;
     height: 22px;
-    margin-right: 11px;
   }
 
   /* Desktop */
   .desktop-item {
-    padding: 12px 16px;
+    border-radius: 12px;
   }
 
   .desktop-bullet {
-    width: 24px;
-    height: 24px;
-    margin-right: 12px;
+    width: 26px;
+    height: 26px;
   }
 
-  /* Estados de hover */
-  .guideline-item:hover {
-    background: rgba(var(--v-theme-surface-variant), 0.12);
-    border-color: rgba(var(--v-theme-primary), 0.15);
-    transform: translateX(4px);
-  }
-
-  .guideline-item:hover::before {
-    opacity: 1;
-  }
-
-  .guideline-item:hover .guideline-bullet {
-    background: rgba(var(--v-theme-primary), 0.15);
-    border-color: rgba(var(--v-theme-primary), 0.3);
-    transform: scale(1.1);
-  }
-
-  .guideline-item:hover .guideline-text {
-    color: rgba(var(--v-theme-on-surface), 0.95);
-  }
-
-  /* Melhorias de acessibilidade */
-  @media (prefers-reduced-motion: reduce) {
-    .guideline-item,
-    .guideline-bullet,
-    .guideline-item::before {
-      transition: none;
-    }
-
-    .guideline-item:hover {
-      transform: none;
-    }
-
-    .guideline-item:hover .guideline-bullet {
-      transform: none;
-    }
-  }
-
-  /* Modo escuro */
-  @media (prefers-color-scheme: dark) {
-    .guideline-item {
-      background: rgba(var(--v-theme-surface-bright), 0.05);
-      border-color: rgba(var(--v-theme-outline), 0.04);
-    }
-
-    .guideline-item:hover {
-      background: rgba(var(--v-theme-surface-bright), 0.08);
-    }
-
-    .guideline-text {
-      color: rgba(var(--v-theme-on-surface), 0.8);
-    }
-
-    .guideline-item:hover .guideline-text {
-      color: rgba(var(--v-theme-on-surface), 0.9);
-    }
-  }
-
-  /* Animação de entrada */
+  /* Animações de entrada */
   .guideline-item {
-    animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateX(-20px);
   }
 
   .guideline-item:nth-child(1) {
@@ -224,18 +190,56 @@
     animation-delay: 0.5s;
   }
 
-  @keyframes slideInUp {
+  @keyframes slideInLeft {
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0);
     }
   }
 
+  /* Melhorias de acessibilidade */
   @media (prefers-reduced-motion: reduce) {
     .guideline-item {
       animation: none;
       opacity: 1;
       transform: none;
+      transition: none;
+    }
+
+    .guideline-item:hover {
+      transform: none;
+    }
+
+    .guideline-item:hover .bullet-container {
+      transform: none;
+    }
+  }
+
+  /* Modo escuro */
+  @media (prefers-color-scheme: dark) {
+    .guideline-item {
+      background: rgba(var(--v-theme-surface), 0.6);
+      border-color: rgba(var(--v-theme-outline), 0.08);
+    }
+
+    .guideline-item:hover {
+      background: rgba(var(--v-theme-surface), 0.8);
+      border-color: rgba(var(--v-theme-primary), 0.2);
+    }
+
+    .guideline-text {
+      color: rgba(var(--v-theme-on-surface), 0.75);
+    }
+
+    .guideline-item:hover .guideline-text {
+      color: rgba(var(--v-theme-on-surface), 0.85);
+    }
+  }
+
+  /* Ajustes para mobile */
+  @media (max-width: 600px) {
+    .guidelines-list {
+      gap: 10px;
     }
   }
 </style>

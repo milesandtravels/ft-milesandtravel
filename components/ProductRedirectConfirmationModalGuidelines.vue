@@ -3,21 +3,23 @@
     <div class="guidelines-header" :class="headerClasses">
       <div class="header-icon-container">
         <v-icon color="primary" :size="iconSize">
-          mdi-clipboard-check-outline
+          mdi-clipboard-list-outline
         </v-icon>
       </div>
       <h4 class="guidelines-title" :class="titleClasses">
-        Por favor, atente-se às seguintes orientações:
+        Orientações importantes para uso do link:
       </h4>
     </div>
 
     <div class="guidelines-content" :class="contentClasses">
-      <ProgramConfirmationModalGuidelinesList :guidelines="guidelines" />
+      <ProductRedirectConfirmationModalGuidelinesList
+        :guidelines="guidelines"
+      />
     </div>
 
     <div class="disclaimer-wrapper" :class="disclaimerClasses">
       <DisclaimerNote
-        disclaimer-text="O Miles&Travels não se responsabiliza por alterações nas regras ou valores dos programas de fidelidade."
+        disclaimer-text="O Miles&Travels utiliza a API do Google para buscar produtos. Alguns links podem não redirecionar diretamente para o marketplace correto. Este serviço é fornecido apenas como referência."
       />
     </div>
   </div>
@@ -65,14 +67,15 @@
   .guidelines-header {
     display: flex;
     align-items: center;
+    gap: 12px;
     padding: 16px 20px;
     background: linear-gradient(
       135deg,
       rgba(var(--v-theme-primary), 0.08) 0%,
-      rgba(var(--v-theme-primary), 0.03) 100%
+      rgba(var(--v-theme-primary), 0.04) 100%
     );
+    border: 1px solid rgba(var(--v-theme-primary), 0.15);
     border-radius: 12px;
-    border: 1px solid rgba(var(--v-theme-primary), 0.12);
     position: relative;
     overflow: hidden;
   }
@@ -80,82 +83,41 @@
   .guidelines-header::before {
     content: '';
     position: absolute;
-    top: 0;
     left: 0;
-    right: 0;
-    height: 3px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
     background: linear-gradient(
-      90deg,
+      180deg,
       rgb(var(--v-theme-primary)) 0%,
       rgba(var(--v-theme-primary), 0.7) 100%
     );
+    border-radius: 0 2px 2px 0;
   }
 
   .header-icon-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(var(--v-theme-primary), 0.15);
-    border: 2px solid rgba(var(--v-theme-primary), 0.25);
+    width: 32px;
+    height: 32px;
+    background: rgba(var(--v-theme-primary), 0.12);
+    border: 1px solid rgba(var(--v-theme-primary), 0.25);
     border-radius: 50%;
-    margin-right: 12px;
     flex-shrink: 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .guidelines-title {
     font-weight: 600;
-    margin-bottom: 0;
     color: rgba(var(--v-theme-on-surface), 0.9);
+    margin: 0;
     line-height: 1.3;
     flex: 1;
   }
 
   .guidelines-content {
-    background: rgba(var(--v-theme-surface-variant), 0.05);
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid rgba(var(--v-theme-outline), 0.08);
-  }
-
-  .disclaimer-wrapper {
-    position: relative;
-  }
-
-  /* Responsividade para mobile */
-  @media (max-width: 599px) {
-    .guidelines-header {
-      padding: 12px 16px;
-      border-radius: 10px;
-    }
-
-    .header-icon-container {
-      width: 36px;
-      height: 36px;
-      margin-right: 10px;
-    }
-
-    .guidelines-title {
-      font-size: 0.9rem;
-    }
-
-    .guidelines-content {
-      padding: 16px;
-      border-radius: 10px;
-    }
-  }
-
-  /* Responsividade para tablet */
-  @media (min-width: 600px) and (max-width: 959px) {
-    .guidelines-header {
-      padding: 14px 18px;
-    }
-
-    .guidelines-content {
-      padding: 18px;
-    }
+    margin-top: 16px;
   }
 
   /* Estados de hover */
@@ -163,21 +125,28 @@
     background: linear-gradient(
       135deg,
       rgba(var(--v-theme-primary), 0.12) 0%,
-      rgba(var(--v-theme-primary), 0.05) 100%
+      rgba(var(--v-theme-primary), 0.06) 100%
     );
-    border-color: rgba(var(--v-theme-primary), 0.2);
+    border-color: rgba(var(--v-theme-primary), 0.25);
+    transform: translateY(-2px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .guidelines-header:hover .header-icon-container {
-    background: rgba(var(--v-theme-primary), 0.2);
+    background: rgba(var(--v-theme-primary), 0.18);
     border-color: rgba(var(--v-theme-primary), 0.35);
     transform: scale(1.05);
   }
 
   /* Melhorias de acessibilidade */
   @media (prefers-reduced-motion: reduce) {
+    .guidelines-header,
     .header-icon-container {
       transition: none;
+    }
+
+    .guidelines-header:hover {
+      transform: none;
     }
 
     .guidelines-header:hover .header-icon-container {
@@ -191,22 +160,43 @@
       background: linear-gradient(
         135deg,
         rgba(var(--v-theme-primary), 0.06) 0%,
-        rgba(var(--v-theme-primary), 0.02) 100%
+        rgba(var(--v-theme-primary), 0.03) 100%
       );
-      border-color: rgba(var(--v-theme-primary), 0.08);
-    }
-
-    .guidelines-content {
-      background: rgba(var(--v-theme-surface-bright), 0.03);
-      border-color: rgba(var(--v-theme-outline), 0.06);
+      border-color: rgba(var(--v-theme-primary), 0.12);
     }
 
     .guidelines-header:hover {
       background: linear-gradient(
         135deg,
-        rgba(var(--v-theme-primary), 0.08) 0%,
-        rgba(var(--v-theme-primary), 0.03) 100%
+        rgba(var(--v-theme-primary), 0.1) 0%,
+        rgba(var(--v-theme-primary), 0.05) 100%
       );
+    }
+
+    .guidelines-title {
+      color: rgba(var(--v-theme-on-surface), 0.85);
+    }
+  }
+
+  /* Responsividade para mobile */
+  @media (max-width: 600px) {
+    .guidelines-header {
+      padding: 12px 16px;
+      gap: 10px;
+      border-radius: 10px;
+    }
+
+    .header-icon-container {
+      width: 28px;
+      height: 28px;
+    }
+
+    .guidelines-title {
+      font-size: 0.9rem;
+    }
+
+    .guidelines-content {
+      margin-top: 12px;
     }
   }
 </style>

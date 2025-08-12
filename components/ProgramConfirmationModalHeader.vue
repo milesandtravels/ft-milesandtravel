@@ -20,38 +20,42 @@
 </template>
 
 <script setup lang="ts">
-  import { useDisplay } from 'vuetify';
+  import { useDisplay } from 'vuetify'
 
   const { xs, sm } = useDisplay()
 
   const headerClasses = computed(() => ({
     'pa-4 pb-3': xs.value,
     'pa-5 pb-4': sm.value,
-    'pa-6 pb-4': !xs.value && !sm.value
+    'pa-6 pb-4': !xs.value && !sm.value,
   }))
 
   const iconClasses = computed(() => ({
     'mr-3': xs.value,
-    'mr-4': !xs.value
+    'mr-4': !xs.value,
   }))
 
-  const iconSize = computed(() => xs.value ? 20 : 24)
+  const iconSize = computed(() => (xs.value ? 20 : 24))
 
   const titleClasses = computed(() => ({
     'text-subtitle-1': xs.value,
-    'text-h6': !xs.value
+    'text-h6': !xs.value,
   }))
 
   const subtitleClasses = computed(() => ({
     'text-caption': xs.value,
-    'text-body-2': !xs.value
+    'text-body-2': !xs.value,
   }))
 </script>
 
 <style scoped>
   .modal-header {
     width: 100%;
-    background: linear-gradient(135deg, rgba(var(--v-theme-surface), 1) 0%, rgba(var(--v-theme-surface-variant), 0.1) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-surface), 1) 0%,
+      rgba(var(--v-theme-surface-variant), 0.1) 100%
+    );
   }
 
   .header-content {
@@ -66,7 +70,11 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.15) 0%, rgba(var(--v-theme-warning), 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-warning), 0.15) 0%,
+      rgba(var(--v-theme-warning), 0.05) 100%
+    );
     border-radius: 50%;
     border: 2px solid rgba(var(--v-theme-warning), 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -120,7 +128,11 @@
   /* Modo escuro */
   @media (prefers-color-scheme: dark) {
     .modal-header {
-      background: linear-gradient(135deg, rgba(var(--v-theme-surface), 1) 0%, rgba(var(--v-theme-surface-bright), 0.05) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-surface), 1) 0%,
+        rgba(var(--v-theme-surface-bright), 0.05) 100%
+      );
     }
   }
 </style>

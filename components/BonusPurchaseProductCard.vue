@@ -145,15 +145,12 @@
       <!-- Action Button -->
       <div class="action-section">
         <v-btn
-          :href="product.product_url"
-          target="_blank"
-          rel="noopener noreferrer"
           color="primary"
           variant="flat"
           :size="isMobile ? 'small' : 'default'"
           class="visit-store-btn"
           block
-          @click.stop
+          @click.stop="handleViewProduct"
         >
           <v-icon start :size="isMobile ? 'small' : 'default'"
             >mdi-open-in-new</v-icon
@@ -163,6 +160,13 @@
       </div>
     </v-card-text>
   </v-card>
+
+  <ProductRedirectConfirmationModal
+    v-model="showProductRedirectModal"
+    :product="productData"
+    @confirm="handleProductRedirect"
+    @cancel="handleProductCancel"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -206,6 +210,7 @@
 
   // Reactive properties
   const currentImageIndex = ref(0)
+  const showProductRedirectModal = ref(false)
 
   const isMobile = computed(() => {
     if (process.client) {
@@ -213,6 +218,27 @@
     }
     return false
   })
+
+  const productData = computed(() => ({
+    id: props.product.id.toString() || '',
+    name: props.product.name || 'Produto sem nome',
+    image: props.product.image_url || '',
+    ecommerce: props.product.ecommerce.name || 'E-commerce não informado',
+    url: props.product.product_url || '',
+  }))
+
+  const handleViewProduct = (): void => {
+    showProductRedirectModal.value = true
+  }
+
+  const handleProductRedirect = (): void => {
+    window.open(props.product.product_url, '_blank', 'noopener,noreferrer')
+    showProductRedirectModal.value = false
+  }
+
+  const handleProductCancel = (): void => {
+    showProductRedirectModal.value = false
+  }
 
   // Parse thumbnails and create image array
   const productImages = computed(() => {

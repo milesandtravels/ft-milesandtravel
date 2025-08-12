@@ -16,7 +16,9 @@
           {{ program.name }}
         </h3>
         <div class="program-type-badge" :class="badgeClasses">
-          <v-icon :size="badgeIconSize" class="mr-1">{{ getProgramTypeIcon(program.type) }}</v-icon>
+          <v-icon :size="badgeIconSize" class="mr-1">{{
+            getProgramTypeIcon(program.type)
+          }}</v-icon>
           <span class="type-text">{{ getProgramTypeName(program.type) }}</span>
         </div>
       </div>
@@ -26,7 +28,7 @@
 
 <script setup lang="ts">
   import type { Program, ProgramType } from '~/interfaces/program'
-  import { useDisplay } from 'vuetify';
+  import { useDisplay } from 'vuetify'
 
   interface Props {
     program: Program
@@ -38,17 +40,17 @@
 
   const sectionClasses = computed(() => ({
     'mb-4': xs.value,
-    'mb-5': !xs.value
+    'mb-5': !xs.value,
   }))
 
   const cardClasses = computed(() => ({
     'flex-column text-center': xs.value,
-    'flex-row align-center': !xs.value
+    'flex-row align-center': !xs.value,
   }))
 
   const logoClasses = computed(() => ({
     'mb-3': xs.value,
-    'mr-4': !xs.value
+    'mr-4': !xs.value,
   }))
 
   const logoSize = computed(() => {
@@ -59,15 +61,15 @@
 
   const nameClasses = computed(() => ({
     'text-h6': xs.value || sm.value,
-    'text-h5': !xs.value && !sm.value
+    'text-h5': !xs.value && !sm.value,
   }))
 
   const badgeClasses = computed(() => ({
     'justify-center': xs.value,
-    'justify-start': !xs.value
+    'justify-start': !xs.value,
   }))
 
-  const badgeIconSize = computed(() => xs.value ? 14 : 16)
+  const badgeIconSize = computed(() => (xs.value ? 14 : 16))
 
   const getProgramTypeName = (type: ProgramType): string => {
     const typeNames = {
@@ -105,7 +107,11 @@
   .program-card {
     display: flex;
     padding: 20px;
-    background: linear-gradient(135deg, rgba(var(--v-theme-surface-variant), 0.1) 0%, rgba(var(--v-theme-surface-variant), 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-surface-variant), 0.1) 0%,
+      rgba(var(--v-theme-surface-variant), 0.05) 100%
+    );
     border-radius: 16px;
     border: 1px solid rgba(var(--v-theme-outline), 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -120,7 +126,11 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, rgb(var(--v-theme-primary)) 0%, rgba(var(--v-theme-primary), 0.7) 100%);
+    background: linear-gradient(
+      90deg,
+      rgb(var(--v-theme-primary)) 0%,
+      rgba(var(--v-theme-primary), 0.7) 100%
+    );
   }
 
   .logo-container {
@@ -213,7 +223,11 @@
   /* Estados de hover */
   .program-card:hover {
     border-color: rgba(var(--v-theme-primary), 0.2);
-    background: linear-gradient(135deg, rgba(var(--v-theme-surface-variant), 0.15) 0%, rgba(var(--v-theme-surface-variant), 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-surface-variant), 0.15) 0%,
+      rgba(var(--v-theme-surface-variant), 0.08) 100%
+    );
   }
 
   .program-card:hover .program-logo {
@@ -242,12 +256,20 @@
   /* Modo escuro */
   @media (prefers-color-scheme: dark) {
     .program-card {
-      background: linear-gradient(135deg, rgba(var(--v-theme-surface-bright), 0.08) 0%, rgba(var(--v-theme-surface-bright), 0.03) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-surface-bright), 0.08) 0%,
+        rgba(var(--v-theme-surface-bright), 0.03) 100%
+      );
       border-color: rgba(var(--v-theme-outline), 0.12);
     }
 
     .program-card:hover {
-      background: linear-gradient(135deg, rgba(var(--v-theme-surface-bright), 0.12) 0%, rgba(var(--v-theme-surface-bright), 0.06) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-surface-bright), 0.12) 0%,
+        rgba(var(--v-theme-surface-bright), 0.06) 100%
+      );
     }
   }
 </style>

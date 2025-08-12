@@ -136,8 +136,6 @@
       @go:program="handleGoToProgram"
     />
 
-
-
     <!-- Modal de edição do valor atual -->
     <v-dialog v-model="showEditModal" max-width="500px">
       <v-card>
@@ -186,9 +184,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
-import type { OfferItem } from '~/interfaces/offers';
-import { useSnackbarStore } from '~/store/snackbar';
+  import { ref } from 'vue'
+  import type { OfferItem } from '~/interfaces/offers'
+  import { useSnackbarStore } from '~/store/snackbar'
 
   interface Props {
     offer: OfferItem

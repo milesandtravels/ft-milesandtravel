@@ -20,7 +20,8 @@
           Importante: Redirecionamento para {{ programName }}
         </h4>
         <p class="alert-text" :class="textClasses">
-          Você será redirecionado para o site oficial do programa. Certifique-se de seguir todas as regras para garantir o recebimento da bonificação.
+          Você será redirecionado para o site oficial do programa. Certifique-se
+          de seguir todas as regras para garantir o recebimento da bonificação.
         </p>
       </div>
     </v-alert>
@@ -45,7 +46,9 @@
           Atenção: Redirecionamento Manual
         </h4>
         <p class="alert-text" :class="textClasses">
-          Em alguns casos, pode não ser possível redirecionar automaticamente para a loja parceira. Se isso acontecer, busque manualmente a loja dentro do programa {{ programName }} para garantir a bonificação.
+          Em alguns casos, pode não ser possível redirecionar automaticamente
+          para a loja parceira. Se isso acontecer, busque manualmente a loja
+          dentro do programa {{ programName }} para garantir a bonificação.
         </p>
       </div>
     </v-alert>
@@ -53,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-  import { useDisplay } from 'vuetify';
+  import { useDisplay } from 'vuetify'
 
   interface Props {
     programName: string
@@ -65,25 +68,25 @@
 
   const containerClasses = computed(() => ({
     'mb-4': xs.value,
-    'mb-5': !xs.value
+    'mb-5': !xs.value,
   }))
 
   const alertClasses = computed(() => ({
-    'mb-3': true
+    'mb-3': true,
   }))
 
-  const alertDensity = computed(() => xs.value ? 'compact' : 'comfortable')
+  const alertDensity = computed(() => (xs.value ? 'compact' : 'comfortable'))
 
-  const iconSize = computed(() => xs.value ? 18 : 20)
+  const iconSize = computed(() => (xs.value ? 18 : 20))
 
   const titleClasses = computed(() => ({
     'text-subtitle-2': xs.value,
-    'text-subtitle-1': !xs.value
+    'text-subtitle-1': !xs.value,
   }))
 
   const textClasses = computed(() => ({
     'text-caption': xs.value,
-    'text-body-2': !xs.value
+    'text-body-2': !xs.value,
   }))
 </script>
 
@@ -95,7 +98,11 @@
   }
 
   .primary-alert {
-    background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.08) 0%, rgba(var(--v-theme-warning), 0.03) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-warning), 0.08) 0%,
+      rgba(var(--v-theme-warning), 0.03) 100%
+    );
     border-radius: 12px;
     border-left-width: 4px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -104,7 +111,11 @@
   }
 
   .secondary-alert {
-    background: linear-gradient(135deg, rgba(var(--v-theme-info), 0.08) 0%, rgba(var(--v-theme-info), 0.03) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-info), 0.08) 0%,
+      rgba(var(--v-theme-info), 0.03) 100%
+    );
     border-radius: 12px;
     border-left-width: 4px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -199,13 +210,21 @@
 
   /* Estados de hover */
   .primary-alert:hover {
-    background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.12) 0%, rgba(var(--v-theme-warning), 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-warning), 0.12) 0%,
+      rgba(var(--v-theme-warning), 0.05) 100%
+    );
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(var(--v-theme-warning), 0.15);
   }
 
   .secondary-alert:hover {
-    background: linear-gradient(135deg, rgba(var(--v-theme-info), 0.12) 0%, rgba(var(--v-theme-info), 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-info), 0.12) 0%,
+      rgba(var(--v-theme-info), 0.05) 100%
+    );
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(var(--v-theme-info), 0.15);
   }
@@ -244,19 +263,35 @@
   /* Modo escuro */
   @media (prefers-color-scheme: dark) {
     .primary-alert {
-      background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.06) 0%, rgba(var(--v-theme-warning), 0.02) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-warning), 0.06) 0%,
+        rgba(var(--v-theme-warning), 0.02) 100%
+      );
     }
 
     .secondary-alert {
-      background: linear-gradient(135deg, rgba(var(--v-theme-info), 0.06) 0%, rgba(var(--v-theme-info), 0.02) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-info), 0.06) 0%,
+        rgba(var(--v-theme-info), 0.02) 100%
+      );
     }
 
     .primary-alert:hover {
-      background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.08) 0%, rgba(var(--v-theme-warning), 0.03) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-warning), 0.08) 0%,
+        rgba(var(--v-theme-warning), 0.03) 100%
+      );
     }
 
     .secondary-alert:hover {
-      background: linear-gradient(135deg, rgba(var(--v-theme-info), 0.08) 0%, rgba(var(--v-theme-info), 0.03) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-info), 0.08) 0%,
+        rgba(var(--v-theme-info), 0.03) 100%
+      );
     }
   }
 

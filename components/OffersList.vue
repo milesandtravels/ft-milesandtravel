@@ -6,9 +6,9 @@
         :key="`${offer.ecommerce.id}-${offer.product.id}-${offer.program.id}`"
         class="grid-item"
       >
-        <OfferCard 
-          :offer="offer" 
-          @view:product="handleViewProduct" 
+        <OfferCard
+          :offer="offer"
+          @view:product="handleViewProduct"
           @value-updated="handleValueUpdated"
         />
       </div>

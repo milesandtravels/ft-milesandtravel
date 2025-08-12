@@ -160,12 +160,12 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-import type { Ecommerce } from '~/interfaces/ecommerces'
-import type { Program } from '~/interfaces/program'
-import type {
-  PromotionHistory,
-  PromotionHistoryResponse,
-} from '~/interfaces/promotions'
+  import type { Ecommerce } from '~/interfaces/ecommerces'
+  import type { Program } from '~/interfaces/program'
+  import type {
+    PromotionHistory,
+    PromotionHistoryResponse,
+  } from '~/interfaces/promotions'
 
   interface Props {
     historyData: PromotionHistoryResponse

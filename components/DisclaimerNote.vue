@@ -1,7 +1,9 @@
 <template>
   <div class="disclaimer-note" :class="containerClasses">
     <div class="disclaimer-icon-wrapper" :class="iconWrapperClasses">
-      <v-icon color="warning" :size="iconSize" class="disclaimer-icon">mdi-alert-circle-outline</v-icon>
+      <v-icon color="warning" :size="iconSize" class="disclaimer-icon"
+        >mdi-alert-circle-outline</v-icon
+      >
     </div>
     <span class="disclaimer-text" :class="textClasses">
       {{ disclaimerText }}
@@ -10,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-  import { useDisplay } from 'vuetify';
+  import { useDisplay } from 'vuetify'
 
   interface Props {
     disclaimerText: string
@@ -23,21 +25,21 @@
   const containerClasses = computed(() => ({
     'mobile-disclaimer': xs.value,
     'tablet-disclaimer': sm.value,
-    'desktop-disclaimer': !xs.value && !sm.value
+    'desktop-disclaimer': !xs.value && !sm.value,
   }))
 
   const iconWrapperClasses = computed(() => ({
     'mobile-icon-wrapper': xs.value,
     'tablet-icon-wrapper': sm.value,
-    'desktop-icon-wrapper': !xs.value && !sm.value
+    'desktop-icon-wrapper': !xs.value && !sm.value,
   }))
 
   const textClasses = computed(() => ({
     'text-caption': xs.value,
-    'text-body-2': !xs.value
+    'text-body-2': !xs.value,
   }))
 
-  const iconSize = computed(() => xs.value ? 14 : 16)
+  const iconSize = computed(() => (xs.value ? 14 : 16))
 </script>
 
 <style scoped>
@@ -45,7 +47,11 @@
     display: flex;
     align-items: flex-start;
     padding: 16px;
-    background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.08) 0%, rgba(var(--v-theme-warning), 0.04) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-warning), 0.08) 0%,
+      rgba(var(--v-theme-warning), 0.04) 100%
+    );
     border: 1px solid rgba(var(--v-theme-warning), 0.15);
     border-radius: 12px;
     margin-top: 20px;
@@ -62,7 +68,11 @@
     top: 0;
     bottom: 0;
     width: 4px;
-    background: linear-gradient(180deg, rgb(var(--v-theme-warning)) 0%, rgba(var(--v-theme-warning), 0.7) 100%);
+    background: linear-gradient(
+      180deg,
+      rgb(var(--v-theme-warning)) 0%,
+      rgba(var(--v-theme-warning), 0.7) 100%
+    );
     border-radius: 0 2px 2px 0;
   }
 
@@ -140,7 +150,11 @@
 
   /* Estados de hover */
   .disclaimer-note:hover {
-    background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.12) 0%, rgba(var(--v-theme-warning), 0.06) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-warning), 0.12) 0%,
+      rgba(var(--v-theme-warning), 0.06) 100%
+    );
     border-color: rgba(var(--v-theme-warning), 0.25);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(var(--v-theme-warning), 0.15);
@@ -184,12 +198,20 @@
   /* Modo escuro */
   @media (prefers-color-scheme: dark) {
     .disclaimer-note {
-      background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.06) 0%, rgba(var(--v-theme-warning), 0.03) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-warning), 0.06) 0%,
+        rgba(var(--v-theme-warning), 0.03) 100%
+      );
       border-color: rgba(var(--v-theme-warning), 0.12);
     }
 
     .disclaimer-note:hover {
-      background: linear-gradient(135deg, rgba(var(--v-theme-warning), 0.1) 0%, rgba(var(--v-theme-warning), 0.05) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-warning), 0.1) 0%,
+        rgba(var(--v-theme-warning), 0.05) 100%
+      );
     }
 
     .disclaimer-text {

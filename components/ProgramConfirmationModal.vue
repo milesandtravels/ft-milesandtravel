@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { Program } from '~/interfaces/program';
-  import { useDisplay } from 'vuetify';
+  import type { Program } from '~/interfaces/program'
+  import { useDisplay } from 'vuetify'
 
   interface Props {
     modelValue: boolean
@@ -61,13 +61,13 @@
   const cardClasses = computed(() => ({
     'mobile-modal': xs.value,
     'tablet-modal': sm.value,
-    'desktop-modal': md.value || !xs.value && !sm.value
+    'desktop-modal': md.value || (!xs.value && !sm.value),
   }))
 
   const contentClasses = computed(() => ({
     'pa-4': xs.value,
     'pa-5': sm.value,
-    'pa-6': !xs.value && !sm.value
+    'pa-6': !xs.value && !sm.value,
   }))
 
   const handleCancel = (): void => {
@@ -76,7 +76,7 @@
 
   const handleConfirm = (): void => {
     emit('confirm', props.program)
-     emit('update:modelValue', false)
+    emit('update:modelValue', false)
   }
 </script>
 

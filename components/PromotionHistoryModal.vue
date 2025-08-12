@@ -141,15 +141,15 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-import type { Ecommerce } from '~/interfaces/ecommerces'
-import type { Program } from '~/interfaces/program'
-import type {
-  PromotionHistoryChartData,
-  PromotionHistoryResponse,
-} from '~/interfaces/promotions'
-import PromotionHistoryCalendar from './PromotionHistoryCalendar.vue'
-import PromotionHistoryComparison from './PromotionHistoryComparison.vue'
-import PromotionHistoryTimeline from './PromotionHistoryTimeline.vue'
+  import type { Ecommerce } from '~/interfaces/ecommerces'
+  import type { Program } from '~/interfaces/program'
+  import type {
+    PromotionHistoryChartData,
+    PromotionHistoryResponse,
+  } from '~/interfaces/promotions'
+  import PromotionHistoryCalendar from './PromotionHistoryCalendar.vue'
+  import PromotionHistoryComparison from './PromotionHistoryComparison.vue'
+  import PromotionHistoryTimeline from './PromotionHistoryTimeline.vue'
 
   interface Props {
     modelValue: boolean
