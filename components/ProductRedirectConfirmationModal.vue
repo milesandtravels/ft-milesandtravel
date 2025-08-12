@@ -30,10 +30,12 @@
       </v-card-text>
 
       <!-- Footer -->
-      <ProductRedirectConfirmationModalFooter
-        @cancel="handleCancel"
-        @confirm="handleConfirm"
-      />
+      <div class="modal-footer-wrapper" :class="{ 'mobile-footer': isMobile }">
+        <ProductRedirectConfirmationModalFooter
+          @cancel="handleCancel"
+          @confirm="handleConfirm"
+        />
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -64,6 +66,8 @@
   const emit = defineEmits<Emits>()
 
   const { xs, sm, md } = useDisplay()
+
+  const isMobile = computed(() => xs.value)
 
   const isVisible = computed({
     get: () => props.modelValue,
@@ -238,8 +242,17 @@
     }
     
     .alert-section,
-    .guidelines-section {
-      margin-bottom: 12px !important;
-    }
+     .guidelines-section {
+       margin-bottom: 12px !important;
+     }
+     
+     .mobile-footer {
+       flex-shrink: 0;
+       margin-top: auto;
+     }
+     
+     .modal-footer-wrapper {
+       width: 100%;
+     }
   }
 </style>

@@ -23,8 +23,8 @@
         </div>
 
         <!-- Botões de ação -->
-        <v-row no-gutters class="w-100 action-buttons">
-          <v-col cols="5">
+        <v-row class="w-100 action-buttons" :class="{ 'ma-0': isMobile }">
+          <v-col cols="5" :class="{ 'pa-1': isMobile, 'pe-2': !isMobile }">
             <v-btn
               variant="outlined"
               color="grey-darken-1"
@@ -36,7 +36,7 @@
               Cancelar
             </v-btn>
           </v-col>
-          <v-col cols="7" class="ps-3">
+          <v-col cols="7" :class="{ 'pa-1': isMobile, 'ps-2': !isMobile }">
             <v-btn
               color="primary"
               :size="isMobile ? 'default' : 'large'"
@@ -124,30 +124,35 @@
   /* Responsividade para mobile */
   @media (max-width: 600px) {
     .footer-content {
-      padding: 16px !important;
-      padding-top: 12px !important;
+      padding: 12px !important;
+      padding-top: 8px !important;
     }
     
     .action-buttons {
-      gap: 8px;
+      margin: 0 !important;
+    }
+    
+    .action-buttons .v-col {
+      padding: 4px !important;
     }
     
     .cancel-btn,
     .confirm-btn {
       min-height: 44px !important;
       font-size: 0.875rem !important;
+      width: 100% !important;
     }
     
     .confirm-btn {
-      padding: 0 12px !important;
+      padding: 0 8px !important;
     }
     
     .disclaimer-section {
-      margin-bottom: 12px !important;
+      margin-bottom: 8px !important;
     }
     
     .disclaimer-alert {
-      padding: 8px 12px !important;
+      padding: 6px 10px !important;
     }
     
     .disclaimer-text {
