@@ -1,16 +1,65 @@
 <template>
   <v-container class="pa-6">
     <!-- Header -->
-    <div class="d-flex justify-space-between align-center mb-6">
-      <h1 class="text-h4">Promoções</h1>
+    <div class="d-flex justify-space-between align-center mb-4">
+      <div>
+        <h1 class="text-h4 mb-2">Promoções</h1>
+        <p class="text-subtitle-1 text-medium-emphasis ma-0 d-none d-sm-block">
+          Descubra as melhores oportunidades de cashback, pontos e milhas disponíveis agora
+        </p>
+        <p class="text-body-2 text-medium-emphasis ma-0 d-sm-none">
+          Melhores ofertas de cashback, pontos e milhas
+        </p>
+      </div>
       <v-btn
         @click="filterDialog = true"
         variant="outlined"
         color="primary"
-        prepend-icon="mdi-filter-variant"
+        class="text-none"
+        :size="$vuetify.display.xs ? 'small' : 'default'"
       >
-        Filtros
+        <v-icon class="d-none d-sm-inline mr-2">mdi-filter-variant</v-icon>
+        <span class="d-none d-sm-inline">Filtros</span>
+        <v-icon class="d-sm-none">mdi-filter-variant</v-icon>
       </v-btn>
+    </div>
+
+    <!-- Descrição detalhada -->
+    <div class="mb-6">
+      <v-card 
+        variant="tonal" 
+        color="primary"
+        :class="$vuetify.display.xs ? 'pa-3' : 'pa-4'"
+      >
+        <div class="d-flex align-start">
+          <v-icon 
+            icon="mdi-information-outline" 
+            color="primary" 
+            :size="$vuetify.display.xs ? '18' : '20'"
+            class="mr-2 mr-sm-3 mt-1"
+          />
+          <div>
+            <!-- Versão desktop -->
+            <div class="d-none d-sm-block">
+              <p class="text-body-2 mb-2">
+                <strong>Como funciona:</strong> Fazemos o cruzamento inteligente entre programas de fidelidade e lojas parceiras para mostrar as promoções mais vantajosas do momento.
+              </p>
+              <p class="text-body-2 mb-0">
+                Use os filtros para encontrar exatamente o que procura: filtre por categoria de produto, tipo de recompensa (cashback, pontos ou milhas) e descubra rapidamente as melhores oportunidades vigentes.
+              </p>
+            </div>
+            <!-- Versão mobile -->
+            <div class="d-sm-none">
+              <p class="text-caption mb-1">
+                <strong>Cruzamento inteligente</strong> entre programas e lojas parceiras.
+              </p>
+              <p class="text-caption mb-0">
+                Use os filtros para encontrar ofertas por categoria ou tipo de recompensa.
+              </p>
+            </div>
+          </div>
+        </div>
+      </v-card>
     </div>
 
     <!-- Active Filters Tabs -->
