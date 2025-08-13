@@ -92,7 +92,14 @@
       </div>
 
       <!-- Preço do mileiro (apenas para programas que não são cashback) -->
-      <div v-if="offer.program.type !== 'cashback' && offer.program.value_per_mile && offer.program.value_per_mile > 0" class="mileiro-price-section mb-3">
+      <div
+        v-if="
+          offer.program.type !== 'cashback' &&
+          offer.program.value_per_mile &&
+          offer.program.value_per_mile > 0
+        "
+        class="mileiro-price-section mb-3"
+      >
         <div class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
             <v-icon
@@ -116,11 +123,7 @@
             @click="openMileiroConfigModal"
             class="ml-2"
           >
-            <v-icon
-              icon="mdi-cog"
-              size="small"
-              class="text-secondary"
-            />
+            <v-icon icon="mdi-cog" size="small" class="text-secondary" />
           </v-btn>
         </div>
       </div>
@@ -216,8 +219,8 @@
     </v-dialog>
 
     <!-- Modal de configuração do mileiro -->
-    <v-dialog 
-      v-model="showMileiroConfigModal" 
+    <v-dialog
+      v-model="showMileiroConfigModal"
       max-width="480"
       :fullscreen="$vuetify.display.xs"
       persistent
@@ -228,11 +231,7 @@
         <div class="modal-header pa-6 pb-4">
           <div class="d-flex align-center mb-2">
             <div class="icon-container mr-3">
-              <v-icon 
-                icon="mdi-tune-variant" 
-                size="24"
-                color="primary"
-              />
+              <v-icon icon="mdi-tune-variant" size="24" color="primary" />
             </div>
             <div>
               <h2 class="text-h6 font-weight-bold mb-1">
@@ -249,9 +248,9 @@
           <!-- Seção principal -->
           <div class="content-section mb-5">
             <div class="d-flex align-start mb-4">
-              <v-icon 
-                icon="mdi-lightbulb-outline" 
-                color="amber" 
+              <v-icon
+                icon="mdi-lightbulb-outline"
+                color="amber"
                 size="20"
                 class="mr-3 mt-1"
               />
@@ -260,7 +259,7 @@
                   Por que personalizar?
                 </h3>
                 <p class="text-body-2 text-medium-emphasis mb-0">
-                  Cada pessoa tem uma estratégia diferente para usar milhas. 
+                  Cada pessoa tem uma estratégia diferente para usar milhas.
                   Defina valores que reflitam seu perfil de viagem.
                 </p>
               </div>
@@ -269,23 +268,18 @@
 
           <!-- Informação sobre valor atual -->
           <div class="current-value-section mb-5">
-            <v-card 
-              variant="tonal" 
-              color="primary"
-              class="pa-4"
-            >
+            <v-card variant="tonal" color="primary" class="pa-4">
               <div class="d-flex align-center mb-2">
-                <v-icon 
-                  icon="mdi-chart-line" 
-                  size="18"
-                  class="mr-2"
-                />
+                <v-icon icon="mdi-chart-line" size="18" class="mr-2" />
                 <span class="text-subtitle-2 font-weight-medium">
                   Valor atual do mercado
                 </span>
               </div>
               <p class="text-body-2 mb-0">
-                Estamos usando um valor base de <strong>{{ formatPrice(offer.program.value_per_mile || 0) }}</strong> 
+                Estamos usando um valor base de
+                <strong>{{
+                  formatPrice(offer.program.value_per_mile || 0)
+                }}</strong>
                 por milha, baseado em nossa análise de mercado.
               </p>
             </v-card>
@@ -298,9 +292,9 @@
             </h3>
             <div class="benefits-list">
               <div class="d-flex align-start mb-3">
-                <v-icon 
-                  icon="mdi-check-circle" 
-                  color="success" 
+                <v-icon
+                  icon="mdi-check-circle"
+                  color="success"
                   size="18"
                   class="mr-3 mt-1"
                 />
@@ -309,9 +303,9 @@
                 </span>
               </div>
               <div class="d-flex align-start mb-3">
-                <v-icon 
-                  icon="mdi-check-circle" 
-                  color="success" 
+                <v-icon
+                  icon="mdi-check-circle"
+                  color="success"
                   size="18"
                   class="mr-3 mt-1"
                 />
@@ -320,9 +314,9 @@
                 </span>
               </div>
               <div class="d-flex align-start">
-                <v-icon 
-                  icon="mdi-check-circle" 
-                  color="success" 
+                <v-icon
+                  icon="mdi-check-circle"
+                  color="success"
                   size="18"
                   class="mr-3 mt-1"
                 />
@@ -407,21 +401,21 @@
   // Função para redirecionar para configuração de mileiros
   const goToMileiroConfig = (): void => {
     closeMileiroConfigModal()
-    
+
     // Capturar parâmetros da URL atual para permitir retorno
     const currentQuery = route.query
     const returnParams = new URLSearchParams()
-    
+
     // Adicionar parâmetros relevantes para manter o contexto da busca
     Object.keys(currentQuery).forEach(key => {
       if (currentQuery[key]) {
         returnParams.append(key, String(currentQuery[key]))
       }
     })
-    
+
     // Adicionar parâmetro de retorno
     const returnUrl = `/offers?${returnParams.toString()}`
-    
+
     navigateTo(`/mileiros-config?returnTo=${encodeURIComponent(returnUrl)}`)
   }
 
@@ -709,7 +703,11 @@
   /* Estilos para modal de configuração do mileiro */
   .mileiro-config-modal {
     .modal-header {
-      background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.05) 0%, rgba(var(--v-theme-primary), 0.02) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--v-theme-primary), 0.05) 0%,
+        rgba(var(--v-theme-primary), 0.02) 100%
+      );
       border-bottom: 1px solid rgba(var(--v-border-color), 0.1);
     }
 
@@ -770,10 +768,10 @@
       }
 
       .text-h6 {
-         font-size: 1.1rem !important;
-       }
-     }
-   }
+        font-size: 1.1rem !important;
+      }
+    }
+  }
 
   .current-value-section {
     border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);

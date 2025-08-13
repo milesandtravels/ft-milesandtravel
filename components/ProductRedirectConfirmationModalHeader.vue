@@ -186,7 +186,7 @@
       padding: 12px 16px 8px 16px !important;
       min-height: auto;
     }
-    
+
     .header-content {
       gap: 10px;
     }
@@ -200,7 +200,7 @@
       font-size: 0.75rem;
       margin-top: 2px !important;
     }
-    
+
     .mobile-icon-container {
       width: 36px;
       height: 36px;

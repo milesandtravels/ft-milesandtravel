@@ -45,7 +45,9 @@
               class="text-body-2 font-weight-bold confirm-btn"
               elevation="0"
             >
-              <v-icon start :size="isMobile ? '16' : '18'">mdi-open-in-new</v-icon>
+              <v-icon start :size="isMobile ? '16' : '18'"
+                >mdi-open-in-new</v-icon
+              >
               Ver Produto
             </v-btn>
           </v-col>
@@ -127,64 +129,64 @@
       padding: 12px !important;
       padding-top: 8px !important;
     }
-    
+
     .action-buttons {
       margin: 0 !important;
     }
-    
+
     .action-buttons .v-col {
       padding: 4px !important;
     }
-    
+
     .cancel-btn,
     .confirm-btn {
       min-height: 44px !important;
       font-size: 0.875rem !important;
       width: 100% !important;
     }
-    
+
     .confirm-btn {
       padding: 0 8px !important;
     }
-    
+
     .disclaimer-section {
       margin-bottom: 8px !important;
     }
-    
+
     .disclaimer-alert {
       padding: 6px 10px !important;
     }
-    
+
     .disclaimer-text {
       font-size: 0.7rem !important;
     }
   }
-  
+
   /* Ajustes para telas muito pequenas */
   @media (max-width: 360px) {
     .footer-content {
       padding: 8px !important;
       padding-top: 6px !important;
     }
-    
+
     .action-buttons .v-col {
       padding: 2px !important;
     }
-    
+
     .cancel-btn,
     .confirm-btn {
       font-size: 0.8rem !important;
       min-height: 40px !important;
     }
   }
-  
+
   /* Garantir que o footer não seja cortado */
   @media (max-height: 700px) and (max-width: 600px) {
     .footer-content {
       padding: 8px !important;
       padding-top: 6px !important;
     }
-    
+
     .disclaimer-section {
       display: none !important;
     }

@@ -224,35 +224,37 @@
       height: 100dvh; /* Usa dynamic viewport height */
       max-height: 100dvh;
     }
-    
+
     .mobile-card {
       height: 100dvh;
       max-height: 100dvh;
     }
-    
+
     .mobile-content {
       padding: 12px !important;
       flex: 1;
       overflow-y: auto;
-      max-height: calc(100dvh - 120px); /* Reserva espaço para header e footer */
+      max-height: calc(
+        100dvh - 120px
+      ); /* Reserva espaço para header e footer */
     }
-    
+
     .mobile-card {
       overflow: hidden;
     }
-    
+
     .alert-section,
-     .guidelines-section {
-       margin-bottom: 12px !important;
-     }
-     
-     .mobile-footer {
-       flex-shrink: 0;
-       margin-top: auto;
-     }
-     
-     .modal-footer-wrapper {
-       width: 100%;
-     }
+    .guidelines-section {
+      margin-bottom: 12px !important;
+    }
+
+    .mobile-footer {
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+
+    .modal-footer-wrapper {
+      width: 100%;
+    }
   }
 </style>

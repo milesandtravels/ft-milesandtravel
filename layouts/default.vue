@@ -81,6 +81,15 @@
     },
   })
 
+  const enablePushNotifications = async () => {
+    await useSanctumFetch('/api/user/notification-settings', {
+      method: 'PUT',
+      body: {
+        push_notification_enabled: true,
+      },
+    })
+  }
+
   //Example combining with push subscription change event
   function pushSubscriptionChangeListener(event: any) {
     if (event.current.token) {
@@ -88,6 +97,7 @@
       oneSignal.login(user.value?.id?.toString() || '')
       oneSignal.User.addEmail(user.value?.email || '')
       oneSignal.User.setLanguage('pt')
+      enablePushNotifications()
     }
   }
   oneSignal.User.PushSubscription.addEventListener(
