@@ -8,6 +8,26 @@
         <h2 class="text-h6 font-weight-bold">Buscar Produto(s)</h2>
       </v-card-title>
 
+      <!-- Seção de Descrição -->
+      <v-card-text class="pa-4 pa-md-6 pt-0 pb-2">
+        <v-alert
+          type="info"
+          variant="tonal"
+          class="mb-4"
+          icon="mdi-lightbulb-outline"
+        >
+          <div class="text-body-2">
+            <div class="d-none d-md-block">
+              <strong>Seleção de Produtos:</strong> Busque e selecione os produtos que atendem às suas necessidades. 
+              Após a seleção, você será direcionado para a tela de ofertas onde poderá comparar preços e benefícios entre diferentes lojas.
+            </div>
+            <div class="d-block d-md-none">
+              <strong>Busque seus produtos:</strong> Selecione os produtos desejados para depois comparar as melhores ofertas disponíveis.
+            </div>
+          </div>
+        </v-alert>
+      </v-card-text>
+
       <v-card-text class="pa-4 pa-md-6 pt-2">
         <v-form @submit.prevent ref="searchForm">
           <v-text-field
@@ -67,7 +87,7 @@
 
       <BonusPurchaseResults
         :results="results"
-        :searchId="searchId"
+        :searchId="searchId || 0"
         @open-filter="openFiltersModal"
       />
     </template>
@@ -162,8 +182,8 @@
 
       loadingStore.updateProgress(85)
 
-      if (data.value && data.value.data) {
-        const searchData = data.value.data
+      if (data.value && (data.value as any).data) {
+        const searchData = (data.value as any).data
 
         if (searchData.search_term) {
           searchQuery.value = searchData.search_term
@@ -197,7 +217,7 @@
       return
     }
 
-    searchId.value = data.value?.data.id
+    searchId.value = (data.value as any)?.data?.id
 
     loadingStore.updateProgress(80)
 
@@ -221,7 +241,7 @@
 
       isSearching.value = true
 
-      const { data, error } = await useSanctumFetch(
+      const { data, error } = await useSanctumFetch<any>(
         `/api/searches/${searchId.value}/automatic-products`,
         {
           method: 'POST',
@@ -232,7 +252,7 @@
       )
 
       if (data.value) {
-        results.value = data.value.data
+        results.value = data.value.data || []
         hasSearched.value = true
 
         // Extrair filtros do meta
@@ -266,9 +286,9 @@
   }
 
   const handleSearch = async () => {
-    const { valid } = await searchForm.value?.validate()
+    const validation = await searchForm.value?.validate()
 
-    if (!valid) {
+    if (!validation?.valid) {
       return
     }
 
