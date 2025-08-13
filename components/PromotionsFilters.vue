@@ -62,8 +62,6 @@
               </v-autocomplete>
             </v-col>
 
-
-
             <!-- Programas de benefícios -->
             <v-col cols="12" md="6">
               <v-autocomplete

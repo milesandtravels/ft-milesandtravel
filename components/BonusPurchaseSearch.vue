@@ -18,11 +18,14 @@
         >
           <div class="text-body-2">
             <div class="d-none d-md-block">
-              <strong>Seleção de Produtos:</strong> Busque e selecione os produtos que atendem às suas necessidades. 
-              Após a seleção, você será direcionado para a tela de ofertas onde poderá comparar preços e benefícios entre diferentes lojas.
+              <strong>Seleção de Produtos:</strong> Busque e selecione os
+              produtos que atendem às suas necessidades. Após a seleção, você
+              será direcionado para a tela de ofertas onde poderá comparar
+              preços e benefícios entre diferentes lojas.
             </div>
             <div class="d-block d-md-none">
-              <strong>Busque seus produtos:</strong> Selecione os produtos desejados para depois comparar as melhores ofertas disponíveis.
+              <strong>Busque seus produtos:</strong> Selecione os produtos
+              desejados para depois comparar as melhores ofertas disponíveis.
             </div>
           </div>
         </v-alert>

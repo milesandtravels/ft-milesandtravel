@@ -225,8 +225,8 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-import { useDisplay } from 'vuetify'
-import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
+  import { useDisplay } from 'vuetify'
+  import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
 
   interface PromotionSection {
     id: string

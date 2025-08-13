@@ -33,24 +33,31 @@
           <v-card-text class="pa-4 pa-md-6">
             <div class="d-flex align-center mb-3">
               <v-icon icon="mdi-chart-line" color="primary" class="me-2" />
-              <h3 class="text-h6 font-weight-bold">Comparação Inteligente de Ofertas</h3>
+              <h3 class="text-h6 font-weight-bold">
+                Comparação Inteligente de Ofertas
+              </h3>
             </div>
-            
+
             <div class="text-body-2 text-medium-emphasis">
               <div class="d-none d-md-block">
                 <p class="mb-2">
-                  <strong>Análise completa:</strong> Cada oferta abaixo foi analisada considerando preço final, 
-                  percentual de cashback, pontos ou milhas acumulados e benefícios exclusivos de cada programa de fidelidade.
+                  <strong>Análise completa:</strong> Cada oferta abaixo foi
+                  analisada considerando preço final, percentual de cashback,
+                  pontos ou milhas acumulados e benefícios exclusivos de cada
+                  programa de fidelidade.
                 </p>
                 <p class="mb-0">
-                  <strong>Melhor custo-benefício:</strong> As ofertas estão ordenadas para mostrar onde sua compra 
-                  rende mais, considerando economia real e acúmulo de benefícios para futuras viagens ou resgates.
+                  <strong>Melhor custo-benefício:</strong> As ofertas estão
+                  ordenadas para mostrar onde sua compra rende mais,
+                  considerando economia real e acúmulo de benefícios para
+                  futuras viagens ou resgates.
                 </p>
               </div>
               <div class="d-block d-md-none">
                 <p class="mb-0">
-                  <strong>Ofertas otimizadas:</strong> Comparamos preços, cashback, pontos e milhas para mostrar 
-                  onde sua compra rende mais benefícios.
+                  <strong>Ofertas otimizadas:</strong> Comparamos preços,
+                  cashback, pontos e milhas para mostrar onde sua compra rende
+                  mais benefícios.
                 </p>
               </div>
             </div>

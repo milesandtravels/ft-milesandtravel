@@ -5,7 +5,8 @@
       <div>
         <h1 class="text-h4 mb-2">Promoções</h1>
         <p class="text-subtitle-1 text-medium-emphasis ma-0 d-none d-sm-block">
-          Descubra as melhores oportunidades de cashback, pontos e milhas disponíveis agora
+          Descubra as melhores oportunidades de cashback, pontos e milhas
+          disponíveis agora
         </p>
         <p class="text-body-2 text-medium-emphasis ma-0 d-sm-none">
           Melhores ofertas de cashback, pontos e milhas
@@ -26,15 +27,15 @@
 
     <!-- Descrição detalhada -->
     <div class="mb-6">
-      <v-card 
-        variant="tonal" 
+      <v-card
+        variant="tonal"
         color="primary"
         :class="$vuetify.display.xs ? 'pa-3' : 'pa-4'"
       >
         <div class="d-flex align-start">
-          <v-icon 
-            icon="mdi-information-outline" 
-            color="primary" 
+          <v-icon
+            icon="mdi-information-outline"
+            color="primary"
             :size="$vuetify.display.xs ? '18' : '20'"
             class="mr-2 mr-sm-3 mt-1"
           />
@@ -42,19 +43,26 @@
             <!-- Versão desktop -->
             <div class="d-none d-sm-block">
               <p class="text-body-2 mb-2">
-                <strong>Como funciona:</strong> Fazemos o cruzamento inteligente entre programas de fidelidade e lojas parceiras para mostrar as promoções mais vantajosas do momento.
+                <strong>Como funciona:</strong> Fazemos o cruzamento inteligente
+                entre programas de fidelidade e lojas parceiras para mostrar as
+                promoções mais vantajosas do momento.
               </p>
               <p class="text-body-2 mb-0">
-                Use os filtros para encontrar exatamente o que procura: filtre por categoria de produto, tipo de recompensa (cashback, pontos ou milhas) e descubra rapidamente as melhores oportunidades vigentes.
+                Use os filtros para encontrar exatamente o que procura: filtre
+                por categoria de produto, tipo de recompensa (cashback, pontos
+                ou milhas) e descubra rapidamente as melhores oportunidades
+                vigentes.
               </p>
             </div>
             <!-- Versão mobile -->
             <div class="d-sm-none">
               <p class="text-caption mb-1">
-                <strong>Cruzamento inteligente</strong> entre programas e lojas parceiras.
+                <strong>Cruzamento inteligente</strong> entre programas e lojas
+                parceiras.
               </p>
               <p class="text-caption mb-0">
-                Use os filtros para encontrar ofertas por categoria ou tipo de recompensa.
+                Use os filtros para encontrar ofertas por categoria ou tipo de
+                recompensa.
               </p>
             </div>
           </div>
@@ -64,9 +72,12 @@
 
     <!-- Filtros Rápidos -->
     <div class="mb-6">
-      <div class="d-flex flex-wrap gap-3" :style="{
-        gap: '8px'
-      }">
+      <div
+        class="d-flex flex-wrap gap-3"
+        :style="{
+          gap: '8px',
+        }"
+      >
         <v-chip
           @click="setQuickFilter('all')"
           :color="quickFilter === 'all' ? 'primary' : 'default'"
@@ -77,7 +88,7 @@
           <v-icon start size="16">mdi-view-grid</v-icon>
           Todos
         </v-chip>
-        
+
         <v-chip
           @click="setQuickFilter('cashback')"
           :color="quickFilter === 'cashback' ? 'success' : 'default'"
@@ -88,7 +99,7 @@
           <v-icon start size="16">mdi-cash</v-icon>
           Cashback
         </v-chip>
-        
+
         <v-chip
           @click="setQuickFilter('points')"
           :color="quickFilter === 'points' ? 'warning' : 'default'"
@@ -99,7 +110,7 @@
           <v-icon start size="16">mdi-circle-multiple</v-icon>
           Pontos
         </v-chip>
-        
+
         <v-chip
           @click="setQuickFilter('miles')"
           :color="quickFilter === 'miles' ? 'info' : 'default'"
@@ -351,8 +362,12 @@
     )
 
     // Add all program types
-    const programKeys = ['pointsPrograms', 'milesPrograms', 'cashbackPrograms'] as const
-    programKeys.forEach((key) => {
+    const programKeys = [
+      'pointsPrograms',
+      'milesPrograms',
+      'cashbackPrograms',
+    ] as const
+    programKeys.forEach(key => {
       programs.push(
         ...(filters.value[key] as any[]).map((item: any) => ({
           ...item,
@@ -425,10 +440,13 @@
 
     programMappings.forEach(({ filterKey, paramKey, optionsKey }) => {
       const ids = extractArrayParams(paramKey)
-      if (ids.length > 0 && (filterOptions.value as any)[optionsKey]?.length > 0) {
-        (filters.value as any)[filterKey] = (filterOptions.value as any)[optionsKey].filter(
-          (item: any) => ids.includes(item.id.toString())
-        )
+      if (
+        ids.length > 0 &&
+        (filterOptions.value as any)[optionsKey]?.length > 0
+      ) {
+        ;(filters.value as any)[filterKey] = (filterOptions.value as any)[
+          optionsKey
+        ].filter((item: any) => ids.includes(item.id.toString()))
       }
     })
   }
@@ -483,7 +501,7 @@
 
   // Initialize
   initializeFiltersFromURL()
-  
+
   // Inicializar filtro rápido baseado nos filtros ativos
   if (filters.value.promotionTypes.length === 1) {
     quickFilter.value = filters.value.promotionTypes[0]
@@ -498,9 +516,15 @@
     ...(filters.value.order && { order: filters.value.order }),
   }
 
-  const {data: initialResponse, pending: initialPending, error: initialError} = await fetchPromotions(initialQueryParams)
+  const {
+    data: initialResponse,
+    pending: initialPending,
+    error: initialError,
+  } = await fetchPromotions(initialQueryParams)
 
-  const promotions = ref<Promotion[]>((initialResponse.value as any)?.data || [])
+  const promotions = ref<Promotion[]>(
+    (initialResponse.value as any)?.data || []
+  )
   const meta = ref<PromotionMeta>((initialResponse.value as any)?.meta)
   const pending = ref(initialPending.value)
   const error = ref(initialError.value)
@@ -515,7 +539,9 @@
 
   const removeFilter = async (filterKey: string, value: any) => {
     if (Array.isArray((filters.value as any)[filterKey])) {
-      (filters.value as any)[filterKey] = (filters.value as any)[filterKey].filter((item: any) => {
+      ;(filters.value as any)[filterKey] = (filters.value as any)[
+        filterKey
+      ].filter((item: any) => {
         return typeof item === 'object' ? item.id !== value.id : item !== value
       })
     }
@@ -656,15 +682,15 @@
   const setQuickFilter = async (filterType: string) => {
     quickFilter.value = filterType
     currentPage.value = 1
-    
+
     // Limpar filtros de tipo de promoção
     filters.value.promotionTypes = []
-    
+
     // Aplicar filtro baseado na seleção
     if (filterType !== 'all') {
       filters.value.promotionTypes = [filterType]
     }
-    
+
     await applyFilters()
   }
 
