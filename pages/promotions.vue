@@ -62,25 +62,60 @@
       </v-card>
     </div>
 
+    <!-- Filtros Rápidos -->
+    <div class="mb-6">
+      <div class="d-flex flex-wrap gap-3" :style="{
+        gap: '8px'
+      }">
+        <v-chip
+          @click="setQuickFilter('all')"
+          :color="quickFilter === 'all' ? 'primary' : 'default'"
+          :variant="quickFilter === 'all' ? 'flat' : 'outlined'"
+          :size="$vuetify.display.xs ? 'small' : 'default'"
+          class="text-none"
+        >
+          <v-icon start size="16">mdi-view-grid</v-icon>
+          Todos
+        </v-chip>
+        
+        <v-chip
+          @click="setQuickFilter('cashback')"
+          :color="quickFilter === 'cashback' ? 'success' : 'default'"
+          :variant="quickFilter === 'cashback' ? 'flat' : 'outlined'"
+          :size="$vuetify.display.xs ? 'small' : 'default'"
+          class="text-none"
+        >
+          <v-icon start size="16">mdi-cash</v-icon>
+          Cashback
+        </v-chip>
+        
+        <v-chip
+          @click="setQuickFilter('points')"
+          :color="quickFilter === 'points' ? 'warning' : 'default'"
+          :variant="quickFilter === 'points' ? 'flat' : 'outlined'"
+          :size="$vuetify.display.xs ? 'small' : 'default'"
+          class="text-none"
+        >
+          <v-icon start size="16">mdi-circle-multiple</v-icon>
+          Pontos
+        </v-chip>
+        
+        <v-chip
+          @click="setQuickFilter('miles')"
+          :color="quickFilter === 'miles' ? 'info' : 'default'"
+          :variant="quickFilter === 'miles' ? 'flat' : 'outlined'"
+          :size="$vuetify.display.xs ? 'small' : 'default'"
+          class="text-none"
+        >
+          <v-icon start size="16">mdi-airplane</v-icon>
+          Milhas
+        </v-chip>
+      </div>
+    </div>
+
     <!-- Active Filters Tabs -->
     <template v-if="hasActiveFilters">
       <v-tabs show-arrows class="mb-4" color="primary" align-tabs="start">
-        <!-- Promotion Types -->
-        <v-tab
-          v-for="type in filters.promotionTypes"
-          :key="`promotion-${type}`"
-          class="text-none"
-        >
-          <v-chip
-            closable
-            @click:close="removeFilter('promotionTypes', type)"
-            color="primary"
-            variant="flat"
-          >
-            {{ getPromotionTypeLabel(type) }}
-          </v-chip>
-        </v-tab>
-
         <!-- Categories -->
         <v-tab
           v-for="category in filters.categories"
@@ -257,6 +292,7 @@
   const currentPage = ref(Number(route.query.page) || 1)
   const itemsPerPage = ref(Number(route.query.per_page) || 15)
   const filterDialog = ref(false)
+  const quickFilter = ref('all')
 
   // State
   const filters = ref({
@@ -282,10 +318,10 @@
   ])
 
   const filterOptions = computed(() => ({
-    ecommerces: ecommercesData.value?.data || [],
-    pointsPrograms: programsData.value?.points || [],
-    milesPrograms: programsData.value?.miles || [],
-    cashbackPrograms: programsData.value?.cashback || [],
+    ecommerces: (ecommercesData.value as any)?.data || [],
+    pointsPrograms: (programsData.value as any)?.points || [],
+    milesPrograms: (programsData.value as any)?.miles || [],
+    cashbackPrograms: (programsData.value as any)?.cashback || [],
     categories: categoriesData.value || [],
     ...FILTER_CONFIGS,
   }))
@@ -296,6 +332,7 @@
       ([key, value]) =>
         key !== 'orderBy' &&
         key !== 'order' &&
+        key !== 'promotionTypes' &&
         (Array.isArray(value) ? value.length > 0 : value)
     )
   )
@@ -314,13 +351,14 @@
     )
 
     // Add all program types
-    ;['pointsPrograms', 'milesPrograms', 'cashbackPrograms'].forEach(key => {
+    const programKeys = ['pointsPrograms', 'milesPrograms', 'cashbackPrograms'] as const
+    programKeys.forEach((key) => {
       programs.push(
-        ...filters.value[key].map(item => ({
+        ...(filters.value[key] as any[]).map((item: any) => ({
           ...item,
           type: key.replace('Programs', ''),
           filterKey: key,
-          icon: PROGRAM_ICONS[key],
+          icon: (PROGRAM_ICONS as any)[key],
         }))
       )
     })
@@ -335,7 +373,10 @@
       if (key.startsWith(paramPrefix + '[') && key.endsWith(']')) {
         const value = route.query[key]
         if (value) {
-          values.push(Array.isArray(value) ? value[0] : value)
+          const stringValue = Array.isArray(value) ? value[0] : value
+          if (stringValue) {
+            values.push(stringValue)
+          }
         }
       }
     })
@@ -384,16 +425,16 @@
 
     programMappings.forEach(({ filterKey, paramKey, optionsKey }) => {
       const ids = extractArrayParams(paramKey)
-      if (ids.length > 0 && filterOptions.value[optionsKey]?.length > 0) {
-        filters.value[filterKey] = filterOptions.value[optionsKey].filter(
-          item => ids.includes(item.id.toString())
+      if (ids.length > 0 && (filterOptions.value as any)[optionsKey]?.length > 0) {
+        (filters.value as any)[filterKey] = (filterOptions.value as any)[optionsKey].filter(
+          (item: any) => ids.includes(item.id.toString())
         )
       }
     })
   }
 
   const buildQueryString = (queryParams: any) => {
-    const queryParts = []
+    const queryParts: string[] = []
 
     // Add basic params
     Object.entries(queryParams).forEach(([key, value]) => {
@@ -415,7 +456,7 @@
     ]
 
     arrayFilters.forEach(({ filter, param }) => {
-      filter.forEach(item => {
+      filter.forEach((item: any) => {
         const value = typeof item === 'object' ? item.id : item
         queryParts.push(`${param}=${encodeURIComponent(value)}`)
       })
@@ -442,6 +483,13 @@
 
   // Initialize
   initializeFiltersFromURL()
+  
+  // Inicializar filtro rápido baseado nos filtros ativos
+  if (filters.value.promotionTypes.length === 1) {
+    quickFilter.value = filters.value.promotionTypes[0]
+  } else if (filters.value.promotionTypes.length === 0) {
+    quickFilter.value = 'all'
+  }
 
   const initialQueryParams = {
     page: currentPage.value,
@@ -450,14 +498,10 @@
     ...(filters.value.order && { order: filters.value.order }),
   }
 
-  const {
-    data: initialResponse,
-    pending: initialPending,
-    error: initialError,
-  } = await fetchPromotions(initialQueryParams)
+  const {data: initialResponse, pending: initialPending, error: initialError} = await fetchPromotions(initialQueryParams)
 
-  const promotions = ref<Promotion[]>(initialResponse.value?.data || [])
-  const meta = ref<PromotionMeta>(initialResponse.value?.meta)
+  const promotions = ref<Promotion[]>((initialResponse.value as any)?.data || [])
+  const meta = ref<PromotionMeta>((initialResponse.value as any)?.meta)
   const pending = ref(initialPending.value)
   const error = ref(initialError.value)
 
@@ -470,8 +514,8 @@
   }
 
   const removeFilter = async (filterKey: string, value: any) => {
-    if (Array.isArray(filters.value[filterKey])) {
-      filters.value[filterKey] = filters.value[filterKey].filter(item => {
+    if (Array.isArray((filters.value as any)[filterKey])) {
+      (filters.value as any)[filterKey] = (filters.value as any)[filterKey].filter((item: any) => {
         return typeof item === 'object' ? item.id !== value.id : item !== value
       })
     }
@@ -484,6 +528,7 @@
 
   const clearAllFilters = async () => {
     clearFilters()
+    quickFilter.value = 'all'
     currentPage.value = 1
     await applyFilters()
   }
@@ -515,14 +560,14 @@
       }
 
       const newResponse = await fetchPromotions(queryParams)
-      promotions.value = newResponse.data.value?.data || []
-      meta.value = newResponse.data.value?.meta
+      promotions.value = (newResponse.data.value as any)?.data || []
+      meta.value = (newResponse.data.value as any)?.meta
       error.value = null
 
       await updateURL()
     } catch (err) {
       console.error('Erro ao aplicar filtros:', err)
-      error.value = err
+      error.value = err as any
     } finally {
       pending.value = false
     }
@@ -541,14 +586,14 @@
       }
 
       const newResponse = await fetchPromotions(queryParams)
-      promotions.value = newResponse.data.value?.data || []
-      meta.value = newResponse.data.value?.meta
+      promotions.value = (newResponse.data.value as any)?.data || []
+      meta.value = (newResponse.data.value as any)?.meta
       error.value = null
 
       await updateURL()
     } catch (err) {
       console.error('Erro ao carregar página:', err)
-      error.value = err
+      error.value = err as any
     } finally {
       pending.value = false
     }
@@ -606,6 +651,21 @@
   const handleViewDetails = (promotion: Promotion) => {
     console.log('Visualizar detalhes da promoção:', promotion.id)
     // navigateTo(`/promocoes/${promotion.id}`)
+  }
+
+  const setQuickFilter = async (filterType: string) => {
+    quickFilter.value = filterType
+    currentPage.value = 1
+    
+    // Limpar filtros de tipo de promoção
+    filters.value.promotionTypes = []
+    
+    // Aplicar filtro baseado na seleção
+    if (filterType !== 'all') {
+      filters.value.promotionTypes = [filterType]
+    }
+    
+    await applyFilters()
   }
 
   // Watchers

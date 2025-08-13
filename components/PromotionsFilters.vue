@@ -55,28 +55,14 @@
                 <template v-slot:chip="{ props, item }">
                   <v-chip
                     v-bind="props"
-                    :prepend-avatar="item.logo_url"
-                    :text="item.name"
+                    :prepend-avatar="(item as any).logo_url"
+                    :text="(item as any).name"
                   ></v-chip>
                 </template>
               </v-autocomplete>
             </v-col>
 
-            <v-col cols="12" md="6">
-              <v-autocomplete
-                :model-value="filters.promotionTypes"
-                @update:model-value="updateFilter('promotionTypes', $event)"
-                :items="filterOptions.promotionTypes.options"
-                label="Tipo de Promoção"
-                variant="outlined"
-                item-title="label"
-                item-value="value"
-                multiple
-                chips
-                clearable
-                closable-chips
-              ></v-autocomplete>
-            </v-col>
+
 
             <!-- Programas de benefícios -->
             <v-col cols="12" md="6">
@@ -96,8 +82,8 @@
                 <template v-slot:chip="{ props, item }">
                   <v-chip
                     v-bind="props"
-                    :prepend-avatar="item.logo_url"
-                    :text="item.name"
+                    :prepend-avatar="(item as any).logo_url"
+                    :text="(item as any).name"
                   ></v-chip>
                 </template>
               </v-autocomplete>
@@ -120,8 +106,8 @@
                 <template v-slot:chip="{ props, item }">
                   <v-chip
                     v-bind="props"
-                    :prepend-avatar="item.logo_url"
-                    :text="item.name"
+                    :prepend-avatar="(item as any).logo_url"
+                    :text="(item as any).name"
                   ></v-chip>
                 </template>
               </v-autocomplete>
