@@ -196,108 +196,6 @@
       </v-row>
     </div>
 
-    <!-- Promotion Sections -->
-    <div class="promotions-highlight-section mb-8">
-      <div class="text-center mb-6">
-        <h2 class="text-h4 font-weight-bold mb-4">Promoções em Destaque</h2>
-        <p class="text-h6 text-medium-emphasis mb-6">
-          Descubra as melhores promoções disponíveis agora
-        </p>
-        <v-btn
-          size="large"
-          variant="outlined"
-          color="primary"
-          rounded="xl"
-          class="px-6"
-          @click="navigateTo('/promotions')"
-        >
-          Ver todas as promoções
-          <v-icon end size="20" class="ml-2">mdi-arrow-right</v-icon>
-        </v-btn>
-      </div>
-    </div>
-    <div
-      v-for="(section, index) in promotionSections"
-      :key="section.id"
-      class="promotion-section mb-8 mb-md-10"
-    >
-      <!-- Section Header -->
-      <div class="d-flex align-center justify-space-between mb-3 mb-md-4">
-        <div class="d-flex align-center">
-          <v-avatar class="mr-3" :color="section.color" size="40">
-            <v-icon color="white" size="20">{{ section.icon }}</v-icon>
-          </v-avatar>
-          <div>
-            <h2 class="text-subtitle-1 text-md-h6 font-weight-bold">
-              {{ section.name }}
-            </h2>
-            <p class="text-caption text-medium-emphasis">
-              {{ section.description }}
-            </p>
-          </div>
-        </div>
-        <v-btn
-          variant="outlined"
-          color="primary"
-          size="small"
-          @click="goToPromotionsPage(section.filterType)"
-        >
-          Ver mais
-        </v-btn>
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="section.loading" class="text-center py-8">
-        <v-progress-circular
-          indeterminate
-          color="primary"
-          size="32"
-        ></v-progress-circular>
-        <p class="mt-2 text-body-2">Carregando promoções...</p>
-      </div>
-
-      <!-- Error State -->
-      <div v-else-if="section.error" class="text-center py-8">
-        <v-alert type="error" variant="tonal" class="mb-4">
-          <v-alert-title>Erro ao carregar dados</v-alert-title>
-          Não foi possível carregar as promoções desta seção.
-        </v-alert>
-      </div>
-
-      <!-- Promotions Grid -->
-      <v-row v-else-if="section.promotions && section.promotions.length > 0">
-        <v-col
-          v-for="promotion in section.promotions"
-          :key="promotion.id"
-          cols="12"
-          sm="6"
-          md="6"
-          lg="4"
-          xl="4"
-        >
-          <PromotionsCard
-            :promotion="promotion"
-            @view-details="handleViewDetails"
-          />
-        </v-col>
-      </v-row>
-
-      <!-- Empty State -->
-      <div v-else class="text-center py-8">
-        <v-card class="pa-8" variant="outlined">
-          <v-icon
-            icon="mdi-package-variant"
-            size="64"
-            class="text-medium-emphasis mb-4"
-          ></v-icon>
-          <h3 class="text-h6 mb-2">Nenhuma promoção encontrada</h3>
-          <p class="text-body-2 text-medium-emphasis">
-            Não há promoções disponíveis nesta categoria no momento.
-          </p>
-        </v-card>
-      </div>
-    </div>
-
     <!-- Success/Error Notifications -->
     <v-snackbar
       v-model="showSnackbar"
@@ -327,8 +225,8 @@
 
 <script setup lang="ts">
   import { computed, onMounted, reactive, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
-  import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
+import { useDisplay } from 'vuetify'
+import type { Promotion, PromotionResponseDTO } from '~/interfaces/promotions'
 
   interface PromotionSection {
     id: string
