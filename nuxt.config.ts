@@ -45,11 +45,11 @@ export default defineNuxtConfig({
   sanctum: {
     mode: 'token',
     baseUrl: process.env.API_URL, // Laravel API
-    redirectIfAuthenticated: true,
+    redirectIfAuthenticated: false, // Desabilita redirecionamento automático
     redirectIfUnauthenticated: true,
     redirect: {
       keepRequestedRoute: true, // ✅ Preserva rota solicitada
-      onLogin: '/', // Fallback se não houver redirect
+      onLogin: false, // Desabilita redirecionamento automático após login
       onLogout: '/login',
       onAuthOnly: '/login', // Para rotas protegidas
       onGuestOnly: '/', // Se já logado tenta acessar login

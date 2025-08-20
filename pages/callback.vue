@@ -3,19 +3,31 @@
     layout: false,
     middleware: ['sanctum:guest'],
   })
-  //pegar o token da url via route
-  const token = useRoute().query.token
+  
+  const processCallback = async () => {
+    //pegar o token da url via route
+    const token = useRoute().query.token
 
-  if (token) {
-    useCookie('sanctum.token.cookie').value = token as string
-    const { refreshIdentity } = useSanctumAuth()
-    await refreshIdentity()
+    if (token) {
+      useCookie('sanctum.token.cookie').value = token as string
+      const { refreshIdentity, user } = useSanctumAuth()
+      await refreshIdentity()
 
-    const redirectTo = sessionStorage.getItem('googleAuthRedirectTo') || '/'
-    sessionStorage.removeItem('googleAuthRedirectTo')
+      // Verifica se o email foi confirmado
+      if (user.value && !(user.value as any).email_verified_at) {
+        window.location.href = window.location.origin + '/confirmation-email?email=' + encodeURIComponent((user.value as any).email)
+        return
+      }
 
-    window.location.href = window.location.origin + redirectTo
-  } else {
-    navigateTo('/login')
+      const redirectTo = sessionStorage.getItem('googleAuthRedirectTo') || '/'
+      sessionStorage.removeItem('googleAuthRedirectTo')
+
+      window.location.href = window.location.origin + redirectTo
+    } else {
+      navigateTo('/login')
+    }
   }
+  
+  // Executa o processamento do callback
+  await processCallback()
 </script>

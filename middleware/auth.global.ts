@@ -20,16 +20,16 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return router.push('/')
   }
 
-  // Excluir as rotas de confirmação da verificação
-  if (
-    to.path === '/confirmation-email' ||
-    to.path === '/callback-email-confirmation'
-  ) {
-    return
-  }
-
   // Redireciona usuário não verificado para confirmação
   if (user && !user?.email_verified_at) {
+    // Permite acesso às rotas de confirmação
+    if (
+      to.path === '/confirmation-email' ||
+      to.path === '/callback-email-confirmation'
+    ) {
+      return
+    }
+    
     return router.push(
       '/confirmation-email?email=' + encodeURIComponent(user.email)
     )
