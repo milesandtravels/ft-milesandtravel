@@ -113,8 +113,8 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { useDisplay } from 'vuetify'
+import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -189,21 +189,15 @@
 
   const alertsMenuItems = ref<MenuItem[]>([
     {
-      title: 'Configurar Alertas',
-      subtitle: 'Definir preferências de notificação',
-      icon: 'mdi-cog-outline', // Ícone de engrenagem para configurações
-      route: '/alerts/configure',
-    },
-    {
-      title: 'Visualizar Alertas',
-      subtitle: 'Ver alertas configurados',
-      icon: 'mdi-format-list-bulleted', // Lista para visualização de histórico
+      title: 'Meus Alertas',
+      subtitle: 'Gerenciar alertas e notificações',
+      icon: 'mdi-bell-outline',
       route: '/alerts/view',
     },
     {
       title: 'Notificações',
       subtitle: 'Ver notificações recebidas',
-      icon: 'mdi-bell-outline', // Sino para notificações
+      icon: 'mdi-message-outline',
       route: '/notifications/view',
     },
   ])

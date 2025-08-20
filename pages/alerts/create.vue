@@ -19,6 +19,14 @@
       </div>
     </div>
 
+    <!-- Banner de Configuração do WhatsApp -->
+    <WhatsAppBanner
+      :is-whats-app-configured="isWhatsAppConfigured"
+      :show-banner="showWhatsAppBanner"
+      @close="showWhatsAppBanner = false"
+      @configure="navigateTo('/alerts/configure')"
+    />
+
     <v-form ref="alertForm" @submit.prevent="handleCreateAlert">
       <!-- Store Selection Card -->
       <v-card class="selection-card mb-4" elevation="1">
@@ -194,65 +202,42 @@
       </v-card>
 
       <!-- Summary Card -->
-      <v-card
-        v-if="showSummary"
-        class="summary-card mb-6"
-        elevation="2"
-        color="primary"
-      >
-        <v-card-text class="pa-4">
-          <div class="section-header mb-3">
-            <v-icon color="white" size="24" class="mr-2">mdi-eye</v-icon>
-            <h3 class="text-subtitle-1 font-weight-medium text-white">
-              Resumo do seu alerta
-            </h3>
-          </div>
+      <AlertSummaryCard
+        :show-summary="showSummary"
+        :store-label="storeSelectionType === 'specific' ? 'Loja' : 'Categoria'"
+        :store-value="getSummaryStore"
+        :program-label="programSelectionType === 'specific' ? 'Programa' : 'Tipo'"
+        :program-value="getSummaryProgram"
+        :threshold="threshold"
+        :threshold-suffix="getThresholdSuffix"
+      />
 
-          <div class="summary-content text-white">
-            <p class="mb-2">
-              <strong
-                >{{
-                  storeSelectionType === 'specific' ? 'Loja' : 'Categoria'
-                }}:</strong
-              >
-              {{ getSummaryStore }}
-            </p>
-            <p class="mb-2">
-              <strong
-                >{{
-                  programSelectionType === 'specific' ? 'Programa' : 'Tipo'
-                }}:</strong
-              >
-              {{ getSummaryProgram }}
-            </p>
-            <p class="mb-0">
-              <strong>Valor mínimo:</strong> {{ threshold
-              }}{{ getThresholdSuffix }}
-            </p>
-          </div>
-        </v-card-text>
-      </v-card>
+      <div class="d-flex justify-center">
 
-      <!-- Action Buttons -->
-      <div class="action-buttons">
-        <v-btn
-          color="primary"
-          size="large"
-          variant="flat"
-          block
-          :disabled="!isFormValid"
-          :loading="isCreating"
-          type="submit"
-        >
-          <v-icon start>mdi-bell-plus</v-icon>
-          Criar Alerta
-        </v-btn>
+        <div class="action-buttons">
+          <v-btn
+          width="280"
+            color="primary"
+            size="large"
+            variant="flat"
+            block
+            :disabled="!isFormValid"
+            :loading="isCreating"
+            type="submit"
+          >
+            <v-icon start>mdi-bell-plus</v-icon>
+            Criar Alerta
+          </v-btn>
+        </div>
       </div>
+      <!-- Action Buttons -->
     </v-form>
   </v-container>
 </template>
 
 <script lang="ts" setup>
+  import type { User } from '~/types/user'
+  
   type Step = 'phone' | 'verification'
 
   // Estados do formulário
@@ -263,6 +248,11 @@
   const selectedEcommerce = ref<any>(null)
   const selectedCategory = ref('')
   const selectedProgram = ref<number | string | null>(null)
+
+  // Estados para configuração do WhatsApp
+  const { user } = useSanctumAuth<User>()
+  const isWhatsAppConfigured = computed(() => user.value?.whatsapp_notification_enabled || false)
+  const showWhatsAppBanner = ref(true)
   const selectedProgramData = ref<any>(null)
   const threshold = ref('')
 
@@ -553,15 +543,15 @@
 
 <style scoped>
   .create-alert-page {
-    max-width: 600px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 12px;
   }
 
   .page-header {
     display: flex;
     align-items: flex-start;
     gap: 12px;
+    margin-bottom: 20px;
   }
 
   .back-btn {
@@ -573,23 +563,30 @@
     min-height: 48px;
   }
 
+  .header-content h1 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+
+  .header-content p {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
   .selection-card {
     border-radius: 12px;
     border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
     transition: border-color 0.2s ease;
+    margin-bottom: 16px;
   }
 
   .selection-card:hover {
     border-color: rgba(var(--v-theme-primary), 0.2);
   }
 
-  .summary-card {
-    border-radius: 12px;
-    background: linear-gradient(
-      135deg,
-      rgb(var(--v-theme-primary)),
-      rgba(var(--v-theme-primary), 0.8)
-    );
+  .selection-card .v-card-text {
+    padding: 16px;
   }
 
   .section-header {
@@ -600,8 +597,9 @@
   .option-group {
     background: rgba(var(--v-theme-surface), 0.5);
     border-radius: 8px;
-    padding: 16px;
+    padding: 12px;
     border: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+    margin-bottom: 16px;
   }
 
   .radio-content {
@@ -631,36 +629,62 @@
     margin-top: 8px;
   }
 
-  .summary-content {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 16px;
-  }
+
+
+
 
   .action-buttons {
-    padding-bottom: 24px;
+    padding: 16px 0 24px;
+    position: sticky;
+    bottom: 0;
+    background: rgba(var(--v-theme-background), 0.95);
+    backdrop-filter: blur(8px);
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-top: 1px solid rgba(var(--v-theme-on-surface), 0.05);
   }
 
-  /* Mobile adjustments */
-  @media (max-width: 600px) {
+  /* Ajustes para tablets e desktops */
+  @media (min-width: 600px) {
     .create-alert-page {
-      padding: 12px;
-    }
-
-    .selection-card .v-card-text {
-      padding: 16px !important;
+      padding: 24px;
     }
 
     .page-header {
-      margin-bottom: 20px;
+      margin-bottom: 32px;
     }
 
-    .section-header h3 {
+    .header-content h1 {
+      font-size: 1.5rem;
+    }
+
+    .header-content p {
       font-size: 1rem;
     }
 
+    .selection-card {
+      margin-bottom: 24px;
+    }
+
+    .selection-card .v-card-text {
+      padding: 24px;
+    }
+
     .option-group {
-      padding: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+
+
+    .action-buttons {
+      position: static;
+      background: transparent;
+      backdrop-filter: none;
+      margin: 0;
+      padding: 24px 0 32px;
+      border-top: none;
     }
   }
 

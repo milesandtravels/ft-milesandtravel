@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { ProgramType } from '~/interfaces/program'
+  import type { User } from '~/types/user'
 
   interface Program {
     id: number
@@ -46,6 +47,13 @@
   const showDeleteModal = ref(false)
   const alertToDelete = ref<Alert | null>(null)
   const isDeleting = ref(false)
+
+  // Estados para configuração do WhatsApp
+  const { user } = useSanctumAuth<User>()
+  const isWhatsAppConfigured = computed(() => user.value?.whatsapp_notification_enabled || false)
+  const showWhatsAppBanner = ref(true)
+  const showOnboardingModal = ref(false)
+  const isFirstVisit = ref(true)
 
   // Estados para edição de alertas
   const showEditAlertModal = ref(false)
@@ -275,8 +283,32 @@
     })
   }
 
+  // Verificar se é primeira visita
+  const checkFirstVisit = () => {
+    const hasVisited = localStorage.getItem('alerts_visited')
+    if (!hasVisited) {
+      isFirstVisit.value = true
+      showOnboardingModal.value = true
+      localStorage.setItem('alerts_visited', 'true')
+    } else {
+      isFirstVisit.value = false
+    }
+  }
+
+  // Fechar modal de onboarding
+  const closeOnboardingModal = () => {
+    showOnboardingModal.value = false
+  }
+
+  // Ir para configuração do WhatsApp
+  const goToWhatsAppConfig = () => {
+    showOnboardingModal.value = false
+    navigateTo('/alerts/configure')
+  }
+
   // Lifecycle
   onMounted(() => {
+    checkFirstVisit()
     fetchAlerts()
   })
 </script>
@@ -285,8 +317,8 @@
   <v-container class="alerts-view" fluid>
     <!-- Header -->
     <div class="alerts-header mb-6">
-      <div class="d-flex align-center justify-space-between mb-4">
-        <div>
+      <div class="header-content">
+        <div class="header-text">
           <h1 class="text-h5 font-weight-bold mb-2">Meus Alertas</h1>
           <p class="text-body-2 text-medium-emphasis">
             Gerencie seus alertas de ofertas e cashbacks
@@ -298,11 +330,22 @@
           variant="flat"
           prepend-icon="mdi-plus"
           @click="createAlert"
+          class="create-alert-btn"
+          size="default"
         >
-          Novo Alerta
+          <span class="d-none d-sm-inline">Novo Alerta</span>
+          <span class="d-sm-none">Novo</span>
         </v-btn>
       </div>
     </div>
+
+    <!-- Banner de Configuração do WhatsApp -->
+    <WhatsAppBanner
+      :is-whats-app-configured="isWhatsAppConfigured"
+      :show-banner="showWhatsAppBanner"
+      @close="showWhatsAppBanner = false"
+      @configure="navigateTo('/alerts/configure')"
+    />
 
     <!-- Lista de Alertas -->
     <div v-if="alerts.length > 0" class="alerts-list">
@@ -315,43 +358,12 @@
           >
             <v-card-text class="pa-4">
               <!-- Status -->
-              <div class="d-flex align-center justify-space-between mb-3">
-                <v-chip
-                  :color="alert.active ? 'success' : 'grey'"
-                  size="small"
-                  variant="tonal"
-                >
-                  <v-icon start size="12">
-                    {{ alert.active ? 'mdi-check-circle' : 'mdi-pause-circle' }}
-                  </v-icon>
-                  {{ alert.active ? 'Ativo' : 'Inativo' }}
-                </v-chip>
-
-                <div class="alert-actions">
-                  <v-switch
-                    :model-value="alert.active"
-                    @update:model-value="toggleAlert(alert)"
-                    color="primary"
-                    hide-details
-                    density="compact"
-                    class="me-2"
-                  />
-                  <v-btn
-                    icon="mdi-pencil"
-                    size="small"
-                    variant="text"
-                    color="primary"
-                    @click="openEditModal(alert)"
-                  />
-                  <v-btn
-                    icon="mdi-delete"
-                    size="small"
-                    variant="text"
-                    color="error"
-                    @click="confirmDelete(alert)"
-                  />
-                </div>
-              </div>
+              <AlertStatusSection
+                :alert="alert"
+                @toggle="toggleAlert"
+                @edit="openEditModal"
+                @delete="confirmDelete"
+              />
 
               <!-- Ecommerce ou Categoria -->
               <div class="ecommerce-section mb-3">
@@ -635,6 +647,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Modal de Onboarding do WhatsApp -->
+    <AlertsOnboardingModal
+      v-model="showOnboardingModal"
+      @configure="goToWhatsAppConfig"
+      @close="closeOnboardingModal"
+    />
   </v-container>
 </template>
 
@@ -649,6 +668,23 @@
     padding: 16px 0;
   }
 
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .header-text {
+    flex: 1;
+  }
+
+  .create-alert-btn {
+    align-self: stretch;
+    min-height: 48px;
+  }
+
+
+
   .alert-card {
     border-radius: 12px;
     transition:
@@ -662,11 +698,7 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
   }
 
-  .alert-actions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
+
 
   .alert-disabled {
     opacity: 0.6;
@@ -707,8 +739,9 @@
     width: 100%;
     height: 100%;
     background: #f5f5f5;
-    border-radius: 4px;
   }
+
+
 
   .category-display,
   .program-type-display {
@@ -743,16 +776,59 @@
     border: 1px solid rgba(var(--v-theme-outline), 0.2);
   }
 
+  /* Tablet and desktop adjustments */
+  @media (min-width: 600px) {
+    .header-content {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .create-alert-btn {
+      align-self: auto;
+      min-height: auto;
+      flex-shrink: 0;
+    }
+
+    .banner-content {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .banner-btn {
+      align-self: auto;
+      min-height: auto;
+      flex-shrink: 0;
+    }
+
+    .alert-status-section {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .status-row {
+      gap: 12px;
+    }
+
+
+  }
+
   /* Mobile adjustments */
-  @media (max-width: 600px) {
+  @media (max-width: 599px) {
     .alerts-view {
       padding: 12px;
     }
 
-    .alerts-header .d-flex {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
+    .alerts-header {
+      padding: 12px 0;
+    }
+
+    .header-content {
+      gap: 12px;
     }
 
     .alert-actions {
