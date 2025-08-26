@@ -29,7 +29,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     ) {
       return
     }
-    
+
     return router.push(
       '/confirmation-email?email=' + encodeURIComponent(user.email)
     )

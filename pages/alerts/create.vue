@@ -206,17 +206,18 @@
         :show-summary="showSummary"
         :store-label="storeSelectionType === 'specific' ? 'Loja' : 'Categoria'"
         :store-value="getSummaryStore"
-        :program-label="programSelectionType === 'specific' ? 'Programa' : 'Tipo'"
+        :program-label="
+          programSelectionType === 'specific' ? 'Programa' : 'Tipo'
+        "
         :program-value="getSummaryProgram"
         :threshold="threshold"
         :threshold-suffix="getThresholdSuffix"
       />
 
       <div class="d-flex justify-center">
-
         <div class="action-buttons">
           <v-btn
-          width="280"
+            width="280"
             color="primary"
             size="large"
             variant="flat"
@@ -237,7 +238,7 @@
 
 <script lang="ts" setup>
   import type { User } from '~/types/user'
-  
+
   type Step = 'phone' | 'verification'
 
   // Estados do formulário
@@ -251,7 +252,9 @@
 
   // Estados para configuração do WhatsApp
   const { user } = useSanctumAuth<User>()
-  const isWhatsAppConfigured = computed(() => user.value?.whatsapp_notification_enabled || false)
+  const isWhatsAppConfigured = computed(
+    () => user.value?.whatsapp_notification_enabled || false
+  )
   const showWhatsAppBanner = ref(true)
   const selectedProgramData = ref<any>(null)
   const threshold = ref('')
@@ -629,10 +632,6 @@
     margin-top: 8px;
   }
 
-
-
-
-
   .action-buttons {
     padding: 16px 0 24px;
     position: sticky;
@@ -675,8 +674,6 @@
       padding: 20px;
       margin-bottom: 20px;
     }
-
-
 
     .action-buttons {
       position: static;

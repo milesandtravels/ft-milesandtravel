@@ -50,7 +50,9 @@
 
   // Estados para configuração do WhatsApp
   const { user } = useSanctumAuth<User>()
-  const isWhatsAppConfigured = computed(() => user.value?.whatsapp_notification_enabled || false)
+  const isWhatsAppConfigured = computed(
+    () => user.value?.whatsapp_notification_enabled || false
+  )
   const showWhatsAppBanner = ref(true)
   const showOnboardingModal = ref(false)
   const isFirstVisit = ref(true)
@@ -683,8 +685,6 @@
     min-height: 48px;
   }
 
-
-
   .alert-card {
     border-radius: 12px;
     transition:
@@ -697,8 +697,6 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
   }
-
-
 
   .alert-disabled {
     opacity: 0.6;
@@ -740,8 +738,6 @@
     height: 100%;
     background: #f5f5f5;
   }
-
-
 
   .category-display,
   .program-type-display {
@@ -813,8 +809,6 @@
     .status-row {
       gap: 12px;
     }
-
-
   }
 
   /* Mobile adjustments */
