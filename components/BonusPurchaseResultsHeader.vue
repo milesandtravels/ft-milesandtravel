@@ -33,8 +33,10 @@
       <div class="cta-section d-flex align-center">
         <v-icon color="success" size="18" class="mr-2">mdi-lightbulb-on</v-icon>
         <span class="cta-text">
-          Após a seleção, clique em <strong>"Explorar Vantagens"</strong> para
-          ver o comparativo completo das melhores opções.
+          Você pode visualizar ofertas de cada produto individualmente através
+          do botão <strong>"Ver ofertas"</strong> ou selecionar múltiplos
+          produtos e clicar em <strong>"Comparar ofertas"</strong> para ver o
+          comparativo completo das melhores opções.
         </span>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Botão principal -->
+    <!-- Botão principal - Comprar com bonificação -->
     <v-card-actions class="pa-3 pt-0">
       <v-btn
         color="primary"
@@ -9,12 +9,12 @@
         class="flex-grow-1 text-white font-weight-medium"
         @click="handleViewProduct"
       >
-        <v-icon start size="18">mdi-open-in-new</v-icon>
-        Ver produto
+        <v-icon start size="18">mdi-shopping</v-icon>
+        Compre por aqui
       </v-btn>
     </v-card-actions>
 
-    <!-- Botão secundário -->
+    <!-- Botão secundário - Cadastrar no programa -->
     <v-card-actions class="px-3 pt-0 pb-3">
       <v-btn
         variant="outlined"
@@ -22,24 +22,16 @@
         class="flex-grow-1"
         @click="handleViewProgram"
       >
-        <v-icon size="18" class="me-2">
-          {{ getProgramTypeIcon(offer.program.type) }}
-        </v-icon>
-        Ver Promoção
+        <v-icon size="18" class="me-2">mdi-account-plus</v-icon>
+        Cadastre-se
       </v-btn>
     </v-card-actions>
 
+    <!-- Modal "Atenção - Regras do Programa" para "Compre por aqui" -->
     <ProgramConfirmationModal
-      v-model="showConfirmationModal"
+      v-model="showProgramConfirmationModal"
       :program="offer.program"
-      @confirm="$emit('go:program', offer)"
-    />
-
-    <ProductRedirectConfirmationModal
-      v-model="showProductRedirectModal"
-      :product="productData"
-      @confirm="handleProductRedirect"
-      @cancel="handleProductCancel"
+      @confirm="handleProgramConfirmation"
     />
   </div>
 </template>
@@ -47,8 +39,8 @@
 <script setup lang="ts">
   import type { OfferItem } from '~/interfaces/offers'
   import type { ProgramType } from '~/interfaces/program'
-  const showConfirmationModal = ref(false)
-  const showProductRedirectModal = ref(false)
+  
+  const showProgramConfirmationModal = ref(false)
   interface Props {
     offer: OfferItem
   }
@@ -60,28 +52,19 @@
     'go:program': [offer: OfferItem]
   }>()
 
-  const productData = computed(() => ({
-    id: props.offer.product.id.toString() || '',
-    name: props.offer.product.name || 'Produto sem nome',
-    image: props.offer.product.image_url || '',
-    ecommerce: props.offer.ecommerce.name || 'E-commerce não informado',
-    url: props.offer.product.product_url || '',
-  }))
 
   const handleViewProgram = (): void => {
-    showConfirmationModal.value = true
+    // Redirecionar diretamente para o programa sem modal
+    window.open(props.offer.program.link_url, '_blank', 'noopener,noreferrer')
   }
 
   const handleViewProduct = (): void => {
-    showProductRedirectModal.value = true
+    showProgramConfirmationModal.value = true
   }
 
-  const handleProductRedirect = (product: any): void => {
-    emit('view:product', props.offer)
-  }
-
-  const handleProductCancel = (): void => {
-    showProductRedirectModal.value = false
+  const handleProgramConfirmation = (): void => {
+    // Usar promotion_link ao invés de product_url
+    window.open(props.offer.promotion_link, '_blank', 'noopener,noreferrer')
   }
 
   const getProgramTypeColor = (type: ProgramType): string => {

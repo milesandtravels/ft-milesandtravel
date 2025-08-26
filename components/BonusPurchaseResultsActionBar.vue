@@ -25,7 +25,7 @@
             @click="$emit('explore-advantages')"
           >
             <v-icon start size="x-small">mdi-star</v-icon>
-            <span class="mobile-btn-text">Explorar</span>
+            <span class="mobile-btn-text">Comparar</span>
           </v-btn>
         </div>
 
@@ -64,7 +64,7 @@
               @click="$emit('explore-advantages')"
             >
               <v-icon start>mdi-star</v-icon>
-              Explorar vantagens
+              Comparar ofertas
             </v-btn>
           </div>
         </div>

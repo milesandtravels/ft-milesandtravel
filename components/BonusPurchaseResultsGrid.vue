@@ -15,6 +15,7 @@
           :product="product"
           :is-selected="selectedProducts.includes(product.id)"
           @toggle-selection="$emit('toggle-selection', product.id)"
+          @view-individual-offers="$emit('view-individual-offers', product.id)"
         />
       </v-col>
     </v-row>
@@ -31,6 +32,7 @@
 
   interface Emits {
     (e: 'toggle-selection', productId: number): void
+    (e: 'view-individual-offers', productId: number): void
   }
 
   defineProps<Props>()

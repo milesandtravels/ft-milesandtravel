@@ -18,14 +18,18 @@
         >
           <div class="text-body-2">
             <div class="d-none d-md-block">
-              <strong>Seleção de Produtos:</strong> Busque e selecione os
-              produtos que atendem às suas necessidades. Após a seleção, você
-              será direcionado para a tela de ofertas onde poderá comparar
-              preços e benefícios entre diferentes lojas.
+              <strong>Selecione os Produtos do Seu Perfil:</strong> Escolha
+              todos os produtos que encaixam no seu perfil de compras para
+              validarmos quais programas de pontos, cashbacks ou milhas trarão
+              as melhores bonificações. Você pode visualizar ofertas de cada
+              produto individualmente através do botão "Ver ofertas" ou
+              selecionar múltiplos produtos e clicar em "Comparar ofertas" para
+              ver o comparativo completo das melhores opções.
             </div>
             <div class="d-block d-md-none">
-              <strong>Busque seus produtos:</strong> Selecione os produtos
-              desejados para depois comparar as melhores ofertas disponíveis.
+              <strong>Busque seus produtos:</strong> Use o botão "Ver ofertas"
+              para produtos individuais ou selecione múltiplos e clique em
+              "Comparar ofertas" para comparar as melhores opções disponíveis.
             </div>
           </div>
         </v-alert>

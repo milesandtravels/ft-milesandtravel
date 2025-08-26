@@ -16,6 +16,7 @@
       :products="results"
       :selected-products="selectedProducts"
       @toggle-selection="toggleSelection"
+      @view-individual-offers="handleViewIndividualOffers"
     />
 
     <!-- Action Bar -->
@@ -47,7 +48,6 @@
   const emit = defineEmits<Emits>()
 
   // Estado reativo
-  const displayFilters = ref<boolean>(false)
   const selectedProducts = ref<number[]>([])
   const loadingAdvantages = ref<boolean>(false)
 
@@ -97,10 +97,6 @@
     }
   }
 
-  const openFilter = () => {
-    displayFilters.value = true
-  }
-
   const updateSearch = () => {
     return useSanctumFetch<any>(
       `/api/searches/${props.searchId}/update-and-sync-products`,
@@ -114,6 +110,31 @@
     )
   }
 
+  // Nova função para visualizar ofertas de um produto específico
+  const handleViewIndividualOffers = async (productId: number) => {
+    loadingAdvantages.value = true
+    try {
+      // Cria uma busca apenas com o produto selecionado
+      await useSanctumFetch<any>(
+        `/api/searches/${props.searchId}/update-and-sync-products`,
+        {
+          method: 'PUT',
+          body: {
+            name: 'individual-product-search',
+            products: [productId],
+          },
+        }
+      )
+      // Redireciona para tela de ofertas com apenas esse produto
+      navigateTo(`/offers?searchId=${props.searchId}`)
+    } catch (error) {
+      console.error('Erro ao visualizar ofertas individuais:', error)
+    } finally {
+      loadingAdvantages.value = false
+    }
+  }
+
+  // Função para comparar múltiplos produtos (fluxo original)
   const exploreAdvantages = async () => {
     if (selectedProducts.value.length === 0) return
 

@@ -142,8 +142,22 @@
         </div>
       </div>
 
-      <!-- Action Button -->
+      <!-- Action Buttons Section -->
       <div class="action-section">
+        <!-- Botão Ver ofertas individuais - Nova funcionalidade -->
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :size="isMobile ? 'small' : 'default'"
+          class="view-offers-btn"
+          block
+          @click.stop="handleViewOffers"
+        >
+          <v-icon start :size="isMobile ? 'small' : 'default'">mdi-star</v-icon>
+          Ver ofertas
+        </v-btn>
+
+        <!-- Botão Ver produto (mantém funcionalidade original) -->
         <v-btn
           color="primary"
           variant="flat"
@@ -203,6 +217,7 @@
 
   interface Emits {
     (e: 'toggle-selection'): void
+    (e: 'view-individual-offers', productId: number): void
   }
 
   const props = defineProps<Props>()
@@ -213,7 +228,7 @@
   const showProductRedirectModal = ref(false)
 
   const isMobile = computed(() => {
-    if (process.client) {
+    if (import.meta.client) {
       return window.innerWidth < 768
     }
     return false
@@ -226,6 +241,11 @@
     ecommerce: props.product.ecommerce.name || 'E-commerce não informado',
     url: props.product.product_url || '',
   }))
+
+  // Nova função para ver ofertas individuais de um produto
+  const handleViewOffers = (): void => {
+    emit('view-individual-offers', props.product.id)
+  }
 
   const handleViewProduct = (): void => {
     showProductRedirectModal.value = true
@@ -279,10 +299,6 @@
     }).format(props.product.price)
   })
 
-  const marketplaceDisplayName = computed(() => {
-    return props.product.ecommerce.name
-  })
-
   const numericRating = computed(() => {
     return parseFloat(props.product.rating) || 0
   })
@@ -301,11 +317,6 @@
 
   const hasRating = computed(() => {
     return numericRating.value > 0
-  })
-
-  const hasDiscount = computed(() => {
-    // Lógica para determinar se há desconto (exemplo)
-    return Math.random() > 0.7 // 30% chance de ter desconto
   })
 
   const selectionIcon = computed(() => {
@@ -560,6 +571,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 2.6em;
@@ -644,6 +656,22 @@
     margin-top: 8px;
     padding-top: 8px;
     border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .view-offers-btn {
+    font-size: 0.75rem !important;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+  }
+
+  .view-offers-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.2);
   }
 
   .visit-store-btn {
@@ -734,6 +762,10 @@
       min-height: 2.8em;
     }
 
+    .view-offers-btn {
+      font-size: 0.8rem !important;
+    }
+
     .visit-store-btn {
       font-size: 0.8rem !important;
     }
@@ -770,6 +802,10 @@
 
     .product-title {
       font-size: 1rem;
+    }
+
+    .view-offers-btn {
+      font-size: 0.85rem !important;
     }
 
     .visit-store-btn {
