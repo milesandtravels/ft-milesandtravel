@@ -24,7 +24,7 @@
       :is-whats-app-configured="isWhatsAppConfigured"
       :show-banner="showWhatsAppBanner"
       @close="showWhatsAppBanner = false"
-      @configure="navigateTo('/alerts/configure')"
+      @configure="navigateTo('/alerts/view?tab=channels')"
     />
 
     <v-form ref="alertForm" @submit.prevent="handleCreateAlert">

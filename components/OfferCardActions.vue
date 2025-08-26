@@ -39,7 +39,7 @@
 <script setup lang="ts">
   import type { OfferItem } from '~/interfaces/offers'
   import type { ProgramType } from '~/interfaces/program'
-  
+
   const showProgramConfirmationModal = ref(false)
   interface Props {
     offer: OfferItem
@@ -51,7 +51,6 @@
     'view:product': [offer: OfferItem]
     'go:program': [offer: OfferItem]
   }>()
-
 
   const handleViewProgram = (): void => {
     // Redirecionar diretamente para o programa sem modal
