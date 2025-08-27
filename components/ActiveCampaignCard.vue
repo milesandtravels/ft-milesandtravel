@@ -54,7 +54,8 @@
 
     <!-- Seção das logos -->
     <div class="logos-section">
-      <div class="transfer-flow">
+      <!-- Layout para Transferência Bonificada (origem → destino) -->
+      <div v-if="campaign.type === 'bonus_transfer'" class="transfer-flow">
         <!-- Origin -->
         <div class="program-item">
           <div class="logo-container">
@@ -101,6 +102,29 @@
           </div>
           <p class="program-name">{{ campaign.program_destination.name }}</p>
           <p class="program-label">DESTINO</p>
+        </div>
+      </div>
+
+      <!-- Layout para outros tipos (apenas programa destino) -->
+      <div v-else class="single-program-flow">
+        <div class="program-item-single">
+          <div class="logo-container-single">
+            <v-img
+              :src="campaign.program_destination.logo_url"
+              :alt="campaign.program_destination.name"
+              contain
+              height="64"
+              max-width="96"
+            >
+              <template v-slot:error>
+                <div class="logo-fallback">
+                  <v-icon icon="mdi-airplane" size="28" color="grey"></v-icon>
+                </div>
+              </template>
+            </v-img>
+          </div>
+          <p class="program-name-single">{{ campaign.program_destination.name }}</p>
+          <p class="program-label-single">{{ getProgramLabel() }}</p>
         </div>
       </div>
     </div>
@@ -244,15 +268,29 @@
     return 'success'
   }
 
-  const getCampaignDescription = (): string => {
-    const descriptions = {
-      bonus_transfer: `Transfira pontos do ${props.campaign.program_origin.name} para ${props.campaign.program_destination.name} e ganhe ${props.campaign.value}% de bônus`,
-      purchase_with_bonus: `Compre pontos do ${props.campaign.program_destination.name} e ganhe ${props.campaign.value}% de bônus extra`,
-      purchase_with_discount: `Adquira pontos do ${props.campaign.program_destination.name} com ${props.campaign.value}% de desconto`,
-      club_upgrade: `Faça upgrade no seu status do clube ${props.campaign.program_destination.name}`,
-      club_subscription: `Assine o clube premium do ${props.campaign.program_destination.name}`,
+  const getProgramLabel = (): string => {
+    const labels = {
+      purchase_with_bonus: 'COMPRA COM BÔNUS',
+      purchase_with_discount: 'COMPRA COM DESCONTO',
+      club_upgrade: 'UPGRADE DE CLUBE',
+      club_subscription: 'ADESÃO DE CLUBE',
     }
-    return descriptions[props.campaign.type] || `Aproveite esta oportunidade especial do ${props.campaign.program_destination.name}`
+    return labels[props.campaign.type] || 'PROGRAMA'
+  }
+
+  const getCampaignDescription = (): string => {
+    const value = props.campaign.value
+    const programName = props.campaign.program_destination.name
+    const valueText = props.campaign.value_type === 'percent' ? `${value}%` : `${value.toLocaleString('pt-BR')}`
+    
+    const descriptions = {
+      bonus_transfer: `Transfira seus pontos na promoção: ${props.campaign.program_origin.name} e ${props.campaign.program_destination.name} e ganhe até ${valueText} de bônus`,
+      purchase_with_bonus: `Ganhe até ${valueText} de bônus na compra de pontos no programa ${programName}`,
+      purchase_with_discount: `Ganhe até ${valueText} de desconto na compra de pontos no programa ${programName}`,
+      club_upgrade: `Faça o Upgrade de clube do programa ${programName} e ganhe até ${valueText} ${props.campaign.value_type === 'percent' ? 'de bônus' : 'pontos de bônus'}`,
+      club_subscription: `Assine o clube do programa ${programName} e ganhe até ${valueText} ${props.campaign.value_type === 'percent' ? 'de bônus' : 'pontos bônus'}`,
+    }
+    return descriptions[props.campaign.type] || `Aproveite esta oportunidade especial do ${programName}`
   }
 
 </script>
@@ -366,6 +404,54 @@
     margin: 0 8px;
   }
 
+  /* Layout para programa único */
+  .single-program-flow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+  }
+
+  .program-item-single {
+    text-align: center;
+  }
+
+  .logo-container-single {
+    width: 96px;
+    height: 64px;
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    margin: 0 auto 12px auto;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .logo-container-single:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .program-name-single {
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 4px 0;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  .program-label-single {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+
   /* Descrição da campanha */
   .campaign-description {
     padding: 12px 16px;
@@ -409,6 +495,19 @@
 
     .transfer-arrow {
       margin: 0 12px;
+    }
+
+    .logo-container-single {
+      width: 104px;
+      height: 68px;
+    }
+
+    .program-name-single {
+      font-size: 0.9375rem;
+    }
+
+    .program-label-single {
+      font-size: 0.8125rem;
     }
 
     .campaign-description {
@@ -472,6 +571,20 @@
       margin: 0 4px;
     }
 
+    .logo-container-single {
+      width: 80px;
+      height: 56px;
+      padding: 8px;
+    }
+
+    .program-name-single {
+      font-size: 0.8125rem;
+    }
+
+    .program-label-single {
+      font-size: 0.6875rem;
+    }
+
     .campaign-description {
       padding: 10px 12px;
     }
@@ -521,5 +634,18 @@
 
   .v-theme--dark .campaign-footer {
     background: #1e1e1e;
+  }
+
+  .v-theme--dark .logo-container-single {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .v-theme--dark .program-name-single {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .v-theme--dark .program-label-single {
+    color: rgba(255, 255, 255, 0.6);
   }
 </style>
