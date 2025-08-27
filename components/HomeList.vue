@@ -81,17 +81,20 @@
             class="quick-action-card pa-6 text-center"
             variant="outlined"
             hover
-            @click="navigateTo('/alerts/view')"
+            @click="navigateTo('/active-campaigns')"
           >
-            <v-icon class="mb-4" color="primary" size="48">mdi-whatsapp</v-icon>
-            <h3 class="text-h6 font-weight-bold mb-2">Alertas WhatsApp</h3>
+            <v-icon class="mb-4" color="primary" size="48">mdi-bullhorn</v-icon>
+            <h3 class="text-h6 font-weight-bold mb-2">Campanhas Ativas</h3>
             <p class="text-body-2 text-medium-emphasis">
-              Configure notificações via WhatsApp
+              Ofertas limitadas de pontos e milhas
             </p>
           </v-card>
         </v-col>
       </v-row>
     </div>
+
+    <!-- Campanhas Ativas Preview -->
+    <HomeCampaignsPreview />
 
     <!-- Features Overview -->
     <div class="features-section mb-8">
