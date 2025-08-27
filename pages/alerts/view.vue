@@ -391,16 +391,16 @@
           push_notification_enabled: enabled,
         },
       })
-      
+
       pushEnabled.value = enabled
       if (user.value) {
         user.value.push_notification_enabled = enabled
       }
-      
+
       console.log('Avisos no celular:', enabled ? 'ativados' : 'desativados')
     } catch (error) {
       console.error('Erro ao configurar avisos no celular:', error)
-      
+
       // Reverter estado em caso de erro
       pushEnabled.value = !enabled
     } finally {
@@ -924,9 +924,10 @@
                     </div>
                   </div>
                   <p class="text-body-2 text-medium-emphasis mb-2">
-                    {{ xs || sm 
-                      ? 'Receba mensagens sobre ofertas e cashbacks diretamente no seu WhatsApp'
-                      : 'Receba notificações instantâneas sobre as melhores ofertas e cashbacks diretamente no seu WhatsApp'
+                    {{
+                      xs || sm
+                        ? 'Receba mensagens sobre ofertas e cashbacks diretamente no seu WhatsApp'
+                        : 'Receba notificações instantâneas sobre as melhores ofertas e cashbacks diretamente no seu WhatsApp'
                     }}
                   </p>
                   <div
@@ -965,7 +966,9 @@
                     >
                     <div>
                       <h3 class="text-h6 font-weight-medium">
-                        {{ xs || sm ? 'Receba no celular' : 'Receba no navegador' }}
+                        {{
+                          xs || sm ? 'Receba no celular' : 'Receba no navegador'
+                        }}
                       </h3>
                       <p class="text-caption text-medium-emphasis mb-0">
                         Disponível
@@ -973,9 +976,10 @@
                     </div>
                   </div>
                   <p class="text-body-2 text-medium-emphasis mb-0">
-                    {{ xs || sm 
-                      ? 'Receba avisos instantâneos no seu celular, mesmo quando não estiver usando o app'
-                      : 'Receba avisos instantâneos no seu navegador, mesmo quando não estiver usando o site'
+                    {{
+                      xs || sm
+                        ? 'Receba avisos instantâneos no seu celular, mesmo quando não estiver usando o app'
+                        : 'Receba avisos instantâneos no seu navegador, mesmo quando não estiver usando o site'
                     }}
                   </p>
                 </div>
@@ -1015,9 +1019,10 @@
                     </div>
                   </div>
                   <p class="text-body-2 text-medium-emphasis mb-0">
-                    {{ xs || sm 
-                      ? 'Receba mensagens no Telegram (em breve)'
-                      : 'Receba notificações através do Telegram (funcionalidade em desenvolvimento)'
+                    {{
+                      xs || sm
+                        ? 'Receba mensagens no Telegram (em breve)'
+                        : 'Receba notificações através do Telegram (funcionalidade em desenvolvimento)'
                     }}
                   </p>
                 </div>

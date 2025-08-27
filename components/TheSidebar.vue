@@ -180,6 +180,12 @@
       route: '/promotions',
     },
     {
+      title: 'Campanhas Ativas',
+      subtitle: 'Ofertas limitadas por tempo',
+      icon: 'mdi-bullhorn',
+      route: '/active-campaigns',
+    },
+    {
       title: 'Minhas Buscas',
       subtitle: 'Histórico de buscas realizadas',
       icon: 'mdi-history',
