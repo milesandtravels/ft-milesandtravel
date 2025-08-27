@@ -603,7 +603,7 @@
   // Inicializar estados dos canais
   const initializeChannelStates = () => {
     whatsappEnabled.value = user.value?.whatsapp_notification_enabled || false
-    pushEnabled.value = false // Implementar quando push estiver disponível
+    pushEnabled.value = user.value?.push_notification_enabled || false
   }
 
   // Cleanup
