@@ -32,13 +32,14 @@
 
     <!-- Navigation Menu -->
     <v-list class="pa-2" nav>
-      <!-- Main Navigation -->
-      <v-list-subheader class="text-uppercase font-weight-bold">
-        Navegação Principal
+      <!-- Descobrir -->
+      <v-list-subheader class="section-header d-flex align-center">
+        <v-icon class="mr-2" size="18">mdi-compass</v-icon>
+        <span class="text-uppercase font-weight-bold">Descobrir</span>
       </v-list-subheader>
 
       <v-list-item
-        v-for="item in mainMenuItems"
+        v-for="item in discoverMenuItems"
         :key="item.title"
         :active="isActiveRoute(item.route)"
         class="menu-item"
@@ -50,13 +51,14 @@
 
       <v-divider class="my-4" />
 
-      <!-- Alertas -->
-      <v-list-subheader class="text-uppercase font-weight-bold">
-        Sistema de Alertas
+      <!-- Acompanhar -->
+      <v-list-subheader class="section-header d-flex align-center">
+        <v-icon class="mr-2" size="18">mdi-eye</v-icon>
+        <span class="text-uppercase font-weight-bold">Acompanhar</span>
       </v-list-subheader>
 
       <v-list-item
-        v-for="item in alertsMenuItems"
+        v-for="item in trackingMenuItems"
         :key="item.title"
         :active="isActiveRoute(item.route)"
         class="menu-item"
@@ -64,17 +66,27 @@
         :subtitle="item.subtitle"
         :title="item.title"
         @click="handleNavigation(item.route)"
-      />
+      >
+        <template #append v-if="item.title === 'Notificações'">
+          <v-badge
+            color="error"
+            content="3"
+            inline
+            v-if="false"
+          />
+        </template>
+      </v-list-item>
 
       <v-divider class="my-4" />
 
-      <!-- Settings & Tools -->
-      <v-list-subheader class="text-uppercase font-weight-bold">
-        Configurações & Ferramentas
+      <!-- Conta -->
+      <v-list-subheader class="section-header d-flex align-center">
+        <v-icon class="mr-2" size="18">mdi-account</v-icon>
+        <span class="text-uppercase font-weight-bold">Conta</span>
       </v-list-subheader>
 
       <v-list-item
-        v-for="item in settingsMenuItems"
+        v-for="item in accountMenuItems"
         :key="item.title"
         :active="isActiveRoute(item.route)"
         class="menu-item"
@@ -160,17 +172,23 @@
     return props.theme === 'dark' ? 'surface' : 'background'
   })
 
-  const mainMenuItems = ref<MenuItem[]>([
+  const discoverMenuItems = ref<MenuItem[]>([
     {
       title: 'Tela Inicial',
-      subtitle: 'Página principal do sistema',
+      subtitle: 'Dashboard e visão geral',
       icon: 'mdi-view-dashboard',
       route: '/',
     },
     {
+      title: 'Carteira',
+      subtitle: 'Seus pontos e milhas',
+      icon: 'mdi-wallet',
+      route: '/wallet',
+    },
+    {
       title: 'Compras Bonificadas',
       subtitle: 'Encontrar produtos e ofertas',
-      icon: 'mdi-cart',
+      icon: 'mdi-shopping',
       route: '/search-products',
     },
     {
@@ -181,57 +199,57 @@
     },
     {
       title: 'Campanhas Ativas',
-      subtitle: 'Ofertas limitadas por tempo',
+      subtitle: 'Ofertas por tempo limitado',
       icon: 'mdi-bullhorn',
       route: '/active-campaigns',
     },
-    {
-      title: 'Minhas Buscas',
-      subtitle: 'Histórico de buscas realizadas',
-      icon: 'mdi-history',
-      route: '/searches-did',
-    },
   ])
 
-  const alertsMenuItems = ref<MenuItem[]>([
+  const trackingMenuItems = ref<MenuItem[]>([
     {
       title: 'Meus Alertas',
-      subtitle: 'Gerenciar alertas e notificações',
-      icon: 'mdi-bell-outline',
+      subtitle: 'Alertas configurados',
+      icon: 'mdi-bell-ring',
       route: '/alerts/view',
     },
     {
       title: 'Notificações',
-      subtitle: 'Ver notificações recebidas',
-      icon: 'mdi-message-outline',
+      subtitle: 'Mensagens recebidas',
+      icon: 'mdi-message-text',
       route: '/notifications/view',
+    },
+    {
+      title: 'Minhas Buscas',
+      subtitle: 'Histórico de pesquisas',
+      icon: 'mdi-clock-outline',
+      route: '/searches-did',
     },
   ])
 
-  const settingsMenuItems = ref<MenuItem[]>([
+  const accountMenuItems = ref<MenuItem[]>([
     {
       title: 'Perfil',
       subtitle: 'Dados pessoais',
-      icon: 'mdi-account-circle-outline',
+      icon: 'mdi-account-circle',
       route: '/profile',
     },
     {
       title: 'Configurar Mileiros',
-      subtitle: 'Preços dos programas de pontos e milhas',
-      icon: 'mdi-currency-usd',
+      subtitle: 'Valores de pontos e milhas',
+      icon: 'mdi-tune',
       route: '/mileiros-config',
+    },
+    {
+      title: 'Ajuda',
+      subtitle: 'Suporte e perguntas',
+      icon: 'mdi-help-circle',
+      route: '/faq',
     },
     {
       title: 'Termos de Uso',
       subtitle: 'Condições de utilização',
-      icon: 'mdi-file-document-check-outline',
+      icon: 'mdi-file-document',
       route: '/terms-of-use',
-    },
-    {
-      title: 'Ajuda',
-      subtitle: 'Suporte e FAQ',
-      icon: 'mdi-help-circle-outline',
-      route: '/faq',
     },
   ])
   const router = useRouter()
@@ -264,6 +282,32 @@
   .sidebar-title {
     font-size: 1.1rem;
     line-height: 1.2;
+  }
+
+  .section-header {
+    padding: 12px 16px 8px 16px;
+    margin-bottom: 4px;
+    color: rgb(var(--v-theme-primary));
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: default;
+  }
+
+  .section-header:hover {
+    background-color: rgba(var(--v-theme-primary), 0.05);
+  }
+
+  .section-header .v-icon {
+    opacity: 0.7;
+    color: rgb(var(--v-theme-primary));
+    transition: opacity 0.2s ease;
+  }
+
+  .section-header:hover .v-icon {
+    opacity: 1;
   }
 
   .menu-item {
@@ -310,6 +354,15 @@
   .v-theme--dark .menu-item.v-list-item--active {
     background-color: rgba(144, 202, 249, 0.16);
     color: rgb(144, 202, 249);
+  }
+
+  .v-theme--dark .section-header {
+    color: rgb(var(--v-theme-primary));
+  }
+
+  .v-theme--dark .section-header .v-icon {
+    color: rgb(var(--v-theme-primary));
+    opacity: 0.8;
   }
 
   /* Responsive adjustments */

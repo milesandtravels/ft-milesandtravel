@@ -68,7 +68,7 @@
             >
               <template v-slot:error>
                 <div class="logo-fallback">
-                  <v-icon icon="mdi-card-giftcard" size="24" color="grey"></v-icon>
+                  <v-icon :icon="getOriginFallbackIcon()" size="24" :color="getCampaignTypeColor()"></v-icon>
                 </div>
               </template>
             </v-img>
@@ -95,7 +95,7 @@
             >
               <template v-slot:error>
                 <div class="logo-fallback">
-                  <v-icon icon="mdi-airplane" size="24" color="grey"></v-icon>
+                  <v-icon :icon="getDestinationFallbackIcon()" size="24" :color="getCampaignTypeColor()"></v-icon>
                 </div>
               </template>
             </v-img>
@@ -118,7 +118,7 @@
             >
               <template v-slot:error>
                 <div class="logo-fallback">
-                  <v-icon icon="mdi-airplane" size="28" color="grey"></v-icon>
+                  <v-icon :icon="getSingleProgramFallbackIcon()" size="28" :color="getCampaignTypeColor()"></v-icon>
                 </div>
               </template>
             </v-img>
@@ -291,6 +291,34 @@
       club_subscription: `Assine o clube do programa ${programName} e ganhe até ${valueText} ${props.campaign.value_type === 'percent' ? 'de bônus' : 'pontos bônus'}`,
     }
     return descriptions[props.campaign.type] || `Aproveite esta oportunidade especial do ${programName}`
+  }
+
+  const getOriginFallbackIcon = (): string => {
+    // Ícone para programa de origem (sempre relacionado a pontos/milhas)
+    return 'mdi-wallet-giftcard'
+  }
+
+  const getDestinationFallbackIcon = (): string => {
+    // Ícone para programa de destino baseado no tipo de campanha
+    const destinationIcons = {
+      bonus_transfer: 'mdi-airplane',
+      purchase_with_bonus: 'mdi-star-circle',
+      purchase_with_discount: 'mdi-star-circle',
+      club_upgrade: 'mdi-crown',
+      club_subscription: 'mdi-crown',
+    }
+    return destinationIcons[props.campaign.type] || 'mdi-store'
+  }
+
+  const getSingleProgramFallbackIcon = (): string => {
+    // Ícone para programa único baseado no tipo de campanha
+    const singleProgramIcons = {
+      purchase_with_bonus: 'mdi-shopping',
+      purchase_with_discount: 'mdi-sale',
+      club_upgrade: 'mdi-crown',
+      club_subscription: 'mdi-account-star',
+    }
+    return singleProgramIcons[props.campaign.type] || 'mdi-store'
   }
 
 </script>
