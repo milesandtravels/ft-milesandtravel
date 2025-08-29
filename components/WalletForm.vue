@@ -32,9 +32,22 @@
                 <template #item="{ props: itemProps, item }">
                   <v-list-item v-bind="itemProps">
                     <template #prepend>
-                      <v-avatar size="32" class="mr-3">
-                        <img :src="item.raw.logo_url" :alt="item.raw.name" />
-                      </v-avatar>
+                      <div class="program-logo-container mr-3">
+                        <v-img
+                          :src="item.raw.logo_url"
+                          :alt="`Logo ${item.raw.name}`"
+                          contain
+                          height="32"
+                          max-width="48"
+                          class="program-logo"
+                        >
+                          <template #error>
+                            <div class="logo-error-small">
+                              <v-icon :icon="getTypeIcon(item.raw.type)" size="16" color="grey"></v-icon>
+                            </div>
+                          </template>
+                        </v-img>
+                      </div>
                     </template>
                     <template #title>
                       <span class="font-weight-medium">{{
@@ -138,7 +151,7 @@
 
   const formData = ref<CreateWalletAccountDTO>({
     balance: 0,
-    program_id: 0,
+    program_id: null as any,
   })
 
   const selectedProgram = computed(() =>
@@ -151,6 +164,7 @@
 
   const balanceLabel = computed(() => {
     const labels: Record<ProgramType, string> = {
+      cashback: 'Saldo de Cashback',
       points: 'Quantidade de Pontos',
       miles: 'Quantidade de Milhas',
     }
@@ -159,6 +173,7 @@
 
   const balancePlaceholder = computed(() => {
     const placeholders: Record<ProgramType, string> = {
+      cashback: '0.00',
       points: '0',
       miles: '0',
     }
@@ -173,7 +188,7 @@
     }))
   )
 
-  const programRules = [(v: number) => !!v || 'Selecione um programa']
+  const programRules = [(v: number) => (v !== null && v !== undefined && v !== 0) || 'Selecione um programa']
 
   const balanceRules = [
     (v: number) => (v !== undefined && v !== null) || 'Digite um valor',
@@ -182,6 +197,7 @@
 
   const getTypeColor = (type: ProgramType) => {
     const colors: Record<ProgramType, string> = {
+      cashback: 'success',
       points: 'info',
       miles: 'purple',
     }
@@ -190,10 +206,20 @@
 
   const getTypeLabel = (type: ProgramType) => {
     const labels: Record<ProgramType, string> = {
+      cashback: 'Cashback',
       points: 'Pontos',
       miles: 'Milhas',
     }
     return labels[type] || type
+  }
+
+  const getTypeIcon = (type: ProgramType) => {
+    const icons: Record<ProgramType, string> = {
+      cashback: 'mdi-cash',
+      points: 'mdi-star',
+      miles: 'mdi-airplane',
+    }
+    return icons[type] || 'mdi-star'
   }
 
   const closeDialog = () => {
@@ -204,7 +230,7 @@
   const resetForm = () => {
     formData.value = {
       balance: 0,
-      program_id: 0,
+      program_id: null as any,
     }
     formRef.value?.resetValidation()
   }
@@ -263,6 +289,45 @@
   :deep(.v-text-field .v-field__input) {
     padding-top: 12px;
     padding-bottom: 12px;
+  }
+
+  /* Program Logo Styles */
+  .program-logo-container {
+    width: 48px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .program-logo {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .logo-error-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+
+  .v-theme--dark .program-logo-container {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .v-theme--dark .logo-error-small {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   @media (max-width: 600px) {
