@@ -54,8 +54,9 @@
             prepend-icon="mdi-plus"
             @click="openAddDialog"
             :disabled="availablePrograms.length === 0"
+            class="responsive-btn"
           >
-            Adicionar Primeiro Programa
+            {{ buttonText }}
           </v-btn>
           <div
             v-if="availablePrograms.length === 0"
@@ -162,6 +163,12 @@
   const showDeleteDialog = ref(false)
   const editingAccount = ref<WalletAccount | null>(null)
   const deletingAccount = ref<WalletAccount | null>(null)
+
+  // Responsive button text
+  const { width } = useWindowSize()
+  const buttonText = computed(() => {
+    return width.value < 600 ? 'Adicionar' : 'Adicionar Primeiro Programa'
+  })
 
   const openAddDialog = () => {
     editingAccount.value = null
@@ -313,6 +320,19 @@
   .v-btn:focus {
     outline: 2px solid rgba(var(--v-theme-primary), 0.5);
     outline-offset: 2px;
+  }
+
+  /* Responsive button */
+  .responsive-btn {
+    min-width: 200px;
+  }
+
+  @media (max-width: 600px) {
+    .responsive-btn {
+      width: 100%;
+      min-width: unset;
+      font-size: 0.875rem;
+    }
   }
 
   /* Smooth scroll for mobile */
