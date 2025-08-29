@@ -68,12 +68,7 @@
         @click="handleNavigation(item.route)"
       >
         <template #append v-if="item.title === 'Notificações'">
-          <v-badge
-            color="error"
-            content="3"
-            inline
-            v-if="false"
-          />
+          <v-badge color="error" content="3" inline v-if="false" />
         </template>
       </v-list-item>
 

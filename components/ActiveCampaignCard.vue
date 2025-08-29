@@ -10,9 +10,9 @@
       <div class="d-flex align-center justify-space-between">
         <div>
           <div class="d-flex align-center gap-2 mb-1">
-            <v-icon 
-              :icon="getCampaignTypeIcon()" 
-              :color="getCampaignTypeColor()" 
+            <v-icon
+              :icon="getCampaignTypeIcon()"
+              :color="getCampaignTypeColor()"
               size="18"
             ></v-icon>
             <span class="text-body-2 font-weight-medium text-medium-emphasis">
@@ -20,7 +20,10 @@
             </span>
           </div>
           <div class="benefit-value">
-            <span class="text-h5 font-weight-bold" :class="`text-${getValueColor()}`">
+            <span
+              class="text-h5 font-weight-bold"
+              :class="`text-${getValueColor()}`"
+            >
               {{ formattedValue }}
             </span>
             <span class="text-body-2 text-medium-emphasis ml-1">
@@ -28,7 +31,7 @@
             </span>
           </div>
         </div>
-        
+
         <v-chip
           v-if="!isExpired"
           :color="getUrgencyColor()"
@@ -68,7 +71,11 @@
             >
               <template v-slot:error>
                 <div class="logo-fallback">
-                  <v-icon :icon="getOriginFallbackIcon()" size="24" :color="getCampaignTypeColor()"></v-icon>
+                  <v-icon
+                    :icon="getOriginFallbackIcon()"
+                    size="24"
+                    :color="getCampaignTypeColor()"
+                  ></v-icon>
                 </div>
               </template>
             </v-img>
@@ -79,8 +86,14 @@
 
         <!-- Arrow -->
         <div class="transfer-arrow">
-          <v-icon icon="mdi-arrow-right-bold" size="24" color="primary"></v-icon>
-          <p class="text-caption text-primary font-weight-bold mt-1">TRANSFERIR</p>
+          <v-icon
+            icon="mdi-arrow-right-bold"
+            size="24"
+            color="primary"
+          ></v-icon>
+          <p class="text-caption text-primary font-weight-bold mt-1">
+            TRANSFERIR
+          </p>
         </div>
 
         <!-- Destination -->
@@ -95,7 +108,11 @@
             >
               <template v-slot:error>
                 <div class="logo-fallback">
-                  <v-icon :icon="getDestinationFallbackIcon()" size="24" :color="getCampaignTypeColor()"></v-icon>
+                  <v-icon
+                    :icon="getDestinationFallbackIcon()"
+                    size="24"
+                    :color="getCampaignTypeColor()"
+                  ></v-icon>
                 </div>
               </template>
             </v-img>
@@ -118,12 +135,18 @@
             >
               <template v-slot:error>
                 <div class="logo-fallback">
-                  <v-icon :icon="getSingleProgramFallbackIcon()" size="28" :color="getCampaignTypeColor()"></v-icon>
+                  <v-icon
+                    :icon="getSingleProgramFallbackIcon()"
+                    size="28"
+                    :color="getCampaignTypeColor()"
+                  ></v-icon>
                 </div>
               </template>
             </v-img>
           </div>
-          <p class="program-name-single">{{ campaign.program_destination.name }}</p>
+          <p class="program-name-single">
+            {{ campaign.program_destination.name }}
+          </p>
           <p class="program-label-single">{{ getProgramLabel() }}</p>
         </div>
       </div>
@@ -139,17 +162,20 @@
     <!-- Footer com data e ação -->
     <div class="campaign-footer">
       <div class="expiry-info mb-3">
-        <v-icon 
+        <v-icon
           :icon="isExpired ? 'mdi-calendar-remove' : 'mdi-calendar-clock'"
           size="14"
           :class="isExpired ? 'text-error' : 'text-warning'"
           class="mr-1"
         ></v-icon>
-        <span 
+        <span
           class="text-caption"
-          :class="isExpired ? 'text-error font-weight-bold' : 'text-medium-emphasis'"
+          :class="
+            isExpired ? 'text-error font-weight-bold' : 'text-medium-emphasis'
+          "
         >
-          {{ isExpired ? 'Expirou' : 'Válida até' }} {{ formattedExpirationDate }}
+          {{ isExpired ? 'Expirou' : 'Válida até' }}
+          {{ formattedExpirationDate }}
         </span>
       </div>
 
@@ -165,7 +191,11 @@
         class="text-none font-weight-bold"
         rounded="lg"
       >
-        <v-icon start :icon="isExpired ? 'mdi-cancel' : 'mdi-open-in-new'" size="18"></v-icon>
+        <v-icon
+          start
+          :icon="isExpired ? 'mdi-cancel' : 'mdi-open-in-new'"
+          size="18"
+        ></v-icon>
         {{ isExpired ? 'Campanha Expirada' : 'Aproveitar Campanha' }}
       </v-btn>
     </div>
@@ -238,7 +268,7 @@
   const getValueDescription = (): string => {
     const descriptions = {
       percent: 'bônus na transferência',
-      points: 'pontos extras'
+      points: 'pontos extras',
     }
     return descriptions[props.campaign.value_type] || 'benefício'
   }
@@ -248,7 +278,7 @@
     const expiryDate = new Date(props.campaign.expiration_date)
     const diffTime = expiryDate.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
+
     if (diffDays <= 0) return 'Expirada'
     if (diffDays === 1) return '1 dia'
     if (diffDays <= 7) return `${diffDays} dias`
@@ -261,7 +291,7 @@
     const expiryDate = new Date(props.campaign.expiration_date)
     const diffTime = expiryDate.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
+
     if (diffDays <= 1) return 'error'
     if (diffDays <= 3) return 'warning'
     if (diffDays <= 7) return 'orange'
@@ -281,8 +311,11 @@
   const getCampaignDescription = (): string => {
     const value = props.campaign.value
     const programName = props.campaign.program_destination.name
-    const valueText = props.campaign.value_type === 'percent' ? `${value}%` : `${value.toLocaleString('pt-BR')}`
-    
+    const valueText =
+      props.campaign.value_type === 'percent'
+        ? `${value}%`
+        : `${value.toLocaleString('pt-BR')}`
+
     const descriptions = {
       bonus_transfer: `Transfira seus pontos na promoção: ${props.campaign.program_origin.name} e ${props.campaign.program_destination.name} e ganhe até ${valueText} de bônus`,
       purchase_with_bonus: `Ganhe até ${valueText} de bônus na compra de pontos no programa ${programName}`,
@@ -290,7 +323,10 @@
       club_upgrade: `Faça o Upgrade de clube do programa ${programName} e ganhe até ${valueText} ${props.campaign.value_type === 'percent' ? 'de bônus' : 'pontos de bônus'}`,
       club_subscription: `Assine o clube do programa ${programName} e ganhe até ${valueText} ${props.campaign.value_type === 'percent' ? 'de bônus' : 'pontos bônus'}`,
     }
-    return descriptions[props.campaign.type] || `Aproveite esta oportunidade especial do ${programName}`
+    return (
+      descriptions[props.campaign.type] ||
+      `Aproveite esta oportunidade especial do ${programName}`
+    )
   }
 
   const getOriginFallbackIcon = (): string => {
@@ -320,7 +356,6 @@
     }
     return singleProgramIcons[props.campaign.type] || 'mdi-store'
   }
-
 </script>
 
 <style scoped>
@@ -629,7 +664,11 @@
   }
 
   .v-theme--dark .benefit-header {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
     border-bottom-color: rgba(255, 255, 255, 0.06);
   }
 

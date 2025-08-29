@@ -37,10 +37,16 @@
                       </v-avatar>
                     </template>
                     <template #title>
-                      <span class="font-weight-medium">{{ item.raw.name }}</span>
+                      <span class="font-weight-medium">{{
+                        item.raw.name
+                      }}</span>
                     </template>
                     <template #subtitle>
-                      <v-chip size="x-small" :color="getTypeColor(item.raw.type)" variant="tonal">
+                      <v-chip
+                        size="x-small"
+                        :color="getTypeColor(item.raw.type)"
+                        variant="tonal"
+                      >
                         {{ getTypeLabel(item.raw.type) }}
                       </v-chip>
                     </template>
@@ -59,7 +65,13 @@
                 type="number"
                 step="0.01"
                 min="0"
-                :suffix="selectedProgramType === 'points' ? 'pts' : selectedProgramType === 'miles' ? 'milhas' : ''"
+                :suffix="
+                  selectedProgramType === 'points'
+                    ? 'pts'
+                    : selectedProgramType === 'miles'
+                      ? 'milhas'
+                      : ''
+                "
                 prepend-inner-icon="mdi-cash"
               />
             </v-col>
@@ -71,9 +83,7 @@
 
       <v-card-actions class="pa-4">
         <v-spacer />
-        <v-btn variant="text" @click="closeDialog">
-          Cancelar
-        </v-btn>
+        <v-btn variant="text" @click="closeDialog"> Cancelar </v-btn>
         <v-btn
           color="primary"
           variant="flat"
@@ -89,167 +99,175 @@
 </template>
 
 <script setup lang="ts">
-import type { Program, ProgramType } from '~/interfaces/program'
-import type { WalletAccount, CreateWalletAccountDTO } from '~/interfaces/wallet'
+  import type { Program, ProgramType } from '~/interfaces/program'
+  import type {
+    WalletAccount,
+    CreateWalletAccountDTO,
+  } from '~/interfaces/wallet'
 
-interface Props {
-  modelValue: boolean
-  programs: Program[]
-  loadingPrograms?: boolean
-  loading?: boolean
-  editingAccount?: WalletAccount | null
-}
-
-interface Emits {
-  'update:modelValue': [value: boolean]
-  submit: [data: CreateWalletAccountDTO]
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  loadingPrograms: false,
-  loading: false,
-  editingAccount: null,
-})
-
-const emit = defineEmits<Emits>()
-
-const formRef = ref()
-const isFormValid = ref(false)
-
-const dialog = computed({
-  get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value),
-})
-
-const isEditing = computed(() => !!props.editingAccount)
-
-const formData = ref<CreateWalletAccountDTO>({
-  balance: 0,
-  program_id: 0,
-})
-
-const selectedProgram = computed(() => 
-  props.programs.find(p => p.id === formData.value.program_id)
-)
-
-const selectedProgramType = computed(() => 
-  selectedProgram.value?.type || 'points'
-)
-
-const balanceLabel = computed(() => {
-  const labels: Record<ProgramType, string> = {
-    points: 'Quantidade de Pontos',
-    miles: 'Quantidade de Milhas',
+  interface Props {
+    modelValue: boolean
+    programs: Program[]
+    loadingPrograms?: boolean
+    loading?: boolean
+    editingAccount?: WalletAccount | null
   }
-  return labels[selectedProgramType.value] || 'Saldo'
-})
 
-const balancePlaceholder = computed(() => {
-  const placeholders: Record<ProgramType, string> = {
-    points: '0',
-    miles: '0',
+  interface Emits {
+    'update:modelValue': [value: boolean]
+    submit: [data: CreateWalletAccountDTO]
   }
-  return placeholders[selectedProgramType.value] || '0'
-})
 
-const programOptions = computed(() =>
-  props.programs.map(program => ({
-    label: program.name.charAt(0).toUpperCase() + program.name.slice(1),
-    value: program.id,
-    ...program,
-  }))
-)
+  const props = withDefaults(defineProps<Props>(), {
+    loadingPrograms: false,
+    loading: false,
+    editingAccount: null,
+  })
 
-const programRules = [
-  (v: number) => !!v || 'Selecione um programa',
-]
+  const emit = defineEmits<Emits>()
 
-const balanceRules = [
-  (v: number) => v !== undefined && v !== null || 'Digite um valor',
-  (v: number) => v >= 0 || 'Valor deve ser maior ou igual a zero',
-]
+  const formRef = ref()
+  const isFormValid = ref(false)
 
-const getTypeColor = (type: ProgramType) => {
-  const colors: Record<ProgramType, string> = {
-    points: 'info',
-    miles: 'purple',
-  }
-  return colors[type] || 'primary'
-}
+  const dialog = computed({
+    get: () => props.modelValue,
+    set: value => emit('update:modelValue', value),
+  })
 
-const getTypeLabel = (type: ProgramType) => {
-  const labels: Record<ProgramType, string> = {
-    points: 'Pontos',
-    miles: 'Milhas',
-  }
-  return labels[type] || type
-}
+  const isEditing = computed(() => !!props.editingAccount)
 
-const closeDialog = () => {
-  dialog.value = false
-  resetForm()
-}
-
-const resetForm = () => {
-  formData.value = {
+  const formData = ref<CreateWalletAccountDTO>({
     balance: 0,
     program_id: 0,
-  }
-  formRef.value?.resetValidation()
-}
+  })
 
-const handleSubmit = async () => {
-  const { valid } = await formRef.value.validate()
-  if (valid) {
-    emit('submit', formData.value)
-  }
-}
+  const selectedProgram = computed(() =>
+    props.programs.find(p => p.id === formData.value.program_id)
+  )
 
-watch(() => props.editingAccount, (account) => {
-  if (account) {
-    formData.value = {
-      balance: account.balance,
-      program_id: account.program.id,
+  const selectedProgramType = computed(
+    () => selectedProgram.value?.type || 'points'
+  )
+
+  const balanceLabel = computed(() => {
+    const labels: Record<ProgramType, string> = {
+      points: 'Quantidade de Pontos',
+      miles: 'Quantidade de Milhas',
     }
-  } else {
-    resetForm()
-  }
-}, { immediate: true })
+    return labels[selectedProgramType.value] || 'Saldo'
+  })
 
-watch(() => props.modelValue, (open) => {
-  if (!open) {
+  const balancePlaceholder = computed(() => {
+    const placeholders: Record<ProgramType, string> = {
+      points: '0',
+      miles: '0',
+    }
+    return placeholders[selectedProgramType.value] || '0'
+  })
+
+  const programOptions = computed(() =>
+    props.programs.map(program => ({
+      label: program.name.charAt(0).toUpperCase() + program.name.slice(1),
+      value: program.id,
+      ...program,
+    }))
+  )
+
+  const programRules = [(v: number) => !!v || 'Selecione um programa']
+
+  const balanceRules = [
+    (v: number) => (v !== undefined && v !== null) || 'Digite um valor',
+    (v: number) => v >= 0 || 'Valor deve ser maior ou igual a zero',
+  ]
+
+  const getTypeColor = (type: ProgramType) => {
+    const colors: Record<ProgramType, string> = {
+      points: 'info',
+      miles: 'purple',
+    }
+    return colors[type] || 'primary'
+  }
+
+  const getTypeLabel = (type: ProgramType) => {
+    const labels: Record<ProgramType, string> = {
+      points: 'Pontos',
+      miles: 'Milhas',
+    }
+    return labels[type] || type
+  }
+
+  const closeDialog = () => {
+    dialog.value = false
     resetForm()
   }
-})
+
+  const resetForm = () => {
+    formData.value = {
+      balance: 0,
+      program_id: 0,
+    }
+    formRef.value?.resetValidation()
+  }
+
+  const handleSubmit = async () => {
+    const { valid } = await formRef.value.validate()
+    if (valid) {
+      emit('submit', formData.value)
+    }
+  }
+
+  watch(
+    () => props.editingAccount,
+    account => {
+      if (account) {
+        formData.value = {
+          balance: account.balance,
+          program_id: account.program.id,
+        }
+      } else {
+        resetForm()
+      }
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => props.modelValue,
+    open => {
+      if (!open) {
+        resetForm()
+      }
+    }
+  )
 </script>
 
 <style scoped>
-.wallet-form-dialog {
-  border-radius: 16px;
-}
-
-.wallet-form-dialog .v-card-title {
-  padding: 20px 24px 16px;
-  background: rgba(var(--v-theme-primary), 0.05);
-}
-
-.wallet-form-dialog .v-card-actions {
-  background: rgba(var(--v-theme-surface), 0.5);
-}
-
-:deep(.v-select .v-field__input) {
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
-
-:deep(.v-text-field .v-field__input) {
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
-
-@media (max-width: 600px) {
   .wallet-form-dialog {
-    margin: 16px;
+    border-radius: 16px;
   }
-}
+
+  .wallet-form-dialog .v-card-title {
+    padding: 20px 24px 16px;
+    background: rgba(var(--v-theme-primary), 0.05);
+  }
+
+  .wallet-form-dialog .v-card-actions {
+    background: rgba(var(--v-theme-surface), 0.5);
+  }
+
+  :deep(.v-select .v-field__input) {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  :deep(.v-text-field .v-field__input) {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .wallet-form-dialog {
+      margin: 16px;
+    }
+  }
 </style>

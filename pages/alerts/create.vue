@@ -11,10 +11,9 @@
       />
 
       <div class="header-content flex-grow-1 ml-3">
-        <h1 class="text-h5 font-weight-bold mb-2">Criar Novo Alerta</h1>
+        <h1 class="text-h5 font-weight-bold mb-2">Criar Alerta</h1>
         <p class="text-body-2 text-medium-emphasis mb-0">
-          Configure um alerta personalizado para receber notificações sobre
-          ofertas e cashbacks
+          Receba notificações das melhores ofertas em 3 passos simples
         </p>
       </div>
     </div>
@@ -27,211 +26,334 @@
       @configure="navigateTo('/alerts/view?tab=channels')"
     />
 
-    <v-form ref="alertForm" @submit.prevent="handleCreateAlert">
-      <!-- Store Selection Card -->
-      <v-card class="selection-card mb-4" elevation="1">
-        <v-card-text class="pa-4">
-          <div class="section-header mb-4">
-            <v-icon color="primary" size="24" class="mr-2"
-              >mdi-storefront</v-icon
-            >
-            <h3 class="text-subtitle-1 font-weight-medium">
-              Onde você quer receber alertas?
-            </h3>
-          </div>
-
-          <p class="text-body-2 text-medium-emphasis mb-4">
-            Escolha se deseja receber alertas de uma loja específica ou de toda
-            uma categoria de lojas
-          </p>
-
-          <!-- Store Type Selection -->
-          <div class="option-group mb-4">
-            <v-radio-group
-              v-model="storeSelectionType"
-              density="comfortable"
-              color="primary"
-              hide-details
-            >
-              <v-radio value="specific" class="mb-2">
-                <template #label>
-                  <div class="radio-content">
-                    <div class="radio-title">Loja específica</div>
-                    <div class="radio-subtitle">
-                      Receber alertas apenas de uma loja escolhida
-                    </div>
-                  </div>
-                </template>
-              </v-radio>
-
-              <v-radio value="category">
-                <template #label>
-                  <div class="radio-content">
-                    <div class="radio-title">Categoria de lojas</div>
-                    <div class="radio-subtitle">
-                      Receber alertas de todas as lojas de uma categoria
-                    </div>
-                  </div>
-                </template>
-              </v-radio>
-            </v-radio-group>
-          </div>
-
-          <!-- Store Selection -->
-          <EcommerceAutocomplete
-            v-if="storeSelectionType === 'specific'"
-            v-model="selectedStore"
-            :multiple="false"
-            class="mt-4"
-            @ecommerce-selected="handleEcommerceSelected"
-          />
-
-          <v-select
-            v-if="storeSelectionType === 'category'"
-            v-model="selectedCategory"
-            :items="categories"
-            item-title="name"
-            item-value="id"
-            label="Selecione a categoria"
-            placeholder="Escolha uma categoria"
-            variant="outlined"
-            prepend-inner-icon="mdi-tag"
-            :rules="categoryRules"
-            density="comfortable"
-          />
-        </v-card-text>
-      </v-card>
-
-      <!-- Program Selection Card -->
-      <v-card class="selection-card mb-4" elevation="1">
-        <v-card-text class="pa-4">
-          <div class="section-header mb-4">
-            <v-icon color="success" size="24" class="mr-2"
-              >mdi-star-circle</v-icon
-            >
-            <h3 class="text-subtitle-1 font-weight-medium">
-              Que tipo de benefício você procura?
-            </h3>
-          </div>
-
-          <p class="text-body-2 text-medium-emphasis mb-4">
-            Escolha se deseja alertas de um programa específico ou de todos os
-            programas de um tipo
-          </p>
-
-          <!-- Program Type Selection -->
-          <div class="option-group mb-4">
-            <v-radio-group
-              v-model="programSelectionType"
-              density="comfortable"
-              color="success"
-              hide-details
-            >
-              <v-radio value="specific" class="mb-2">
-                <template #label>
-                  <div class="radio-content">
-                    <div class="radio-title">Programa específico</div>
-                    <div class="radio-subtitle">
-                      Ex: Nubank Rewards, Multiplus, etc.
-                    </div>
-                  </div>
-                </template>
-              </v-radio>
-
-              <v-radio value="type">
-                <template #label>
-                  <div class="radio-content">
-                    <div class="radio-title">Tipo de programa</div>
-                    <div class="radio-subtitle">
-                      Ex: Cashback, Milhas, Pontos, etc.
-                    </div>
-                  </div>
-                </template>
-              </v-radio>
-            </v-radio-group>
-          </div>
-
-          <!-- Program Selection -->
-          <ProgramAutocomplete
-            v-model="selectedProgram"
-            :selection-type="programSelectionType"
-            :multiple="false"
-            class="mt-4"
-            @program-selected="handleProgramSelected"
-            @program-type-selected="handleProgramTypeSelected"
-          />
-        </v-card-text>
-      </v-card>
-
-      <!-- Threshold Card -->
-      <v-card class="selection-card mb-6" elevation="1">
-        <v-card-text class="pa-4">
-          <div class="section-header mb-4">
-            <v-icon color="warning" size="24" class="mr-2">mdi-tag</v-icon>
-            <h3 class="text-subtitle-1 font-weight-medium">
-              Valor mínimo da promoção
-            </h3>
-          </div>
-
-          <p class="text-body-2 text-medium-emphasis mb-4">
-            {{ getThresholdDescription }}
-          </p>
-
-          <v-text-field
-            v-model="threshold"
-            :label="getThresholdLabel"
-            :placeholder="getThresholdPlaceholder"
-            variant="outlined"
-            :prepend-inner-icon="getThresholdIcon"
-            :suffix="getThresholdSuffix"
-            :rules="thresholdRules"
-            density="comfortable"
-            type="number"
-            :step="isCashbackType ? '0.01' : '1'"
-            min="0"
-            @input="formatThreshold"
-          />
-
-          <div class="threshold-help mt-2">
-            <v-icon size="16" color="info" class="mr-1">mdi-information</v-icon>
-            <span class="text-caption text-medium-emphasis">
-              {{ getThresholdHelp }}
-            </span>
-          </div>
-        </v-card-text>
-      </v-card>
-
-      <!-- Summary Card -->
-      <AlertSummaryCard
-        :show-summary="showSummary"
-        :store-label="storeSelectionType === 'specific' ? 'Loja' : 'Categoria'"
-        :store-value="getSummaryStore"
-        :program-label="
-          programSelectionType === 'specific' ? 'Programa' : 'Tipo'
-        "
-        :program-value="getSummaryProgram"
-        :threshold="threshold"
-        :threshold-suffix="getThresholdSuffix"
+    <!-- Progress Indicator -->
+    <div class="progress-section mb-6">
+      <v-stepper
+        v-model="currentStep"
+        :items="steps"
+        hide-actions
+        flat
+        color="primary"
+        class="elevation-0"
       />
+    </div>
 
-      <div class="d-flex justify-center">
-        <div class="action-buttons">
+    <v-form ref="alertForm" @submit.prevent="handleCreateAlert">
+      <!-- Step Content -->
+      <v-window v-model="currentStep" class="step-window">
+        <!-- Step 1: Tipo de benefício -->
+        <v-window-item :value="1">
+          <v-card class="step-card" elevation="2">
+            <v-card-title class="step-title">
+              <v-icon color="success" size="28" class="mr-3">mdi-gift</v-icon>
+              Que tipo de benefício você quer?
+            </v-card-title>
+
+            <v-card-text class="pa-6">
+              <p class="step-description mb-6">
+                Selecione o tipo de benefício que você quer receber
+              </p>
+
+              <!-- Benefit Types -->
+              <div class="benefit-types mb-6">
+                <v-card
+                  :class="[
+                    'benefit-card',
+                    'cashback',
+                    { selected: selectedBenefitType === 'cashback' },
+                  ]"
+                  @click="selectBenefitType('cashback')"
+                  role="button"
+                  tabindex="0"
+                  @keydown.enter="selectBenefitType('cashback')"
+                  @keydown.space="selectBenefitType('cashback')"
+                  ripple
+                >
+                  <v-card-text class="benefit-content">
+                    <v-icon size="32" color="success">mdi-cash-multiple</v-icon>
+                    <h4>Cashback</h4>
+                    <p>Dinheiro de volta</p>
+                  </v-card-text>
+                </v-card>
+
+                <v-card
+                  :class="[
+                    'benefit-card',
+                    'points',
+                    { selected: selectedBenefitType === 'points' },
+                  ]"
+                  @click="selectBenefitType('points')"
+                  role="button"
+                  tabindex="0"
+                  @keydown.enter="selectBenefitType('points')"
+                  @keydown.space="selectBenefitType('points')"
+                  ripple
+                >
+                  <v-card-text class="benefit-content">
+                    <v-icon size="32" color="info">mdi-star</v-icon>
+                    <h4>Pontos</h4>
+                    <p>Programas de fidelidade</p>
+                  </v-card-text>
+                </v-card>
+
+                <v-card
+                  :class="[
+                    'benefit-card',
+                    'miles',
+                    { selected: selectedBenefitType === 'miles' },
+                  ]"
+                  @click="selectBenefitType('miles')"
+                  role="button"
+                  tabindex="0"
+                  @keydown.enter="selectBenefitType('miles')"
+                  @keydown.space="selectBenefitType('miles')"
+                  ripple
+                >
+                  <v-card-text class="benefit-content">
+                    <v-icon size="32" color="purple">mdi-airplane</v-icon>
+                    <h4>Milhas</h4>
+                    <p>Viagens e upgrades</p>
+                  </v-card-text>
+                </v-card>
+              </div>
+
+              <!-- Program Selection -->
+              <div v-if="selectedBenefitType" class="mt-6">
+                <h5 class="mb-4">
+                  Escolha o programa de {{ getBenefitTypeName }}:
+                </h5>
+
+                <ProgramAutocomplete
+                  v-model="selectedProgram"
+                  :filter-by-type="selectedBenefitType"
+                  :multiple="false"
+                  :label="`Selecione um programa de ${getBenefitTypeName}`"
+                  :placeholder="`Busque por um programa de ${getBenefitTypeName}...`"
+                  @program-selected="handleProgramSelected"
+                />
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+
+        <!-- Step 2: Onde receber alertas -->
+        <v-window-item :value="2">
+          <v-card class="step-card" elevation="2">
+            <v-card-title class="step-title">
+              <v-icon color="primary" size="28" class="mr-3"
+                >mdi-storefront</v-icon
+              >
+              Onde você quer receber alertas?
+            </v-card-title>
+
+            <v-card-text class="pa-6">
+              <p class="step-description mb-6">
+                Escolha receber alertas de uma loja ou de todas as lojas de uma
+                categoria
+              </p>
+
+              <!-- Store Options -->
+              <div class="options-container">
+                <v-card
+                  :class="[
+                    'option-card',
+                    { selected: storeSelectionType === 'specific' },
+                  ]"
+                  @click="storeSelectionType = 'specific'"
+                  role="button"
+                  tabindex="0"
+                  @keydown.enter="storeSelectionType = 'specific'"
+                  @keydown.space="storeSelectionType = 'specific'"
+                  ripple
+                >
+                  <v-card-text class="option-content">
+                    <div class="option-header">
+                      <v-icon color="primary" size="24">mdi-store</v-icon>
+                      <h4>Uma loja específica</h4>
+                    </div>
+                    <p class="option-description">
+                      Ex: Amazon, Americanas, Magazine Luiza
+                    </p>
+                  </v-card-text>
+                </v-card>
+
+                <v-card
+                  :class="[
+                    'option-card',
+                    { selected: storeSelectionType === 'category' },
+                  ]"
+                  @click="storeSelectionType = 'category'"
+                  role="button"
+                  tabindex="0"
+                  @keydown.enter="storeSelectionType = 'category'"
+                  @keydown.space="storeSelectionType = 'category'"
+                  ripple
+                >
+                  <v-card-text class="option-content">
+                    <div class="option-header">
+                      <v-icon color="primary" size="24"
+                        >mdi-tag-multiple</v-icon
+                      >
+                      <h4>Categoria de lojas</h4>
+                    </div>
+                    <p class="option-description">
+                      Ex: E-commerce, Supermercados, Farmácias
+                    </p>
+                  </v-card-text>
+                </v-card>
+              </div>
+
+              <!-- Store Selection -->
+              <div v-if="storeSelectionType" class="mt-6">
+                <EcommerceAutocomplete
+                  v-if="storeSelectionType === 'specific'"
+                  v-model="selectedStore"
+                  :multiple="false"
+                  label="Buscar loja"
+                  placeholder="Digite o nome da loja..."
+                  :benefit-type="selectedBenefitType"
+                  @ecommerce-selected="handleEcommerceSelected"
+                />
+
+                <v-select
+                  v-if="storeSelectionType === 'category'"
+                  v-model="selectedCategory"
+                  :items="categories"
+                  item-title="name"
+                  item-value="id"
+                  label="Escolha a categoria"
+                  placeholder="Selecione uma categoria"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-tag"
+                  :rules="categoryRules"
+                />
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+
+        <!-- Step 3: Valor mínimo -->
+        <v-window-item :value="3">
+          <v-card class="step-card" elevation="2">
+            <v-card-title class="step-title">
+              <v-icon color="warning" size="28" class="mr-3"
+                >mdi-calculator</v-icon
+              >
+              {{ getStepTitle }}
+            </v-card-title>
+
+            <v-card-text class="pa-6">
+              <p class="step-description mb-6">
+                {{ getThresholdDescription }}
+              </p>
+
+              <v-text-field
+                v-model="threshold"
+                :label="getThresholdLabel"
+                :placeholder="getThresholdPlaceholder"
+                variant="outlined"
+                :prepend-inner-icon="getThresholdIcon"
+                :suffix="getThresholdSuffix"
+                :rules="thresholdRules"
+                density="comfortable"
+                type="number"
+                :step="isCashbackType ? '0.01' : '1'"
+                min="0"
+                @input="formatThreshold"
+              />
+
+              <div class="threshold-help mt-4">
+                <v-icon size="18" color="info" class="mr-2"
+                  >mdi-information</v-icon
+                >
+                <span class="text-body-2 text-medium-emphasis">
+                  {{ getThresholdHelp }}
+                </span>
+              </div>
+
+              <!-- Preview Card -->
+              <v-card
+                v-if="isFormValid"
+                class="preview-card mt-6"
+                variant="tonal"
+                color="primary"
+              >
+                <v-card-text class="pa-4">
+                  <div class="preview-header mb-3">
+                    <v-icon color="primary" class="mr-2">mdi-eye</v-icon>
+                    <h5>Resumo do seu alerta:</h5>
+                  </div>
+
+                  <div class="preview-content">
+                    <div class="preview-item">
+                      <span class="preview-label">Benefício:</span>
+                      <span class="preview-value">{{ getSummaryProgram }}</span>
+                    </div>
+
+                    <div class="preview-item">
+                      <span class="preview-label">{{
+                        storeSelectionType === 'specific'
+                          ? 'Loja:'
+                          : 'Categoria:'
+                      }}</span>
+                      <span class="preview-value">{{ getSummaryStore }}</span>
+                    </div>
+
+                    <div class="preview-item">
+                      <span class="preview-label">Valor mínimo:</span>
+                      <span class="preview-value"
+                        >{{ threshold }}{{ getThresholdSuffix }}</span
+                      >
+                    </div>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-card-text>
+          </v-card>
+        </v-window-item>
+      </v-window>
+
+      <!-- Navigation Buttons -->
+      <div class="navigation-buttons mt-8">
+        <div class="d-flex justify-space-between align-center">
           <v-btn
-            width="280"
+            v-if="currentStep > 1"
+            variant="outlined"
+            size="large"
+            @click="previousStep"
+            prepend-icon="mdi-chevron-left"
+          >
+            Voltar
+          </v-btn>
+
+          <div v-else></div>
+
+          <v-btn
+            v-if="currentStep < 3"
             color="primary"
             size="large"
             variant="flat"
-            block
+            :disabled="!isCurrentStepValid"
+            @click="nextStep"
+            append-icon="mdi-chevron-right"
+          >
+            Continuar
+          </v-btn>
+
+          <v-btn
+            v-else
+            color="primary"
+            size="large"
+            variant="flat"
             :disabled="!isFormValid"
             :loading="isCreating"
             type="submit"
+            prepend-icon="mdi-bell-plus"
           >
-            <v-icon start>mdi-bell-plus</v-icon>
             Criar Alerta
           </v-btn>
         </div>
       </div>
-      <!-- Action Buttons -->
     </v-form>
   </v-container>
 </template>
@@ -239,16 +361,23 @@
 <script lang="ts" setup>
   import type { User } from '~/types/user'
 
-  type Step = 'phone' | 'verification'
+  // Stepper
+  const currentStep = ref(1)
+  const steps = [
+    { title: 'Benefício', value: 1 },
+    { title: 'Onde', value: 2 },
+    { title: 'Valor', value: 3 },
+  ]
 
   // Estados do formulário
   const storeSelectionType = ref<'specific' | 'category'>('specific')
-  const programSelectionType = ref<'specific' | 'type'>('specific')
+  const selectedBenefitType = ref<'cashback' | 'points' | 'miles' | null>(null)
+  const selectedProgram = ref<number | null>(null)
+  const selectedProgramData = ref<any>(null)
 
   const selectedStore = ref<number | null>(null)
   const selectedEcommerce = ref<any>(null)
   const selectedCategory = ref('')
-  const selectedProgram = ref<number | string | null>(null)
 
   // Estados para configuração do WhatsApp
   const { user } = useSanctumAuth<User>()
@@ -256,7 +385,6 @@
     () => user.value?.whatsapp_notification_enabled || false
   )
   const showWhatsAppBanner = ref(true)
-  const selectedProgramData = ref<any>(null)
   const threshold = ref('')
 
   const isCreating = ref(false)
@@ -279,32 +407,17 @@
   definePageMeta({
     middleware: ['sanctum:auth'],
   })
-  // Computeds para threshold baseado no tipo de programa
-  const selectedProgramTypeData = computed(() => {
-    if (
-      programSelectionType.value === 'specific' &&
-      selectedProgramData.value?.type
-    ) {
-      return selectedProgramData.value.type.toLowerCase()
-    } else if (
-      programSelectionType.value === 'type' &&
-      selectedProgramData.value
-    ) {
-      return selectedProgramData.value
-    }
-    return ''
-  })
-
+  // Computeds para threshold baseado no tipo de benefício
   const isCashbackType = computed(() => {
-    return selectedProgramTypeData.value === 'cashback'
+    return selectedBenefitType.value === 'cashback'
   })
 
   const isPointsType = computed(() => {
-    return selectedProgramTypeData.value === 'points'
+    return selectedBenefitType.value === 'points'
   })
 
   const isMilesType = computed(() => {
-    return selectedProgramTypeData.value === 'miles'
+    return selectedBenefitType.value === 'miles'
   })
 
   const getThresholdLabel = computed(() => {
@@ -337,28 +450,28 @@
 
   const getThresholdDescription = computed(() => {
     if (isCashbackType.value) {
-      return 'Defina a porcentagem mínima de cashback para receber o alerta'
+      return 'Só receba alertas quando o cashback for pelo menos:'
     }
     if (isPointsType.value) {
-      return 'Defina a quantidade mínima de pontos para receber o alerta'
+      return 'Só receba alertas quando os pontos forem pelo menos:'
     }
     if (isMilesType.value) {
-      return 'Defina a quantidade mínima de milhas para receber o alerta'
+      return 'Só receba alertas quando as milhas forem pelo menos:'
     }
-    return 'Defina o valor mínimo para receber o alerta'
+    return 'Só receba alertas quando o valor for pelo menos:'
   })
 
   const getThresholdHelp = computed(() => {
     if (isCashbackType.value) {
-      return 'Use valores decimais como 2.5 para 2,5%. Valor mínimo: 0%'
+      return 'Exemplo: digite 2.5 para receber alertas de cashback de 2,5% ou mais'
     }
     if (isPointsType.value) {
-      return 'Use apenas números inteiros como 1000. Valor mínimo: 0 pontos'
+      return 'Exemplo: digite 1000 para receber alertas de 1.000 pontos ou mais'
     }
     if (isMilesType.value) {
-      return 'Use apenas números inteiros como 500. Valor mínimo: 0 milhas'
+      return 'Exemplo: digite 500 para receber alertas de 500 milhas ou mais'
     }
-    return 'Valor mínimo: 0'
+    return 'Digite 0 para receber todos os alertas'
   })
 
   // Validações
@@ -392,11 +505,12 @@
 
   // Computeds
   const isFormValid = computed(() => {
+    const hasBenefit = !!selectedBenefitType.value
+    const hasProgram = !!selectedProgram.value
     const hasStore =
       storeSelectionType.value === 'specific'
         ? !!selectedStore.value
         : !!selectedCategory.value
-    const hasProgram = !!selectedProgram.value
 
     let hasValidThreshold = false
     if (threshold.value) {
@@ -408,7 +522,7 @@
       }
     }
 
-    return hasStore && hasProgram && hasValidThreshold
+    return hasBenefit && hasProgram && hasStore && hasValidThreshold
   })
 
   const showSummary = computed(() => {
@@ -427,26 +541,64 @@
   })
 
   const getSummaryProgram = computed(() => {
-    if (programSelectionType.value === 'specific') {
-      return selectedProgramData.value?.name || 'Programa não selecionado'
-    } else {
-      // Para tipos, mostrar o nome do tipo selecionado
-      const typeLabels = {
-        cashback: 'Cashback',
-        points: 'Pontos',
-        miles: 'Milhas',
-      }
-      return (
-        typeLabels[selectedProgramData.value as keyof typeof typeLabels] ||
-        'Tipo não selecionado'
-      )
-    }
+    return selectedProgramData.value?.name || 'Programa não selecionado'
   })
 
-  // Methods
-  const goBack = () => {
-    console.log('Navigate to: /alerts/view')
+  // Navigation Methods
+  const nextStep = () => {
+    if (currentStep.value < 3) {
+      currentStep.value++
+    }
   }
+
+  const previousStep = () => {
+    if (currentStep.value > 1) {
+      currentStep.value--
+    }
+  }
+
+  // Benefit Type Selection
+  const selectBenefitType = (type: 'cashback' | 'points' | 'miles') => {
+    selectedBenefitType.value = type
+  }
+
+  const getBenefitTypeName = computed(() => {
+    const names = {
+      cashback: 'cashback',
+      points: 'pontos',
+      miles: 'milhas',
+    }
+    return selectedBenefitType.value ? names[selectedBenefitType.value] : ''
+  })
+
+  const getStepTitle = computed(() => {
+    if (isCashbackType.value) {
+      return 'Qual o cashback mínimo?'
+    }
+    if (isPointsType.value) {
+      return 'Quantos pontos no mínimo?'
+    }
+    if (isMilesType.value) {
+      return 'Quantas milhas no mínimo?'
+    }
+    return 'Qual o valor mínimo?'
+  })
+
+  // Validation for each step
+  const isCurrentStepValid = computed(() => {
+    switch (currentStep.value) {
+      case 1:
+        return !!selectedBenefitType.value && !!selectedProgram.value
+      case 2:
+        return storeSelectionType.value === 'specific'
+          ? !!selectedStore.value
+          : !!selectedCategory.value
+      case 3:
+        return !!threshold.value && parseFloat(threshold.value) >= 0
+      default:
+        return false
+    }
+  })
 
   const handleEcommerceSelected = (ecommerce: any) => {
     selectedEcommerce.value = ecommerce
@@ -454,10 +606,6 @@
 
   const handleProgramSelected = (program: any) => {
     selectedProgramData.value = program
-  }
-
-  const handleProgramTypeSelected = (type: any) => {
-    selectedProgramData.value = type
   }
 
   const formatThreshold = (event: Event) => {
@@ -495,18 +643,13 @@
         threshold: isCashbackType.value
           ? parseFloat(threshold.value)
           : parseInt(threshold.value),
+        program_id: selectedProgram.value,
       }
 
       if (storeSelectionType.value === 'specific') {
         payload.ecommerce_id = selectedStore.value
       } else {
         payload.ecommerce_category = selectedCategory.value
-      }
-
-      if (programSelectionType.value === 'specific') {
-        payload.program_id = selectedProgram.value
-      } else {
-        payload.program_type = selectedProgram.value
       }
 
       console.log('API: Criar alerta com payload:', payload)
@@ -533,28 +676,25 @@
     selectedCategory.value = ''
   })
 
-  watch(programSelectionType, () => {
+  watch(selectedBenefitType, () => {
     selectedProgram.value = null
     selectedProgramData.value = null
-    threshold.value = ''
-  })
-
-  watch([selectedProgram], () => {
     threshold.value = ''
   })
 </script>
 
 <style scoped>
   .create-alert-page {
+    max-width: 600px;
     margin: 0 auto;
-    padding: 12px;
+    padding: 16px;
   }
 
   .page-header {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .back-btn {
@@ -567,125 +707,290 @@
   }
 
   .header-content h1 {
-    font-size: 1.25rem;
-    line-height: 1.4;
-    margin-bottom: 4px;
+    font-size: 1.5rem;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    color: rgba(var(--v-theme-on-surface), 0.95);
   }
 
   .header-content p {
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.4;
+    color: rgba(var(--v-theme-on-surface), 0.7);
   }
 
-  .selection-card {
+  /* Progress Section */
+  .progress-section {
+    margin-bottom: 32px;
+  }
+
+  /* Step Window */
+  .step-window {
+    min-height: 400px;
+  }
+
+  .step-card {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .step-title {
+    padding: 24px 24px 16px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: rgba(var(--v-theme-on-surface), 0.9);
+  }
+
+  .step-description {
+    font-size: 1rem;
+    color: rgba(var(--v-theme-on-surface), 0.7);
+    line-height: 1.5;
+  }
+
+  /* Options Container */
+  .options-container {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .option-card {
+    border: 2px solid rgba(var(--v-theme-on-surface), 0.12);
     border-radius: 12px;
-    border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-    transition: border-color 0.2s ease;
-    margin-bottom: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 
-  .selection-card:hover {
-    border-color: rgba(var(--v-theme-primary), 0.2);
+  .option-card:hover {
+    border-color: rgba(var(--v-theme-primary), 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.15);
   }
 
-  .selection-card .v-card-text {
-    padding: 16px;
+  .option-card.selected {
+    border-color: rgb(var(--v-theme-primary));
+    background-color: rgba(var(--v-theme-primary), 0.05);
   }
 
-  .section-header {
+  .option-content {
+    padding: 20px;
+  }
+
+  .option-header {
     display: flex;
     align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
   }
 
-  .option-group {
-    background: rgba(var(--v-theme-surface), 0.5);
-    border-radius: 8px;
-    padding: 12px;
-    border: 1px solid rgba(var(--v-theme-on-surface), 0.05);
-    margin-bottom: 16px;
-  }
-
-  .radio-content {
-    margin-left: 8px;
-  }
-
-  .radio-title {
-    font-weight: 500;
+  .option-header h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
     color: rgba(var(--v-theme-on-surface), 0.9);
-    margin-bottom: 2px;
   }
 
-  .radio-subtitle {
-    font-size: 0.75rem;
+  .option-description {
+    font-size: 0.9rem;
     color: rgba(var(--v-theme-on-surface), 0.6);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  /* Benefit Types */
+  .benefit-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+  }
+
+  .benefit-card {
+    border: 2px solid rgba(var(--v-theme-on-surface), 0.12);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    aspect-ratio: 1;
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .benefit-card.selected {
+    border-color: rgb(var(--v-theme-primary));
+    background-color: rgba(var(--v-theme-primary), 0.05);
+  }
+
+  .benefit-card.cashback.selected {
+    border-color: rgb(var(--v-theme-success));
+    background-color: rgba(var(--v-theme-success), 0.05);
+  }
+
+  .benefit-card.points.selected {
+    border-color: rgb(var(--v-theme-info));
+    background-color: rgba(var(--v-theme-info), 0.05);
+  }
+
+  .benefit-card.miles.selected {
+    border-color: rgb(var(--v-theme-purple));
+    background-color: rgba(var(--v-theme-purple), 0.05);
+  }
+
+  .benefit-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 20px;
+  }
+
+  .benefit-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 12px 0 4px;
+    color: rgba(var(--v-theme-on-surface), 0.9);
+  }
+
+  .benefit-content p {
+    font-size: 0.85rem;
+    color: rgba(var(--v-theme-on-surface), 0.6);
+    margin: 0;
     line-height: 1.2;
   }
 
-  .program-item {
-    border-radius: 8px;
-    margin: 2px 0;
-  }
-
+  /* Threshold Help */
   .threshold-help {
     display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: rgba(var(--v-theme-info), 0.05);
+    border-radius: 8px;
+    border-left: 4px solid rgb(var(--v-theme-info));
+  }
+
+  /* Preview Card */
+  .preview-card {
+    border-radius: 12px;
+  }
+
+  .preview-header {
+    display: flex;
     align-items: center;
-    margin-top: 8px;
   }
 
-  .action-buttons {
-    padding: 16px 0 24px;
-    position: sticky;
-    bottom: 0;
-    background: rgba(var(--v-theme-background), 0.95);
-    backdrop-filter: blur(8px);
-    margin: 0 -12px;
-    padding-left: 12px;
-    padding-right: 12px;
-    border-top: 1px solid rgba(var(--v-theme-on-surface), 0.05);
+  .preview-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: rgb(var(--v-theme-primary));
   }
 
-  /* Ajustes para tablets e desktops */
-  @media (min-width: 600px) {
+  .preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .preview-label {
+    font-weight: 500;
+    color: rgba(var(--v-theme-on-surface), 0.8);
+  }
+
+  .preview-value {
+    font-weight: 600;
+    color: rgba(var(--v-theme-on-surface), 0.95);
+  }
+
+  /* Navigation Buttons */
+  .navigation-buttons {
+    margin-top: 32px;
+    padding-bottom: 24px;
+  }
+
+  /* Mobile Adjustments */
+  @media (max-width: 600px) {
     .create-alert-page {
-      padding: 24px;
-    }
-
-    .page-header {
-      margin-bottom: 32px;
+      padding: 12px;
     }
 
     .header-content h1 {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
 
     .header-content p {
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
 
-    .selection-card {
+    .progress-section {
       margin-bottom: 24px;
     }
 
-    .selection-card .v-card-text {
-      padding: 24px;
+    .step-title {
+      padding: 20px 20px 12px;
+      font-size: 1.1rem;
     }
 
-    .option-group {
+    .step-card .v-card-text {
       padding: 20px;
-      margin-bottom: 20px;
     }
 
-    .action-buttons {
-      position: static;
-      background: transparent;
-      backdrop-filter: none;
-      margin: 0;
-      padding: 24px 0 32px;
-      border-top: none;
+    .benefit-types {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .benefit-card {
+      aspect-ratio: 3/1;
+    }
+
+    .benefit-content {
+      flex-direction: row;
+      text-align: left;
+    }
+
+    .benefit-content h4 {
+      margin: 0 0 0 12px;
+    }
+
+    .benefit-content p {
+      margin: 4px 0 0 12px;
     }
   }
 
-  /* Radio group customization */
+  /* Vuetify Overrides */
+  :deep(.v-stepper-header) {
+    padding: 0;
+    border-radius: 12px;
+    background-color: rgba(var(--v-theme-surface), 0.5);
+  }
+
+  :deep(.v-stepper-item) {
+    padding: 16px 20px;
+  }
+
+  :deep(.v-stepper-item--selected .v-stepper-item__title) {
+    color: rgb(var(--v-theme-primary));
+    font-weight: 600;
+  }
+
+  :deep(.v-text-field .v-field) {
+    border-radius: 12px;
+  }
+
+  :deep(.v-select .v-field) {
+    border-radius: 12px;
+  }
+
   :deep(.v-radio-group .v-selection-control) {
     min-height: auto;
   }
@@ -693,14 +998,5 @@
   :deep(.v-radio .v-selection-control__wrapper) {
     align-self: flex-start;
     margin-top: 2px;
-  }
-
-  /* Input customization */
-  :deep(.v-text-field .v-field) {
-    border-radius: 8px;
-  }
-
-  :deep(.v-select .v-field) {
-    border-radius: 8px;
   }
 </style>

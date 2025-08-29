@@ -5,7 +5,7 @@
         <v-col cols="12" class="pb-2">
           <h3 class="text-h6 font-weight-bold mb-3">Resumo da Carteira</h3>
         </v-col>
-        
+
         <v-col cols="12" sm="6">
           <div class="summary-item points">
             <div class="d-flex align-center">
@@ -43,44 +43,44 @@
 </template>
 
 <script setup lang="ts">
-import type { WalletSummary } from '~/interfaces/wallet'
+  import type { WalletSummary } from '~/interfaces/wallet'
 
-interface Props {
-  summary: WalletSummary
-}
+  interface Props {
+    summary: WalletSummary
+  }
 
-defineProps<Props>()
+  defineProps<Props>()
 
-const formatNumber = (value: number) => {
-  return new Intl.NumberFormat('pt-BR').format(value)
-}
+  const formatNumber = (value: number) => {
+    return new Intl.NumberFormat('pt-BR').format(value)
+  }
 </script>
 
 <style scoped>
-.wallet-summary {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
-}
-
-.summary-item {
-  padding: 12px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  background: rgba(var(--v-theme-surface), 0.5);
-}
-
-.summary-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.summary-icon {
-  flex-shrink: 0;
-}
-
-@media (max-width: 600px) {
-  .summary-item {
-    margin-bottom: 8px;
+  .wallet-summary {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
   }
-}
+
+  .summary-item {
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: rgba(var(--v-theme-surface), 0.5);
+  }
+
+  .summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .summary-icon {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    .summary-item {
+      margin-bottom: 8px;
+    }
+  }
 </style>

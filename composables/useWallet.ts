@@ -1,8 +1,8 @@
-import type { 
-  WalletAccount, 
-  WalletAccountsResponseDTO, 
-  CreateWalletAccountDTO, 
-  WalletSummary 
+import type {
+  WalletAccount,
+  WalletAccountsResponseDTO,
+  CreateWalletAccountDTO,
+  WalletSummary,
 } from '~/interfaces/wallet'
 import type { Program, ProgramsResponseDTO } from '~/interfaces/program'
 import { useSnackbarStore } from '~/store/snackbar'
@@ -35,7 +35,8 @@ export const useWallet = () => {
   const fetchAccounts = async () => {
     try {
       loading.value = true
-      const { data } = await useSanctumFetch<WalletAccountsResponseDTO>('/api/accounts')
+      const { data } =
+        await useSanctumFetch<WalletAccountsResponseDTO>('/api/accounts')
       accounts.value = data.value?.data || []
     } catch (error) {
       console.error('Erro ao buscar contas da carteira:', error)
@@ -48,8 +49,9 @@ export const useWallet = () => {
   const fetchPrograms = async () => {
     try {
       loadingPrograms.value = true
-      const { data } = await useSanctumFetch<ProgramsResponseDTO>('/api/programs')
-      
+      const { data } =
+        await useSanctumFetch<ProgramsResponseDTO>('/api/programs')
+
       programs.value = [
         ...(data.value?.points || []),
         ...(data.value?.miles || []),
@@ -69,9 +71,9 @@ export const useWallet = () => {
         method: 'POST',
         body: accountData,
       })
-      
+
       snackbarStore.showSuccess('Programa adicionado à carteira com sucesso')
-      
+
       await fetchAccounts()
       return true
     } catch (error) {
@@ -83,16 +85,19 @@ export const useWallet = () => {
     }
   }
 
-  const updateAccount = async (accountId: number, accountData: CreateWalletAccountDTO) => {
+  const updateAccount = async (
+    accountId: number,
+    accountData: CreateWalletAccountDTO
+  ) => {
     try {
       loading.value = true
       await useSanctumFetch(`/api/accounts/${accountId}`, {
         method: 'PUT',
         body: accountData,
       })
-      
+
       snackbarStore.showSuccess('Saldo atualizado com sucesso')
-      
+
       await fetchAccounts()
       return true
     } catch (error) {
@@ -110,9 +115,9 @@ export const useWallet = () => {
       await useSanctumFetch(`/api/accounts/${accountId}`, {
         method: 'DELETE',
       })
-      
+
       snackbarStore.showSuccess('Programa removido da carteira')
-      
+
       await fetchAccounts()
       return true
     } catch (error) {
@@ -126,7 +131,9 @@ export const useWallet = () => {
 
   const getAvailablePrograms = computed(() => {
     const existingProgramIds = accounts.value.map(account => account.program.id)
-    return programs.value.filter(program => !existingProgramIds.includes(program.id))
+    return programs.value.filter(
+      program => !existingProgramIds.includes(program.id)
+    )
   })
 
   return {

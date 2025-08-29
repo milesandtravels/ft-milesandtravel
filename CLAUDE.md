@@ -268,3 +268,40 @@ yarn lint:check   # Apenas verificar
 - **Consistência**: Manter linguagem profissional e limpa em todo o projeto
 
 Este documento deve ser consultado sempre antes de iniciar desenvolvimento para garantir consistência e qualidade do código.
+
+### 11. Campanhas
+
+Transferência Bonificada
+
+Exemplos:
+Transfira seus pontos na promoção: Premmia e Smiles e ganhe até 80% de bônus
+Transfira seus pontos na promoção: Inter Loop e TudoAzul e ganhe até 80% de bônus
+Transfira seus pontos na promoção: Livelo e TudoAzul e ganhe até 110% de bônus
+
+Compra de Pontos com Bônus
+
+Exemplos:
+Ganhe até 250% de bônus na compra de pontos no programa Smiles
+Ganhe até 100% de bônus na compra de pontos no programa MileagePlus
+Ganhe até 350% de bônus na compra de pontos no programa Smiles
+
+Compra de Pontos com Desconto
+
+Exemplos:
+Ganhe até 60% de desconto na compra de pontos no programa LATAM Pass
+Ganhe até 50% de desconto na compra de pontos no programa Livelo
+Ganhe até 55% de desconto na compra de pontos no programa Livelo
+
+Upgrade de Clube
+
+Exemplos:
+Faça o Upgrade de clube do programa Smiles e ganhe até 240.000 pontos de bônus
+Faça o Upgrade de clube do programa Esfera e ganhe até 60.000 pontos de bônus
+Faça o Upgrade de clube do programa Smiles e ganhe até 96.000 pontos de bônus
+
+Adesão de Clube
+
+Exemplos:
+Assine o clube do programa Livelo e ganhe até 10.000 pontos bônus  
+Assine o clube do programa Smiles e ganhe até 14.000 pontos bônus
+Assine o clube do programa Livelo e ganhe até 98.000 (Top) pontos bônus

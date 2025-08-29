@@ -61,12 +61,20 @@
       <template #selection="{ item }">
         <div class="d-flex align-center">
           <div class="program-logo-container-small mr-2">
+            <template v-if="!item.raw.logo_url">
+              <v-icon
+                :icon="getTypeIcon(item.raw.type)"
+                size="12"
+                color="grey"
+              ></v-icon>
+            </template>
             <v-img
+              v-else
               :src="item.raw.logo_url"
               :alt="`Logo ${item.raw.name}`"
               contain
-              height="20"
-              max-width="32"
+              height="32"
+              max-width="48"
               class="program-logo"
             >
               <template #error>
