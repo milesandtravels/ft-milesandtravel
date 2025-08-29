@@ -37,8 +37,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { OfferItem } from '~/interfaces/offers'
-  import type { ProgramType } from '~/interfaces/program'
+  import type { OfferItem } from '~/interfaces/offers';
+import type { ProgramType } from '~/interfaces/program';
 
   const showProgramConfirmationModal = ref(false)
   interface Props {
@@ -63,7 +63,7 @@
 
   const handleProgramConfirmation = (): void => {
     // Usar promotion_link ao invés de product_url
-    window.open(props.offer.promotion_link, '_blank', 'noopener,noreferrer')
+    window.open(props.offer.promotion_link ?? props.offer.program.link_url, '_blank', 'noopener,noreferrer')
   }
 
   const getProgramTypeColor = (type: ProgramType): string => {
