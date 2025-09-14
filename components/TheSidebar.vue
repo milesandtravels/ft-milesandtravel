@@ -187,6 +187,12 @@
       route: '/search-products',
     },
     {
+      title: 'Busca de Voos',
+      subtitle: 'Voos com milhas e pontos',
+      icon: 'mdi-airplane',
+      route: '/flight-searches',
+    },
+    {
       title: 'Promoções',
       subtitle: 'Vantagens em lojas online',
       icon: 'mdi-tag-multiple',
