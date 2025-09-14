@@ -31,8 +31,10 @@
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.12.3",
+    "laravel-echo": "^2.2.0",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
+    "pusher-js": "^8.4.0",
     "vite-plugin-vuetify": "^2.1.1",
     "vuetify": "^3.8.8"
   },

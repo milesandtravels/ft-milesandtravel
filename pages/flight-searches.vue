@@ -99,16 +99,29 @@
           </p>
         </div>
         
-        <v-btn
-          variant="outlined"
-          size="small"
-          prepend-icon="mdi-refresh"
-          @click="searchFlights"
-          :loading="isSearching"
-          class="text-none"
-        >
-          Atualizar
-        </v-btn>
+        <div class="d-flex align-center ga-2">
+          <!-- Real-time indicator -->
+          <v-chip
+            v-if="isListeningToChannel"
+            color="success"
+            variant="tonal"
+            size="small"
+            prepend-icon="mdi-wifi"
+          >
+            Tempo Real
+          </v-chip>
+          
+          <v-btn
+            variant="outlined"
+            size="small"
+            prepend-icon="mdi-refresh"
+            @click="searchFlights"
+            :loading="isSearching"
+            class="text-none"
+          >
+            Atualizar
+          </v-btn>
+        </div>
       </div>
 
       <!-- Loading State -->
@@ -172,15 +185,15 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
-  import { useSnackbarStore } from '~/store/snackbar'
-  import type {
+  import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import type {
+    Airport,
     FlightSearchFilters,
-    FlightSearchResult,
-    FlightSearchResponse,
     FlightSearchHistory,
-    Airport
-  } from '~/interfaces/flight-search'
+    FlightSearchResponse,
+    FlightSearchResult
+} from '~/interfaces/flight-search'
+import { useSnackbarStore } from '~/store/snackbar'
 
   // Page meta
   definePageMeta({
@@ -196,6 +209,7 @@
 
   // Stores
   const snackbarStore = useSnackbarStore()
+  const { $echo } = useNuxtApp()
 
   // Reactive state
   const searchForm = ref()
@@ -211,6 +225,8 @@
   const hasSearched = ref(false)
   const selectedOriginAirport = ref<Airport | null>(null)
   const selectedDestinationAirport = ref<Airport | null>(null)
+  const currentFlightSearchId = ref<number | null>(null)
+  const isListeningToChannel = ref(false)
 
   // Computed
   const minDate = computed(() => {
@@ -226,10 +242,95 @@
     )
   })
 
+  // WebSocket Methods
+  const startListeningToFlightUpdates = (flightSearchId: number) => {
+    if (!$echo || isListeningToChannel.value) return
+
+    currentFlightSearchId.value = flightSearchId
+    isListeningToChannel.value = true
+
+    const channelName = `flight_search.${flightSearchId}`
+    
+    $echo.channel(channelName)
+      .listen('.flight.created', (event: any) => {
+        console.log('FlightCreated event received:', event)
+        
+        try {
+          // The event itself contains the flight data, not event.data
+          let flightData: FlightSearchResult
+          
+          if (event.data) {
+            // If event has a data property, use it
+            flightData = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+          } else if (event.id && event.airline) {
+            // If event is the flight data directly
+            flightData = event
+          } else {
+            console.error('Invalid event structure:', event)
+            return
+          }
+          
+          // Add new flight to results if not already exists
+          const existingFlight = searchResults.value.find(flight => flight.id === flightData.id)
+          if (!existingFlight) {
+            searchResults.value.push(flightData)
+            snackbarStore.showInfo(`Novo voo encontrado: ${flightData.airline}`)
+          }
+        } catch (error) {
+          console.error('Erro ao fazer parse do evento FlightCreated:', error, event)
+        }
+      })
+      .listen('.flight.updated', (event: any) => {
+        console.log('FlightUpdated event received:', event)
+        
+        try {
+          // The event itself contains the flight data, not event.data
+          let flightData: FlightSearchResult
+          
+          if (event.data) {
+            // If event has a data property, use it
+            flightData = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+          } else if (event.id && event.airline) {
+            // If event is the flight data directly
+            flightData = event
+          } else {
+            console.error('Invalid event structure:', event)
+            return
+          }
+          
+          // Update existing flight or add if not exists
+          const flightIndex = searchResults.value.findIndex(flight => flight.id === flightData.id)
+          if (flightIndex !== -1) {
+            searchResults.value[flightIndex] = flightData
+            snackbarStore.showInfo(`Voo atualizado: ${flightData.airline}`)
+          } else {
+            searchResults.value.push(flightData)
+            snackbarStore.showInfo(`Novo voo encontrado: ${flightData.airline}`)
+          }
+        } catch (error) {
+          console.error('Erro ao fazer parse do evento FlightUpdated:', error, event)
+        }
+      })
+
+    console.log(`Listening to channel: ${channelName}`)
+  }
+
+  const stopListeningToFlightUpdates = () => {
+    if (!$echo || !currentFlightSearchId.value || !isListeningToChannel.value) return
+
+    const channelName = `flight_search.${currentFlightSearchId.value}`
+    $echo.leaveChannel(channelName)
+    
+    currentFlightSearchId.value = null
+    isListeningToChannel.value = false
+    
+    console.log(`Stopped listening to channel: ${channelName}`)
+  }
+
   // Methods
   const searchFlights = async () => {
     if (!canSearch.value) {
-      snackbarStore.showSnackbar('Preencha todos os campos para pesquisar', 'warning')
+      snackbarStore.showWarning('Preencha todos os campos para pesquisar')
       return
     }
 
@@ -250,14 +351,22 @@
       }
 
       if (data.value?.data) {
-        searchResults.value = data.value.data
+        const searchData = data.value.data
+        searchResults.value = searchData.flights || []
         hasSearched.value = true
         
         if (searchResults.value.length > 0) {
-          snackbarStore.showSnackbar(
-            `${searchResults.value.length} voo${searchResults.value.length !== 1 ? 's' : ''} encontrado${searchResults.value.length !== 1 ? 's' : ''}!`,
-            'success'
+          snackbarStore.showSuccess(
+            `${searchResults.value.length} voo${searchResults.value.length !== 1 ? 's' : ''} encontrado${searchResults.value.length !== 1 ? 's' : ''}!`
           )
+        }
+        
+        // Start listening to WebSocket updates using the search ID
+        if (searchData.id) {
+          // Stop previous listening if any
+          stopListeningToFlightUpdates()
+          // Start listening to new search
+          startListeningToFlightUpdates(searchData.id)
         }
         
         // Update search history after successful search
@@ -268,7 +377,7 @@
     } catch (err: any) {
       console.error('Erro ao buscar voos:', err)
       searchError.value = err?.data?.message || 'Erro ao buscar voos. Tente novamente.'
-      snackbarStore.showSnackbar('Erro ao buscar voos', 'error')
+      snackbarStore.showError('Erro ao buscar voos')
     } finally {
       isSearching.value = false
     }
@@ -284,7 +393,7 @@
     // Trigger search automatically
     searchFlights()
     
-    snackbarStore.showSnackbar('Pesquisa aplicada do histórico', 'info')
+    snackbarStore.showInfo('Pesquisa aplicada do histórico')
   }
 
   const onOriginSelected = (airport: Airport | null) => {
@@ -296,6 +405,9 @@
   }
 
   const clearSearch = () => {
+    // Stop WebSocket listening
+    stopListeningToFlightUpdates()
+    
     searchFilters.value = {
       origin: '',
       destination: '',
@@ -315,6 +427,11 @@
       today.setDate(today.getDate() + 1) // Default to tomorrow
       searchFilters.value.departure_date = today.toISOString().split('T')[0]
     }
+  })
+
+  // Cleanup WebSocket connection on component unmount
+  onBeforeUnmount(() => {
+    stopListeningToFlightUpdates()
   })
 </script>
 

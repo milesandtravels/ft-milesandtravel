@@ -24,7 +24,7 @@ export interface FlightProgram {
 
 export interface FlightSearchResult {
   id: number
-  program: FlightProgram
+  program?: FlightProgram
   stops: number
   departure_datetime: string
   arrival_datetime: string
@@ -34,8 +34,18 @@ export interface FlightSearchResult {
   airline: string
 }
 
+export interface FlightSearchData {
+  id: number
+  origin: string
+  destination: string
+  departure_date: string
+  created_at: string
+  updated_at: string
+  flights: FlightSearchResult[]
+}
+
 export interface FlightSearchResponse {
-  data: FlightSearchResult[]
+  data: FlightSearchData
 }
 
 export interface FlightSearchHistory {

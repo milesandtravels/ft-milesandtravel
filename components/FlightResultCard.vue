@@ -8,6 +8,7 @@
             <!-- Program Logo -->
             <v-avatar size="32" class="mr-3">
               <v-img
+                v-if="flight.program?.logo_url"
                 :src="flight.program.logo_url"
                 :alt="`Logo ${flight.program.name}`"
                 contain
@@ -16,12 +17,13 @@
                   <v-icon icon="mdi-airplane" color="primary"></v-icon>
                 </template>
               </v-img>
+              <v-icon v-else icon="mdi-airplane" color="primary"></v-icon>
             </v-avatar>
             
             <!-- Airline Name -->
             <div>
               <h3 class="text-h6 font-weight-bold mb-0">{{ flight.airline }}</h3>
-              <p class="text-caption text-medium-emphasis mb-0">{{ flight.program.name }}</p>
+              <p class="text-caption text-medium-emphasis mb-0">{{ flight.program?.name || 'Programa não especificado' }}</p>
             </div>
           </div>
 
@@ -60,7 +62,7 @@
           <div class="mb-3">
             <p class="text-h5 font-weight-bold text-primary mb-1">
               {{ formatPrice(flight.price) }}
-              <span class="text-caption text-medium-emphasis">{{ flight.program.type === 'miles' ? 'milhas' : 'pontos' }}</span>
+              <span class="text-caption text-medium-emphasis">{{ flight.program?.type === 'miles' ? 'milhas' : (flight.program?.type === 'points' ? 'pontos' : 'unidade') }}</span>
             </p>
             <p class="text-caption text-medium-emphasis mb-0">
               Atualizado {{ formatDate(flight.updated_at) }}
@@ -68,6 +70,7 @@
           </div>
           
           <v-btn
+            v-if="flight.program?.link_url"
             color="primary"
             variant="flat"
             size="large"
@@ -78,6 +81,16 @@
             class="text-none"
           >
             Ver Oferta
+          </v-btn>
+          <v-btn
+            v-else
+            color="primary"
+            variant="flat"
+            size="large"
+            disabled
+            class="text-none"
+          >
+            Indisponível
           </v-btn>
         </div>
       </div>

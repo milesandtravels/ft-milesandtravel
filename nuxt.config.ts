@@ -26,6 +26,10 @@ export default defineNuxtConfig({
       googleTagCode: process.env.GOOGLE_TAG_CODE || '',
       onesignalAppId: process.env.ONESIGNAL_APP_ID,
       onesignalSafariWebId: process.env.ONESIGNAL_SAFARI_WEB_ID,
+      reverbAppKey: process.env.VITE_REVERB_APP_KEY,
+      reverbHost: process.env.VITE_REVERB_HOST,
+      reverbPort: process.env.VITE_REVERB_PORT,
+      reverbScheme: process.env.VITE_REVERB_SCHEME,
     },
   },
   vuetify: {
