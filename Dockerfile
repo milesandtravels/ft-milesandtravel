@@ -4,9 +4,11 @@ FROM node:latest AS build-stage
 WORKDIR /app
 
 # Copia arquivos essenciais primeiro para aproveitar cache
-COPY package.json yarn.lock .  
-RUN corepack enable && corepack prepare yarn@stable --activate  
-RUN yarn install --frozen-lockfile
+COPY package.json yarn.lock .
+# Instala Yarn de forma confiável (evita erro 'corepack: not found')
+RUN npm install -g yarn \
+  && yarn --version \
+  && yarn install --frozen-lockfile
 
 # Copia o restante do projeto
 COPY . .
