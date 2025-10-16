@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ChatMessage, FlightChatResponse } from '~/interfaces/FlightChat'
+import type { ChatMessage, FlightChatResponse } from '~/interfaces/FlightChat';
 
 const props = defineProps<{
   chatId?: number
