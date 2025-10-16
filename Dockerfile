@@ -5,10 +5,14 @@ WORKDIR /app
 
 # Copia arquivos essenciais primeiro para aproveitar cache
 COPY package.json yarn.lock .
-# Instala Yarn de forma confiável (evita erro 'corepack: not found')
-RUN npm install -g yarn \
-  && yarn --version \
-  && yarn install --frozen-lockfile
+# Instala Yarn apenas se não existir, e então instala dependências com lockfile
+RUN if command -v yarn >/dev/null 2>&1; then \
+      echo "Yarn já instalado"; \
+    else \
+      npm install -g yarn; \
+    fi \
+    && yarn --version \
+    && yarn install --frozen-lockfile
 
 # Copia o restante do projeto
 COPY . .
