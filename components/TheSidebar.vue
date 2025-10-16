@@ -193,6 +193,12 @@
       route: '/flight-searches',
     },
     {
+      title: 'Chat de Voos (IA)',
+      subtitle: 'Converse e encontre voos',
+      icon: 'mdi-robot',
+      route: '/flight-chat',
+    },
+    {
       title: 'Promoções',
       subtitle: 'Vantagens em lojas online',
       icon: 'mdi-tag-multiple',

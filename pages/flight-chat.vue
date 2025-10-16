@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid class="pa-0 fill-height">
-    <v-row no-gutters class="fill-height">
+  <v-container fluid class="pa-0">
+    <v-row no-gutters>
       <v-col cols="12">
-        <v-card elevation="0" class="fill-height">
+        <v-card elevation="0">
           <v-card-title class="d-flex align-center bg-primary">
             <v-btn icon variant="text" color="white" @click="navigateTo('/')">
               <v-icon>mdi-arrow-left</v-icon>
@@ -11,7 +11,17 @@
           </v-card-title>
 
           <FlightChatBox :chat-id="chatId" @chat-created="handleChatCreated" />
+          <v-divider class="my-6"></v-divider>
         </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- Seção de resultados fora do card para evitar recorte de altura -->
+    <v-row class="mt-4">
+      <v-col cols="12">
+        <!-- Listagem de resultados (ida e volta) -->
+        <FlightChatResults :chat-id="chatId" />
+      
       </v-col>
     </v-row>
   </v-container>

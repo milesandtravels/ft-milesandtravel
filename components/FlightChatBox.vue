@@ -300,7 +300,7 @@ onUnmounted(() => {
 
 .assistant-message {
   margin-right: auto;
-  background-color: rgb(var(--v-theme-surface-variant));
+  background-color: rgb(var(--v-theme-success));
 }
 
 .user-message .message-time {

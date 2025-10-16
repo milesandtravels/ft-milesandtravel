@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// Removido import de VCalendar aqui para evitar erro de CSS no Node
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   ssr: false,
@@ -34,6 +36,7 @@ export default defineNuxtConfig({
   },
   vuetify: {
     vuetifyOptions: {
+      // Componentes Labs serão registrados localmente onde necessários
       theme: {
         defaultTheme: 'light',
         themes: {
