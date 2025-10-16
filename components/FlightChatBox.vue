@@ -129,6 +129,8 @@ const createNewChat = async (message: string) => {
   } catch (error) {
     console.error('[CHAT] Erro ao criar chat:', error)
     isLoading.value = false
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -152,6 +154,8 @@ const addMessage = async (message: string) => {
     await fetchChatMessages()
   } catch (error) {
     console.error('[CHAT] Erro ao adicionar mensagem:', error)
+    isLoading.value = false
+  } finally {
     isLoading.value = false
   }
 }
