@@ -568,6 +568,6 @@ const formatDate = (dateStr: string) => {
   font-size: 0.75rem;
 }
 .mini-calendar {
-  max-height: 360px;
+  /* max-height: 360px; removed to show full month */
 }
 </style>
