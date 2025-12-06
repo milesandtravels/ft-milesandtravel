@@ -431,7 +431,11 @@ const startPolling = () => {
   isPolling.value = true
   const run = async () => {
     await fetchFlights()
-    poller.value = setTimeout(run, 20000)
+    if (flights.value.length > 0) {
+      stopPolling()
+      return
+    }
+    poller.value = setTimeout(run, 2000)
   }
   poller.value = setTimeout(run, 0)
 }
