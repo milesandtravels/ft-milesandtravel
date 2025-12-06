@@ -55,13 +55,13 @@
           hide-details
           class="flex-grow-1"
           @keydown.enter.exact.prevent="sendMessage"
-          :disabled="isLoading"
+          :disabled="isLoading || isWaitingResponse"
         />
         <v-btn
           icon="mdi-send"
           color="primary"
           class="ml-2"
-          :disabled="!newMessage.trim() || isLoading"
+          :disabled="!newMessage.trim() || isLoading || isWaitingResponse"
           @click="sendMessage"
         />
       </v-card-actions>
@@ -86,6 +86,13 @@ const messages = ref<ChatMessage[]>([])
 const isLoading = ref(false)
 const currentChatId = ref<number | undefined>(props.chatId)
 const pollInterval = ref<NodeJS.Timeout | null>(null)
+
+// Bloqueia envio se a última mensagem for do usuário
+const isWaitingResponse = computed(() => {
+  if (messages.value.length === 0) return false
+  const lastMessage = messages.value[messages.value.length - 1]
+  return lastMessage.role === 'user'
+})
 
 const scrollToBottom = () => {
   nextTick(() => {
