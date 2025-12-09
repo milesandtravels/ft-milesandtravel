@@ -120,8 +120,8 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { useDisplay } from 'vuetify'
+import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 
   // Types
   interface MenuItem {
@@ -174,18 +174,18 @@
       icon: 'mdi-view-dashboard',
       route: '/',
     },
-    {
-      title: 'Carteira',
-      subtitle: 'Seus pontos e milhas',
-      icon: 'mdi-wallet',
-      route: '/wallet',
-    },
-    {
-      title: 'Compras Bonificadas',
-      subtitle: 'Encontrar produtos e ofertas',
-      icon: 'mdi-shopping',
-      route: '/search-products',
-    },
+    // {
+    //   title: 'Carteira',
+    //   subtitle: 'Seus pontos e milhas',
+    //   icon: 'mdi-wallet',
+    //   route: '/wallet',
+    // },
+    // {
+    //   title: 'Compras Bonificadas',
+    //   subtitle: 'Encontrar produtos e ofertas',
+    //   icon: 'mdi-shopping',
+    //   route: '/search-products',
+    // },
     {
       title: 'Busca de Voos',
       subtitle: 'Voos com milhas e pontos',
